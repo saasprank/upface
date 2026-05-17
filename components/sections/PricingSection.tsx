@@ -17,66 +17,84 @@ const CrossIcon = () => (
   </svg>
 )
 
+type PlanId = 'free' | 'weekly' | 'monthly'
+
 export default function PricingSection() {
   const t = useTranslations('pricing')
   const locale = useLocale()
   const router = useRouter()
   const prefix = locale === 'fr' ? '' : `/${locale}`
 
-  const plans = [
+  const plans: {
+    id: PlanId
+    name: string
+    price: string
+    period: string
+    desc: string
+    cta: string
+    ctaVariant: 'outline' | 'primary'
+    featured: boolean
+    badge?: string
+    features: { label: string; included: boolean }[]
+  }[] = [
     {
+      id: 'free',
       name: t('free_name'),
       price: t('free_price'),
       period: '',
       desc: t('free_desc'),
       cta: t('cta_free'),
-      ctaVariant: 'outline' as const,
+      ctaVariant: 'outline',
       featured: false,
       features: [
-        { label: 'Score global', included: true },
-        { label: '5 BreakdownBars', included: true },
-        { label: '3 TraitCards', included: true },
-        { label: 'Routine complète 30j', included: false },
-        { label: 'Historique analyses', included: false },
-        { label: 'Progression semaine/semaine', included: false },
+        { label: t('feat_global_score'), included: true },
+        { label: t('feat_three_criteria'), included: true },
+        { label: t('feat_full_routine'), included: false },
+        { label: t('feat_unlimited_analysis'), included: false },
+        { label: t('feat_ai_coach'), included: false },
       ],
     },
     {
-      name: t('report_name'),
-      price: t('report_price'),
-      period: '',
-      desc: t('report_desc'),
-      cta: t('cta_report'),
-      ctaVariant: 'outline' as const,
+      id: 'weekly',
+      name: t('weekly_name'),
+      price: t('weekly_price'),
+      period: t('weekly_period'),
+      desc: t('weekly_desc'),
+      cta: t('cta_weekly'),
+      ctaVariant: 'outline',
       featured: false,
       features: [
-        { label: 'Score global', included: true },
-        { label: '5 BreakdownBars', included: true },
-        { label: '5 TraitCards débloquées', included: true },
-        { label: 'Routine complète 30j', included: true },
-        { label: 'Historique analyses', included: false },
-        { label: 'Progression semaine/semaine', included: false },
+        { label: t('feat_unlock_all'), included: true },
+        { label: t('feat_unlimited_analysis'), included: true },
+        { label: t('feat_full_routine'), included: true },
+        { label: t('feat_ai_coach'), included: true },
+        { label: t('feat_history'), included: true },
       ],
     },
     {
-      name: t('pro_name'),
-      price: '9,99€',
-      period: t('per_month'),
-      desc: t('pro_desc'),
+      id: 'monthly',
+      name: t('monthly_name'),
+      price: t('monthly_price'),
+      period: t('monthly_period'),
+      desc: t('monthly_desc'),
       cta: t('cta_pro'),
-      ctaVariant: 'primary' as const,
+      ctaVariant: 'primary',
       featured: true,
-      badge: t('popular'),
+      badge: t('save_badge'),
       features: [
-        { label: 'Score global', included: true },
-        { label: '5 BreakdownBars', included: true },
-        { label: '5 TraitCards débloquées', included: true },
-        { label: 'Routine complète 30j', included: true },
-        { label: 'Historique analyses illimité', included: true },
-        { label: 'Progression semaine/semaine', included: true },
+        { label: t('feat_unlock_all'), included: true },
+        { label: t('feat_unlimited_analysis'), included: true },
+        { label: t('feat_full_routine'), included: true },
+        { label: t('feat_ai_coach'), included: true },
+        { label: t('feat_history'), included: true },
       ],
     },
   ]
+
+  const handleCta = (id: PlanId) => {
+    if (id === 'free') router.push(`${prefix}/analyze`)
+    else router.push(`${prefix}/onboarding/routine-preview`)
+  }
 
   return (
     <section id="pricing" className="py-24 sm:py-32">
@@ -86,21 +104,17 @@ export default function PricingSection() {
             className="text-3xl sm:text-4xl font-black text-[#EEF2FF] mb-4"
             style={{ fontFamily: 'Satoshi, sans-serif' }}
           >
-            Tarifs simples et transparents
+            {t('section_title')}
           </h2>
-          <p className="text-[#8B9DC3] max-w-lg mx-auto text-sm">
-            Commencez gratuitement. Débloquez votre rapport ou passez Pro pour un suivi illimité.
-          </p>
+          <p className="text-[#8B9DC3] max-w-lg mx-auto text-sm">{t('section_subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {plans.map((plan) => (
             <div
-              key={plan.name}
+              key={plan.id}
               className={`rounded-2xl p-6 flex flex-col gap-6 relative ${
-                plan.featured
-                  ? 'border-2 border-blue-500/40'
-                  : 'border border-[rgba(59,130,246,0.12)]'
+                plan.featured ? 'border-2 border-blue-500/40' : 'border border-[rgba(59,130,246,0.12)]'
               }`}
               style={{
                 background: plan.featured
@@ -116,14 +130,14 @@ export default function PricingSection() {
 
               <div>
                 <p className="text-sm font-semibold text-[#8B9DC3] mb-1">{plan.name}</p>
-                <div className="flex items-baseline gap-1">
+                <div className="flex items-baseline gap-1 flex-wrap">
                   <span
                     className="text-3xl font-black text-[#EEF2FF]"
                     style={{ fontFamily: 'Satoshi, sans-serif' }}
                   >
                     {plan.price}
                   </span>
-                  {plan.period && <span className="text-sm text-[#3D4F6E]">{plan.period}</span>}
+                  {plan.period ? <span className="text-sm text-[#3D4F6E]">{plan.period}</span> : null}
                 </div>
                 <p className="text-xs text-[#3D4F6E] mt-1">{plan.desc}</p>
               </div>
@@ -143,7 +157,7 @@ export default function PricingSection() {
                 variant={plan.ctaVariant}
                 size="md"
                 className="w-full"
-                onClick={() => router.push(`${prefix}/checkout?plan=${plan.name.toLowerCase()}`)}
+                onClick={() => handleCta(plan.id)}
               >
                 {plan.cta}
               </Button>

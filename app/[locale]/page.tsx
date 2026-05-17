@@ -4,6 +4,7 @@ import HeroSection from '@/components/sections/HeroSection'
 import HowItWorksSection from '@/components/sections/HowItWorksSection'
 import ScoreDemoSection from '@/components/sections/ScoreDemoSection'
 import RoutinePreviewSection from '@/components/sections/RoutinePreviewSection'
+import LandingMidSections from '@/components/sections/LandingMidSections'
 import PricingSection from '@/components/sections/PricingSection'
 
 export default function LandingPage() {
@@ -15,6 +16,7 @@ export default function LandingPage() {
         <HowItWorksSection />
         <ScoreDemoSection />
         <RoutinePreviewSection />
+        <LandingMidSections />
         <PricingSection />
       </main>
       <Footer />
