@@ -32,6 +32,9 @@ const SCORE_BARS = [
   { label: 'Aura', key: 'aura' as keyof Scores, color: '#F59E0B' },
 ]
 
+/** Nouvelle analyse : `app/[locale]/analyze/page.tsx` existe ; sinon utiliser `'/onboarding'`. */
+const NEW_ANALYSIS_LOCALE_PATH = '/analyze' as '/analyze' | '/onboarding'
+
 const TIPS = [
   { icon: '💧', tip: "Bois 2L d'eau aujourd'hui — l'hydratation améliore la texture de peau de 23%" },
   { icon: '😴', tip: '7-8h de sommeil cette nuit — le collagène se régénère principalement la nuit' },
@@ -143,7 +146,7 @@ export default function DashboardHome() {
           <h1 className="text-xl font-bold text-white">Ton dashboard</h1>
         </div>
         <button
-          onClick={() => router.push(`/${locale}/analyze`)}
+          onClick={() => router.push(`/${locale}${NEW_ANALYSIS_LOCALE_PATH}`)}
           className="px-3 py-2 rounded-xl text-xs font-medium"
           style={{ background: 'rgba(59,130,246,0.12)', color: '#3B82F6', border: '1px solid rgba(59,130,246,0.2)' }}
         >
@@ -268,11 +271,35 @@ export default function DashboardHome() {
         </div>
       ) : (
         <div
-          className="rounded-2xl p-4 mb-4 text-center"
+          className="rounded-2xl p-4 mb-4"
           style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
         >
-          <p className="text-sm font-medium text-white mb-1">📈 Suis ta progression</p>
-          <p className="text-xs" style={{ color: '#8B9DC3' }}>Fais une 2e analyse pour voir ton graphique de progression</p>
+          <p className="text-xs font-medium mb-3" style={{ color: '#8B9DC3' }}>TON POTENTIEL</p>
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-center">
+              <p className="text-2xl font-black text-white">{score}</p>
+              <p className="text-xs" style={{ color: '#8B9DC3' }}>Maintenant</p>
+            </div>
+            <div className="flex-1 mx-4">
+              <div className="flex items-center gap-1 justify-center mb-1">
+                {[...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-1.5 flex-1 rounded-full"
+                    style={{ background: i < Math.round((score / potentiel) * 5) ? '#3B82F6' : '#1A2236' }}
+                  />
+                ))}
+              </div>
+              <p className="text-xs text-center" style={{ color: '#06B6D4' }}>+{progression} pts possibles</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-black" style={{ color: '#06B6D4' }}>{potentiel}</p>
+              <p className="text-xs" style={{ color: '#8B9DC3' }}>Potentiel</p>
+            </div>
+          </div>
+          <p className="text-xs text-center" style={{ color: '#3D4F6E' }}>
+            📈 Fais une 2e analyse pour voir ta progression
+          </p>
         </div>
       )}
 
@@ -337,6 +364,43 @@ export default function DashboardHome() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Récap semaine */}
+      <div
+        className="rounded-2xl p-4 mt-4"
+        style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+      >
+        <p className="text-xs font-medium mb-3" style={{ color: '#8B9DC3' }}>CETTE SEMAINE</p>
+        <div className="space-y-3">
+          {[
+            { label: 'Routine complétée', value: '3/7 jours', icon: '📋', color: '#3B82F6' },
+            { label: 'Actions faites', value: '12 actions', icon: '✅', color: '#10B981' },
+            { label: 'Temps investi', value: '~45 min', icon: '⏱️', color: '#06B6D4' },
+          ].map((item) => (
+            <div key={item.label} className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span>{item.icon}</span>
+                <span className="text-sm" style={{ color: '#8B9DC3' }}>{item.label}</span>
+              </div>
+              <span className="text-sm font-bold" style={{ color: item.color }}>{item.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Citation motivationnelle */}
+      <div
+        className="rounded-2xl p-4 mt-4 text-center"
+        style={{
+          background: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(6,182,212,0.08))',
+          border: '1px solid rgba(59,130,246,0.15)',
+        }}
+      >
+        <p className="text-sm font-medium text-white mb-1">
+          &quot;La discipline est le pont entre les objectifs et les accomplissements.&quot;
+        </p>
+        <p className="text-xs" style={{ color: '#3D4F6E' }}>— Jim Rohn</p>
       </div>
     </div>
   )
