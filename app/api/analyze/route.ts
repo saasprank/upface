@@ -95,9 +95,9 @@ export async function POST(request: NextRequest) {
       Math.floor(Math.random() * (max - min + 1)) + min
 
     let objectiveScores = {
-      symetrie:    randInt(58, 88),
-      proportions: randInt(55, 85),
-      structure:   randInt(52, 82),
+      symetrie:    randInt(52, 92),
+      proportions: randInt(48, 90),
+      structure:   randInt(45, 88),
     }
     let mediapipeOk = false
 

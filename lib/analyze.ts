@@ -55,39 +55,47 @@ export function getTier(globalScore: number): AnalysisTier {
   return 'below'
 }
 
+/** Borne un score GPT autour de la référence MediaPipe (±delta). */
+function clampScoreAroundRef(ref: number, value: number | undefined, delta = 12): number {
+  const v = typeof value === 'number' && !Number.isNaN(value) ? value : ref
+  const lo = Math.max(0, ref - delta)
+  const hi = Math.min(100, ref + delta)
+  return Math.round(Math.min(hi, Math.max(lo, v)))
+}
+
 // ─── Prompt GPT-4o ────────────────────────────────────────────────────────────
 
-function buildPrompt(objectiveScores: ObjectiveScores): string {
-  return `Tu es un expert en analyse faciale scientifique et en looksmaxxing.
+function buildPrompt(objectiveScores: ObjectiveScores, randomSeed: string): string {
+  const { symetrie: refSym, proportions: refProp, structure: refStruct } = objectiveScores
 
-Des mesures OBJECTIVES ont déjà été calculées par un algorithme de landmarks faciaux (MediaPipe) :
-- Symétrie      : ${objectiveScores.symetrie}/100
-- Proportions   : ${objectiveScores.proportions}/100 (ratio doré Phi = 1.618)
-- Structure     : ${objectiveScores.structure}/100 (angle mandibulaire, mâchoire)
+  return `[Session: ${randomSeed}]
+Tu es un expert en analyse faciale scientifique et en looksmaxxing.
 
-⚠️ Utilise ces trois scores EXACTEMENT tels quels dans ton JSON. Ne les modifie pas.
+Références algorithmiques (landmarks / MediaPipe) — point de départ, pas des valeurs figées :
+- Symétrie (réf.)      : ${refSym}/100
+- Proportions (réf.)   : ${refProp}/100 (ratio doré Phi ≈ 1.618)
+- Structure (réf.)     : ${refStruct}/100 (angle mandibulaire, mâchoire)
 
-Ton rôle : ANALYSER MINUTIEUSEMENT L'IMAGE RÉELLE pour évaluer les 3 dimensions subjectives.
-Observe attentivement : texture de peau, pores, imperfections, brillance, teint, coupe de cheveux, barbe, sourcils, regard, énergie.
-Les scores DOIVENT refléter ce que tu observes vraiment — ils varient selon chaque visage.
+Consignes obligatoires :
+- Analyse objectivement la photo fournie.
+- Les scores DOIVENT refléter ce que tu vois réellement sur CETTE photo spécifique.
+- Ne jamais retourner les mêmes scores ni les mêmes formulations que pour une analyse précédente — chaque session est unique.
+- Varie tes observations et formulations à chaque analyse (utilise le libellé Session comme repère d’unicité).
+- Pour symétrie, proportions et structure : choisis un entier dans [référence−12, référence+12] (borné 0–100) selon l’angle, la lumière et l’expression visibles sur l’image.
+- Pour peau, grooming et aura : entiers 0–100 uniquement à partir de ce que tu observes sur l’image (texture, pores, barbe, regard, etc.).
+- score_global : moyenne pondérée (symétrie×0.2 + proportions×0.2 + structure×0.2 + peau×0.15 + grooming×0.15 + aura×0.10), arrondie à l’entier.
+- percentile : rang estimé dans la population (0 = pire, 100 = meilleur), cohérent avec score_global.
 
-- score_peau     : qualité réelle observée (pores, acné, teint, hydratation, texture) — 0-100
-- score_grooming : coupe, barbe, sourcils, hygiène visible, style global observé — 0-100
-- score_aura     : énergie du regard, expression, charisme, présence perçue — 0-100
-- score_global   : moyenne pondérée (symetrie×0.2 + proportions×0.2 + structure×0.2 + peau×0.15 + grooming×0.15 + aura×0.10)
-- percentile     : rang estimé parmi la population générale (0 = pire, 100 = meilleur)
-
-Les observations doivent être SPÉCIFIQUES à ce visage (pas génériques). Mentionne des détails précis.
-La routine doit être ADAPTÉE aux faiblesses identifiées dans cette image.
+Les observations doivent être SPÉCIFIQUES à ce visage (pas génériques). La routine doit être adaptée aux faiblesses visibles sur cette image.
 
 Retourne UNIQUEMENT ce JSON valide, sans texte avant ou après :
 
 {
   "scores": {
     "global": <entier 0-100>,
-    "symetrie": ${objectiveScores.symetrie},
-    "proportions": ${objectiveScores.proportions},
-    "structure": ${objectiveScores.structure},
+    "symetrie": <entier 0-100>,
+    "proportions": <entier 0-100>,
+    "structure": <entier 0-100>,
     "peau": <entier 0-100>,
     "grooming": <entier 0-100>,
     "aura": <entier 0-100>
@@ -185,10 +193,7 @@ function getMockAnalysis(objectiveScores: ObjectiveScores): AnalysisResult {
 // ─── Analyse principale ───────────────────────────────────────────────────────
 
 /**
- * Appelle GPT-4o Vision avec les scores MediaPipe déjà calculés.
- * GPT complète uniquement peau, grooming, aura, global, routine et observations.
- * Les trois scores objectifs (symetrie, proportions, structure) sont injectés
- * directement dans le prompt et forcés dans le résultat final.
+ * Appelle GPT-4o Vision avec les scores MediaPipe comme références (±12 une fois parsé).
  */
 export async function analyzeImage(
   imageUrl: string,
@@ -200,6 +205,8 @@ export async function analyzeImage(
     await new Promise((resolve) => setTimeout(resolve, 1500))
     return getMockAnalysis(objectiveScores)
   }
+
+  const randomSeed = Math.random().toString(36).substring(7)
 
   // Convertir l'image en base64 pour GPT-4o (évite les problèmes d'accès URL privées)
   let imagePayload: { type: 'image_url'; image_url: { url: string; detail: 'high' } }
@@ -236,20 +243,20 @@ export async function analyzeImage(
   const response = await openai.chat.completions.create({
     model: 'gpt-4o',
     messages: [
-      { role: 'system', content: buildPrompt(objectiveScores) },
+      { role: 'system', content: buildPrompt(objectiveScores, randomSeed) },
       {
         role: 'user',
         content: [
           imagePayload,
           {
             type: 'text',
-            text: 'Complète l\'analyse faciale en te basant sur les scores objectifs fournis dans les instructions système.',
+            text: `Analyse cette photo pour la session [${randomSeed}]. Remplis le JSON en suivant toutes les consignes système (scores visuels, variété des formulations).`,
           },
         ],
       },
     ],
     max_tokens: 1800,
-    temperature: 0.7,
+    temperature: 0.8,
   })
 
   const content = response.choices[0]?.message?.content
@@ -260,10 +267,22 @@ export async function analyzeImage(
 
   const parsed = JSON.parse(jsonMatch[0]) as AnalysisResult
 
-  // Forcer les scores objectifs MediaPipe (GPT ne peut pas les modifier)
-  parsed.scores.symetrie    = objectiveScores.symetrie
-  parsed.scores.proportions = objectiveScores.proportions
-  parsed.scores.structure   = objectiveScores.structure
+  // Symétrie / proportions / structure : autoriser la variabilité GPT mais borner à ±12 autour MediaPipe
+  parsed.scores.symetrie    = clampScoreAroundRef(objectiveScores.symetrie,    parsed.scores.symetrie)
+  parsed.scores.proportions = clampScoreAroundRef(objectiveScores.proportions, parsed.scores.proportions)
+  parsed.scores.structure   = clampScoreAroundRef(objectiveScores.structure,   parsed.scores.structure)
+
+  const s = parsed.scores
+  parsed.scores.global = Math.round(
+    s.symetrie * 0.2 +
+      s.proportions * 0.2 +
+      s.structure * 0.2 +
+      s.peau * 0.15 +
+      s.grooming * 0.15 +
+      s.aura * 0.10
+  )
+  parsed.scores.global = Math.min(100, Math.max(0, parsed.scores.global))
+
   parsed.tier = getTier(parsed.scores.global)
 
   return parsed
