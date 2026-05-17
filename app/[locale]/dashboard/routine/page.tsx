@@ -309,17 +309,21 @@ function RoutineContent() {
         style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
       >
         <div className="flex justify-between items-center mb-2">
-          <p className="text-xs font-medium" style={{ color: '#8B9DC3' }}>{"AUJOURD'HUI"}</p>
+          <p className="text-sm font-semibold text-white">{"Aujourd'hui"}</p>
           <p className="text-xs font-bold" style={{ color: '#06B6D4' }}>{completedCount}/{totalTasks} tâches</p>
         </div>
-        <div className="h-2 rounded-full" style={{ background: '#1A2236' }}>
+        <div className="h-2 rounded-full mb-2" style={{ background: '#1A2236' }}>
           <div
             className="h-full rounded-full transition-all duration-500"
             style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, #3B82F6, #06B6D4)' }}
           />
         </div>
-        {progressPct === 100 && totalTasks > 0 && (
-          <p className="text-xs mt-2 text-center" style={{ color: '#10B981' }}>🔥 Routine du jour complète !</p>
+        {progressPct === 100 && totalTasks > 0 ? (
+          <p className="text-xs text-center" style={{ color: '#10B981' }}>🔥 Routine du jour complète ! Streak +1</p>
+        ) : progressPct === 0 ? (
+          <p className="text-xs" style={{ color: '#3D4F6E' }}>Commence ta routine pour booster ton streak 🚀</p>
+        ) : (
+          <p className="text-xs" style={{ color: '#3D4F6E' }}>Continue ! Plus que {totalTasks - completedCount} tâche{totalTasks - completedCount > 1 ? 's' : ''}</p>
         )}
       </div>
 

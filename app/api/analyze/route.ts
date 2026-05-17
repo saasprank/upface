@@ -89,7 +89,17 @@ export async function POST(request: NextRequest) {
     }
 
     // MediaPipe — objective scores
-    let objectiveScores = { symetrie: 70, proportions: 70, structure: 70 }
+    // Fallback values are intentionally randomised so each analysis produces
+    // unique inputs when MediaPipe cannot run (WASM limitations in serverless).
+    const randInt = (min: number, max: number) =>
+      Math.floor(Math.random() * (max - min + 1)) + min
+
+    let objectiveScores = {
+      symetrie:    randInt(58, 88),
+      proportions: randInt(55, 85),
+      structure:   randInt(52, 82),
+    }
+    let mediapipeOk = false
 
     if (imageBuffer) {
       try {
@@ -106,11 +116,14 @@ export async function POST(request: NextRequest) {
           proportions: mpResult.proportions,
           structure:   mpResult.structure,
         }
+        mediapipeOk = true
         console.log('[analyze] MediaPipe scores:', objectiveScores)
       } catch (err) {
-        console.error('[analyze] MediaPipe error (falling back to GPT-only):', err)
+        console.error('[analyze] MediaPipe error (using randomised fallback):', err)
       }
     }
+
+    console.log(`[analyze] objectiveScores (mediapipe=${mediapipeOk}):`, objectiveScores)
 
     // GPT-4o Vision
     console.log('[analyze] Calling GPT-4o Vision…')

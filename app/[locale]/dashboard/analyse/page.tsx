@@ -30,11 +30,69 @@ const CRITERIA = [
   { key: 'aura' as keyof Scores, label: 'Aura', icon: '☀', color: '#EC4899' },
 ]
 
+const RADAR_DIMS = [
+  { key: 'symetrie' as keyof Scores, label: 'Symétrie' },
+  { key: 'proportions' as keyof Scores, label: 'Proportions' },
+  { key: 'structure' as keyof Scores, label: 'Structure' },
+  { key: 'peau' as keyof Scores, label: 'Peau' },
+  { key: 'grooming' as keyof Scores, label: 'Grooming' },
+  { key: 'aura' as keyof Scores, label: 'Aura' },
+]
+
 function getTier(s: number) {
   if (s >= 85) return { label: 'Elite', color: '#06B6D4' }
   if (s >= 70) return { label: 'Attractive', color: '#3B82F6' }
   if (s >= 55) return { label: 'Moyen', color: '#F59E0B' }
   return { label: 'Below Average', color: '#EF4444' }
+}
+
+function RadarChart({ scores }: { scores: Scores }) {
+  const cx = 120, cy = 110, R = 80
+  const angleStep = (Math.PI * 2) / RADAR_DIMS.length
+
+  const getPoint = (i: number, r: number) => ({
+    x: cx + r * Math.sin(i * angleStep),
+    y: cy - r * Math.cos(i * angleStep),
+  })
+
+  const dataPoints = RADAR_DIMS.map((d, i) => getPoint(i, ((scores[d.key] as number) / 100) * R))
+  const gridPoints = (r: number) => RADAR_DIMS.map((_, i) => getPoint(i, r))
+
+  const toPath = (pts: { x: number; y: number }[]) =>
+    pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ') + 'Z'
+
+  return (
+    <svg viewBox="0 0 240 200" className="w-full">
+      <defs>
+        <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3B82F6" />
+          <stop offset="100%" stopColor="#06B6D4" />
+        </linearGradient>
+      </defs>
+      {/* Grilles */}
+      {[0.25, 0.5, 0.75, 1].map(scale => (
+        <path key={scale} d={toPath(gridPoints(R * scale))} fill="none" stroke="rgba(59,130,246,0.1)" strokeWidth="1" />
+      ))}
+      {/* Axes */}
+      {RADAR_DIMS.map((_, i) => {
+        const p = getPoint(i, R)
+        return <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="rgba(59,130,246,0.15)" strokeWidth="1" />
+      })}
+      {/* Données */}
+      <path d={toPath(dataPoints)} fill="rgba(59,130,246,0.18)" stroke="url(#rg)" strokeWidth="2" />
+      {/* Points */}
+      {dataPoints.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r="3.5" fill="#06B6D4" />)}
+      {/* Labels */}
+      {RADAR_DIMS.map((d, i) => {
+        const p = getPoint(i, R + 18)
+        return (
+          <text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle" fill="#8B9DC3" fontSize="9">
+            {d.label}
+          </text>
+        )
+      })}
+    </svg>
+  )
 }
 
 export default function AnalysePage() {
@@ -44,6 +102,7 @@ export default function AnalysePage() {
 
   const [scores, setScores] = useState<Scores | null>(null)
   const [analyses, setAnalyses] = useState<Analysis[]>([])
+  const [descriptions, setDescriptions] = useState<Record<string, string>>({})
 
   useEffect(() => {
     const load = async () => {
@@ -57,14 +116,13 @@ export default function AnalysePage() {
         }
       } catch { /* ignore */ }
 
-      // Attempt 2: Supabase (last analysis + history)
+      // Attempt 2: Supabase
       try {
         const { createClient } = await import('@/lib/supabase')
         const supabase = createClient()
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
 
-        // If scores not in localStorage, fetch them from the latest analysis
         if (!scoredFromLS) {
           const { data: latest } = await supabase
             .from('analyses')
@@ -73,6 +131,7 @@ export default function AnalysePage() {
             .order('created_at', { ascending: false })
             .limit(1)
             .single()
+
           if (latest) {
             const s: Scores = {
               global:       latest.score_global      ?? 74,
@@ -87,10 +146,38 @@ export default function AnalysePage() {
             }
             setScores(s)
             try { localStorage.setItem('upface_scores', JSON.stringify(s)) } catch { /* ignore */ }
+
+            // Extract observations from raw AI response
+            if (latest.observations) {
+              try {
+                const obs = typeof latest.observations === 'string'
+                  ? JSON.parse(latest.observations as string)
+                  : latest.observations
+                setDescriptions(obs as Record<string, string>)
+              } catch { /* ignore */ }
+            }
+          }
+        } else {
+          // Load observations from latest even if scores came from localStorage
+          const { data: latest } = await supabase
+            .from('analyses')
+            .select('observations')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single()
+
+          if (latest?.observations) {
+            try {
+              const obs = typeof latest.observations === 'string'
+                ? JSON.parse(latest.observations as string)
+                : latest.observations
+              setDescriptions(obs as Record<string, string>)
+            } catch { /* ignore */ }
           }
         }
 
-        // Always fetch history
+        // History
         const { data } = await supabase
           .from('analyses')
           .select('id, score_global, created_at')
@@ -164,13 +251,24 @@ export default function AnalysePage() {
         </svg>
       </div>
 
-      {/* 6 critères */}
+      {/* Radar chart */}
+      {scores && (
+        <div
+          className="rounded-2xl p-4 mb-4"
+          style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+        >
+          <p className="text-xs font-medium mb-1" style={{ color: '#8B9DC3' }}>RADAR DE PERFORMANCE</p>
+          <RadarChart scores={scores} />
+        </div>
+      )}
+
+      {/* 6 critères détaillés */}
       <div
         className="rounded-2xl p-4 mb-4"
         style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
       >
         <p className="text-xs font-medium mb-3" style={{ color: '#8B9DC3' }}>ANALYSE DÉTAILLÉE</p>
-        <div className="space-y-3">
+        <div className="space-y-4">
           {CRITERIA.map((c) => {
             const val = scores ? (scores[c.key] as number) : 0
             const level = val >= 75 ? 'Fort' : val >= 50 ? 'Moyen' : 'Faible'
@@ -187,19 +285,19 @@ export default function AnalysePage() {
                     <span className="text-sm font-bold text-white">{val || '--'}/100</span>
                   </div>
                 </div>
-                <div className="h-1.5 rounded-full" style={{ background: '#1A2236' }}>
-                  <div
-                    className="h-full rounded-full transition-all"
-                    style={{ width: `${val}%`, background: c.color }}
-                  />
+                <div className="h-1.5 rounded-full mb-1" style={{ background: '#1A2236' }}>
+                  <div className="h-full rounded-full transition-all" style={{ width: `${val}%`, background: c.color }} />
                 </div>
+                {descriptions[c.key] && (
+                  <p className="text-xs leading-relaxed" style={{ color: '#8B9DC3' }}>{descriptions[c.key]}</p>
+                )}
               </div>
             )
           })}
         </div>
       </div>
 
-      {/* Historique analyses */}
+      {/* Historique */}
       {analyses.length > 1 && (
         <div
           className="rounded-2xl p-4 mb-4"
@@ -222,9 +320,7 @@ export default function AnalysePage() {
                 {i < analyses.length - 1 && analyses[i + 1] && (
                   <span
                     className="text-xs font-medium"
-                    style={{
-                      color: a.score_global >= analyses[i + 1].score_global ? '#10B981' : '#EF4444',
-                    }}
+                    style={{ color: a.score_global >= analyses[i + 1].score_global ? '#10B981' : '#EF4444' }}
                   >
                     {a.score_global >= analyses[i + 1].score_global ? '▲' : '▼'}
                     {Math.abs(a.score_global - analyses[i + 1].score_global)} pts

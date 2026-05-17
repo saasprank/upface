@@ -33,6 +33,7 @@ export default function ProfilPage() {
   const [user, setUser] = useState<SupabaseUser | null>(null)
   const [sub, setSub] = useState<Subscription | null>(null)
   const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState({ totalAnalyses: 0, avgScore: 0, bestScore: 0 })
 
   useEffect(() => {
     const load = async () => {
@@ -41,14 +42,31 @@ export default function ProfilPage() {
         const supabase = createClient()
         const { data: { user: u } } = await supabase.auth.getUser()
         setUser(u as SupabaseUser | null)
+
         if (u) {
-          const { data } = await supabase
+          // Subscription
+          const { data: subData } = await supabase
             .from('subscriptions')
             .select('plan, status, price_id, current_period_end')
             .eq('user_id', u.id)
             .eq('status', 'active')
             .single()
-          if (data) setSub(data as Subscription)
+          if (subData) setSub(subData as Subscription)
+
+          // Analyses stats
+          const { data: analysesData } = await supabase
+            .from('analyses')
+            .select('score_global')
+            .eq('user_id', u.id)
+
+          if (analysesData && analysesData.length > 0) {
+            const scores = analysesData.map(a => a.score_global as number).filter(Boolean)
+            setStats({
+              totalAnalyses: scores.length,
+              avgScore: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length),
+              bestScore: Math.max(...scores),
+            })
+          }
         }
       } catch { /* ignore */ }
       setLoading(false)
@@ -74,6 +92,8 @@ export default function ProfilPage() {
     )
   }
 
+  const displayName = user?.email?.split('@')[0] ?? 'Utilisateur'
+
   return (
     <div className="px-4 pt-6 pb-4 min-h-screen" style={{ background: '#080C14' }}>
 
@@ -81,7 +101,7 @@ export default function ProfilPage() {
       <p className="text-xs font-medium mb-1" style={{ color: '#8B9DC3' }}>MON COMPTE</p>
       <h1 className="text-xl font-bold text-white mb-6">Profil</h1>
 
-      {/* Avatar + email */}
+      {/* Avatar + nom */}
       <div
         className="rounded-2xl p-4 mb-4 flex items-center gap-4"
         style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
@@ -90,17 +110,34 @@ export default function ProfilPage() {
           className="w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold text-white flex-shrink-0"
           style={{ background: 'linear-gradient(135deg, #3B82F6, #06B6D4)' }}
         >
-          {user?.email?.[0]?.toUpperCase() ?? '?'}
+          {displayName[0]?.toUpperCase() ?? '?'}
         </div>
         <div>
-          <p className="text-white font-semibold">{user?.email ?? 'Utilisateur'}</p>
+          <p className="text-white font-semibold">{displayName}</p>
           <p className="text-xs mt-0.5" style={{ color: '#3D4F6E' }}>
-            Membre depuis{' '}
             {user?.created_at
-              ? new Date(user.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
-              : '—'}
+              ? `Membre depuis ${new Date(user.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}`
+              : 'Membre Upface'}
           </p>
         </div>
+      </div>
+
+      {/* Stats analyses */}
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        {[
+          { label: 'Analyses', value: stats.totalAnalyses || '--' },
+          { label: 'Score moyen', value: stats.avgScore ? `${stats.avgScore}/100` : '--' },
+          { label: 'Meilleur', value: stats.bestScore ? `${stats.bestScore}/100` : '--' },
+        ].map(s => (
+          <div
+            key={s.label}
+            className="rounded-xl p-3 text-center"
+            style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.1)' }}
+          >
+            <p className="text-lg font-bold text-white">{s.value}</p>
+            <p className="text-xs" style={{ color: '#3D4F6E' }}>{s.label}</p>
+          </div>
+        ))}
       </div>
 
       {/* Abonnement */}
@@ -150,14 +187,13 @@ export default function ProfilPage() {
       {/* Déconnexion */}
       <button
         onClick={() => void handleLogout()}
-        className="w-full py-4 rounded-2xl font-semibold text-sm transition-all active:scale-95"
+        className="w-full py-4 rounded-2xl font-semibold text-sm transition-all active:scale-95 mb-4"
         style={{ background: 'rgba(239,68,68,0.1)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.2)' }}
       >
         Se déconnecter
       </button>
 
-      {/* Version */}
-      <p className="text-center text-xs mt-4" style={{ color: '#3D4F6E' }}>
+      <p className="text-center text-xs" style={{ color: '#3D4F6E' }}>
         Upface v1.0 · Fait avec soin
       </p>
     </div>

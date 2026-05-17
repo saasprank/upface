@@ -60,52 +60,56 @@ export function getTier(globalScore: number): AnalysisTier {
 function buildPrompt(objectiveScores: ObjectiveScores): string {
   return `Tu es un expert en analyse faciale scientifique et en looksmaxxing.
 
-Des mesures OBJECTIVES ont déjà été calculées par un algorithme de détection de landmarks faciaux (MediaPipe) :
+Des mesures OBJECTIVES ont déjà été calculées par un algorithme de landmarks faciaux (MediaPipe) :
 - Symétrie      : ${objectiveScores.symetrie}/100
-- Proportions   : ${objectiveScores.proportions}/100 (comparaison au ratio doré Phi = 1.618)
-- Structure     : ${objectiveScores.structure}/100 (angle mandibulaire, qualité de la mâchoire)
+- Proportions   : ${objectiveScores.proportions}/100 (ratio doré Phi = 1.618)
+- Structure     : ${objectiveScores.structure}/100 (angle mandibulaire, mâchoire)
 
-⚠️ Tu dois IMPÉRATIVEMENT utiliser ces trois scores tels quels. Ne les recalcule pas et ne les modifie pas.
+⚠️ Utilise ces trois scores EXACTEMENT tels quels dans ton JSON. Ne les modifie pas.
 
-Ton rôle : analyser l'image pour compléter l'analyse avec les dimensions subjectives :
-- score_peau     (qualité, teint, texture, imperfections)  0-100
-- score_grooming (coupe, barbe, hygiène, style global)     0-100
-- score_aura     (regard, charisme, énergie, présence)     0-100
-- score_global   (moyenne pondérée de toutes les dimensions, raisonne à partir des 6 scores)
-- percentile     (ton estimation du rang dans la population générale, 0-100)
+Ton rôle : ANALYSER MINUTIEUSEMENT L'IMAGE RÉELLE pour évaluer les 3 dimensions subjectives.
+Observe attentivement : texture de peau, pores, imperfections, brillance, teint, coupe de cheveux, barbe, sourcils, regard, énergie.
+Les scores DOIVENT refléter ce que tu observes vraiment — ils varient selon chaque visage.
 
-Retourne UNIQUEMENT ce JSON valide, sans aucun texte avant ou après :
+- score_peau     : qualité réelle observée (pores, acné, teint, hydratation, texture) — 0-100
+- score_grooming : coupe, barbe, sourcils, hygiène visible, style global observé — 0-100
+- score_aura     : énergie du regard, expression, charisme, présence perçue — 0-100
+- score_global   : moyenne pondérée (symetrie×0.2 + proportions×0.2 + structure×0.2 + peau×0.15 + grooming×0.15 + aura×0.10)
+- percentile     : rang estimé parmi la population générale (0 = pire, 100 = meilleur)
+
+Les observations doivent être SPÉCIFIQUES à ce visage (pas génériques). Mentionne des détails précis.
+La routine doit être ADAPTÉE aux faiblesses identifiées dans cette image.
+
+Retourne UNIQUEMENT ce JSON valide, sans texte avant ou après :
 
 {
   "scores": {
-    "global": 0-100,
+    "global": <entier 0-100>,
     "symetrie": ${objectiveScores.symetrie},
     "proportions": ${objectiveScores.proportions},
     "structure": ${objectiveScores.structure},
-    "peau": 0-100,
-    "grooming": 0-100,
-    "aura": 0-100
+    "peau": <entier 0-100>,
+    "grooming": <entier 0-100>,
+    "aura": <entier 0-100>
   },
   "tier": "elite|attractive|average|below",
   "observations": {
-    "symetrie": "observation courte et factuelle",
-    "proportions": "observation courte et factuelle",
-    "structure": "observation courte et factuelle",
-    "peau": "observation courte et factuelle",
-    "grooming": "observation courte et factuelle",
-    "aura": "observation courte et factuelle"
+    "symetrie": "observation factuelle et spécifique",
+    "proportions": "observation factuelle et spécifique",
+    "structure": "observation factuelle et spécifique",
+    "peau": "observation sur ce qui est visible dans l'image",
+    "grooming": "observation sur ce qui est visible dans l'image",
+    "aura": "observation sur l'énergie et la présence perçues"
   },
   "routine": {
-    "skincare":  ["action 1", "action 2", "action 3", "action 4"],
-    "grooming":  ["action 1", "action 2", "action 3", "action 4"],
-    "fitness":   ["action 1", "action 2", "action 3", "action 4"],
-    "style":     ["action 1", "action 2", "action 3", "action 4"],
-    "aura":      ["action 1", "action 2", "action 3", "action 4"]
+    "skincare":  ["action adaptée 1", "action adaptée 2", "action adaptée 3", "action adaptée 4"],
+    "grooming":  ["action adaptée 1", "action adaptée 2", "action adaptée 3", "action adaptée 4"],
+    "fitness":   ["action adaptée 1", "action adaptée 2", "action adaptée 3", "action adaptée 4"],
+    "style":     ["action adaptée 1", "action adaptée 2", "action adaptée 3", "action adaptée 4"],
+    "aura":      ["action adaptée 1", "action adaptée 2", "action adaptée 3", "action adaptée 4"]
   },
-  "percentile": 0-100
-}
-
-Sois factuel, bienveillant, précis. Retourne uniquement le JSON.`
+  "percentile": <entier 0-100>
+}`
 }
 
 // ─── Mock (dev sans clé OpenAI) ───────────────────────────────────────────────
@@ -245,7 +249,7 @@ export async function analyzeImage(
       },
     ],
     max_tokens: 1800,
-    temperature: 0.3,
+    temperature: 0.7,
   })
 
   const content = response.choices[0]?.message?.content
