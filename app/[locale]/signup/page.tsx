@@ -1,0 +1,309 @@
+'use client'
+
+import { useState, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useTranslations, useLocale } from 'next-intl'
+import Link from 'next/link'
+import Image from 'next/image'
+import Button from '@/components/ui/Button'
+import ScoreRing from '@/components/ui/ScoreRing'
+import { createClient } from '@/lib/supabase'
+import { authCallbackUrl, setAuthNextCookieClient } from '@/lib/auth-redirect'
+
+function SignupForm() {
+  const t = useTranslations('signup')
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const locale = useLocale()
+  const prefix = locale === 'fr' ? '' : `/${locale}`
+
+  const nextUrl = searchParams.get('next') ?? `${prefix}/dashboard`
+  const isResultsGate = nextUrl.includes('/results/')
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [gdpr, setGdpr] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [emailSent, setEmailSent] = useState(false)
+
+  const handleGoogle = async () => {
+    setAuthNextCookieClient(nextUrl)
+    const supabase = createClient()
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: authCallbackUrl(),
+      },
+    })
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!gdpr) { setError('Veuillez accepter la politique de confidentialité.'); return }
+    setLoading(true)
+    setError(null)
+
+    setAuthNextCookieClient(nextUrl)
+
+    const supabase = createClient()
+    const trimmedEmail = email.trim().toLowerCase()
+
+    // Pas de `emailRedirectTo` ici : évite l’erreur Supabase "string did not match expected pattern"
+    // quand l’URL du front ne colle pas exactement aux Redirect URLs. Les mails de confirmation
+    // utilisent alors la **Site URL** du projet (Dashboard → Authentication → URL Configuration).
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email: trimmedEmail,
+      password,
+    })
+
+    if (signUpError) {
+      const msg = signUpError.message ?? ''
+      const lower = msg.toLowerCase()
+      if (lower.includes('redirect') || lower.includes('redirect_uri')) {
+        setError(
+          locale === 'fr'
+            ? 'Problème de redirection auth. Dans Supabase → URL Configuration, mets la Site URL sur https://upface-saas.vercel.app et ajoute https://upface-saas.vercel.app/api/auth/callback dans Redirect URLs.'
+            : 'Auth redirect misconfiguration. Update Site URL and Redirect URLs in Supabase.'
+        )
+      } else if (lower.includes('pattern')) {
+        setError(
+          locale === 'fr'
+            ? 'L’email ou le mot de passe ne correspond pas aux règles Supabase. Dans Authentication → Providers → Email, vérifie la politique de mot de passe (longueur / complexité). Essaie une adresse email simple (minuscules, sans espaces).'
+            : 'Email or password does not match Supabase rules. Check Email provider password policy in Supabase dashboard.'
+        )
+      } else {
+        setError(msg)
+      }
+      setLoading(false)
+      return
+    }
+
+    // Session immédiate (confirmation email désactivée dans Supabase)
+    if (data.session) {
+      router.push(nextUrl)
+      return
+    }
+
+    // Pas de session → email de confirmation envoyé
+    setEmailSent(true)
+    setLoading(false)
+  }
+
+  // ── Email de confirmation envoyé ──────────────────────────────────────────
+  if (emailSent) {
+    return (
+      <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4">
+        <div className="w-full max-w-sm text-center">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
+            <svg className="w-8 h-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-black text-[#EEF2FF] mb-3" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+            Vérifiez votre email
+          </h1>
+          <p className="text-sm text-[#8B9DC3] mb-2 leading-relaxed">
+            Un lien de confirmation a été envoyé à <strong className="text-[#EEF2FF]">{email}</strong>.
+          </p>
+          <p className="text-sm text-[#8B9DC3] mb-8 leading-relaxed">
+            Cliquez sur le lien pour activer votre compte et être connecté automatiquement.
+          </p>
+          <div className="rounded-xl p-4 text-left mb-6" style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.15)' }}>
+            <p className="text-xs text-[#8B9DC3] leading-relaxed">
+              <span className="text-blue-400 font-medium">Astuce :</span> Vérifiez vos spams si vous ne trouvez pas l&apos;email. Le lien expire dans 24h.
+            </p>
+          </div>
+          <p className="text-xs text-[#3D4F6E]">
+            Déjà un lien ?{' '}
+            <Link href={`${prefix}/login`} className="text-blue-400 hover:underline">
+              Se connecter
+            </Link>
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-[#080C14] flex flex-col lg:flex-row">
+      {/* Left teaser (desktop only) */}
+      <div className="hidden lg:flex flex-1 items-center justify-center relative overflow-hidden bg-[#0D1321] border-r border-[rgba(59,130,246,0.10)]">
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'radial-gradient(ellipse 600px 600px at 50% 50%, rgba(59,130,246,0.08) 0%, transparent 70%)',
+          }}
+        />
+
+        <div className="relative z-10 flex flex-col items-center gap-8 px-12 text-center">
+          {/* Blurred score */}
+          <div className="relative">
+            <div className="blur-md pointer-events-none">
+              <ScoreRing score={74} size={160} animate={false} />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="bg-[#0D1321]/90 backdrop-blur-sm border border-blue-500/20 rounded-xl px-5 py-3 text-center">
+                <svg className="w-6 h-6 text-blue-400 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <p className="text-xs text-[#8B9DC3]">Résultat verrouillé</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h2
+              className="text-2xl font-black text-[#EEF2FF] mb-2"
+              style={{ fontFamily: 'Satoshi, sans-serif' }}
+            >
+              {isResultsGate ? t('teaser_title_scan') : t('teaser_title')}
+            </h2>
+            <p className="text-sm text-[#8B9DC3]">{isResultsGate ? t('teaser_subtitle_scan') : t('teaser_subtitle')}</p>
+          </div>
+
+          {/* Preview bars */}
+          <div className="w-full max-w-xs space-y-2.5">
+            {['Symétrie', 'Proportions', 'Structure', 'Peau', 'Grooming'].map((label, i) => (
+              <div key={label} className="flex items-center gap-3 blur-sm">
+                <span className="text-xs text-[#3D4F6E] w-20 shrink-0">{label}</span>
+                <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${65 + i * 4}%`,
+                      background: 'linear-gradient(90deg, #3B82F6, #06B6D4)',
+                    }}
+                  />
+                </div>
+                <span className="text-xs text-[#3D4F6E] w-6">??</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right form */}
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-sm">
+          {/* Logo */}
+          <Link href={`${prefix}/`} className="flex items-center gap-2 mb-10 group">
+            <div style={{ mixBlendMode: 'screen', display: 'inline-block', lineHeight: 0 }}>
+              <Image src="/logo.png" alt="UPFACE" width={32} height={32} style={{ display: 'block' }} />
+            </div>
+            <span className="font-bold text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>UPFACE</span>
+          </Link>
+
+          <h1
+            className="text-2xl font-black text-[#EEF2FF] mb-2"
+            style={{ fontFamily: 'Satoshi, sans-serif' }}
+          >
+            {isResultsGate ? t('title_after_scan') : t('title')}
+          </h1>
+          <p className="text-sm text-[#8B9DC3] mb-8">{isResultsGate ? t('subtitle_after_scan') : t('subtitle_form')}</p>
+
+          {/* Google OAuth */}
+          <Button
+            variant="outline"
+            size="lg"
+            className="w-full mb-6"
+            onClick={handleGoogle}
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+            </svg>
+            {t('google')}
+          </Button>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex-1 h-px bg-[rgba(255,255,255,0.06)]" />
+            <span className="text-xs text-[#3D4F6E]">{t('or')}</span>
+            <div className="flex-1 h-px bg-[rgba(255,255,255,0.06)]" />
+          </div>
+
+          {/* Email/password form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs text-[#8B9DC3] mb-1.5">{t('email')}</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                className="w-full bg-[#0D1321] border border-[rgba(59,130,246,0.15)] rounded-xl px-4 py-3 text-sm text-[#EEF2FF] placeholder-[#3D4F6E] focus:outline-none focus:border-blue-500/50 transition-colors"
+                placeholder="vous@exemple.com"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs text-[#8B9DC3] mb-1.5">{t('password')}</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  className="w-full bg-[#0D1321] border border-[rgba(59,130,246,0.15)] rounded-xl px-4 py-3 pr-12 text-sm text-[#EEF2FF] placeholder-[#3D4F6E] focus:outline-none focus:border-blue-500/50 transition-colors"
+                  placeholder="Minimum 8 caractères"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#3D4F6E] hover:text-[#8B9DC3]"
+                >
+                  {showPassword ? t('hide_password') : t('show_password')}
+                </button>
+              </div>
+            </div>
+
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={gdpr}
+                onChange={e => setGdpr(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded border-blue-500/30 bg-[#0D1321] accent-blue-500 cursor-pointer"
+              />
+              <span className="text-xs text-[#8B9DC3] leading-relaxed">
+                {t('gdpr')}{' '}
+                <Link href={`${prefix}/privacy`} className="text-blue-400 hover:underline">Politique de confidentialité</Link>
+              </span>
+            </label>
+
+            {error && (
+              <p className="text-xs text-red-400">{error}</p>
+            )}
+
+            <Button type="submit" size="lg" className="w-full" loading={loading}>
+              {t('submit')}
+            </Button>
+          </form>
+
+          <p className="mt-6 text-center text-xs text-[#3D4F6E]">
+            {t('already')}{' '}
+            <Link href={`${prefix}/login?next=${encodeURIComponent(nextUrl)}`} className="text-blue-400 hover:underline">
+              {t('login_link')}
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#080C14] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
+      </div>
+    }>
+      <SignupForm />
+    </Suspense>
+  )
+}
