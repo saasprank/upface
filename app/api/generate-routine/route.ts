@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
+import { createClient } from '@/lib/supabase-server'
+import { getSubscription } from '@/lib/subscription'
+import { isSupabaseConfigured } from '@/lib/supabase-config'
+import { isAuthUiHidden } from '@/lib/auth-ui'
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
@@ -28,11 +32,34 @@ const TIME_LABELS: Record<string, string> = {
 
 export async function POST(req: NextRequest) {
   try {
-    const { improve, dream, time, scores } = await req.json() as {
+    const enforcePaid = isSupabaseConfigured() && !isAuthUiHidden()
+
+    if (enforcePaid) {
+      const supabase = await createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const userId = session?.user?.id
+      if (!userId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+      const sub = await getSubscription(userId)
+      if (!sub.isActive) {
+        return NextResponse.json({ error: 'Subscription required' }, { status: 403 })
+      }
+    }
+
+    const { improve, dream, time, scores, observations } = await req.json() as {
       improve: string[]
       dream: string
       time: string
       scores: Record<string, number> | null
+      observations?: {
+        symetrie?: string
+        proportions?: string
+        structure?: string
+        peau?: string
+        grooming?: string
+        aura?: string
+      } | null
     }
 
     const improveText = improve
@@ -56,72 +83,40 @@ export async function POST(req: NextRequest) {
 
     const prompt = `Tu es un expert en looksmaxxing, skincare, fitness facial et développement personnel.
 
-Un utilisateur vient de terminer son analyse faciale Upface. Voici son profil complet :
+Un utilisateur vient de terminer son analyse faciale Upface. Voici son profil COMPLET :
 
 ${scoresText}
 
-Zones qu'il veut améliorer en priorité : ${improveText}
+Observations détaillées de l'analyse IA sur ce visage spécifique :
+${observations ? `
+- Symétrie : ${observations.symetrie ?? 'non disponible'}
+- Proportions : ${observations.proportions ?? 'non disponible'}
+- Structure : ${observations.structure ?? 'non disponible'}
+- Peau : ${observations.peau ?? 'non disponible'}
+- Grooming : ${observations.grooming ?? 'non disponible'}
+- Aura : ${observations.aura ?? 'non disponible'}
+` : 'Non disponibles'}
+
+Zones prioritaires choisies par l'utilisateur : ${improveText}
 Objectif / ressenti visé : ${dreamText}
 Temps disponible par jour : ${timeText}
 
-Génère une routine personnalisée sur 30 jours, structurée en 5 catégories.
-La routine doit être DIRECTEMENT adaptée à ses scores (insiste sur ses points faibles) et à son temps disponible.
+RÈGLES OBLIGATOIRES :
+- Chaque tâche doit être CONCRÈTE et SPÉCIFIQUE à ce profil (pas générique)
+- Insiste sur les dimensions avec les scores les plus bas
+- Le headline doit mentionner le score potentiel atteignable
+- Les tâches style et aura doivent rester verrouillées (unlocked: false)
+- Adapte la quantité de tâches au temps disponible par jour
 
 Réponds UNIQUEMENT en JSON valide, sans texte avant ou après, sans backticks, sans markdown. Format exact :
-
 {
-  "headline": "string (ex: Ton plan pour atteindre 88/100 en 8 semaines)",
+  "headline": "string",
   "categories": [
-    {
-      "id": "skincare",
-      "category": "Skincare",
-      "icon": "✦",
-      "color": "#3B82F6",
-      "day": "Jour 1–7",
-      "title": "string (titre court et percutant)",
-      "tasks": ["string", "string", "string"],
-      "unlocked": true
-    },
-    {
-      "id": "grooming",
-      "category": "Grooming",
-      "icon": "✂",
-      "color": "#06B6D4",
-      "day": "Jour 1–7",
-      "title": "string",
-      "tasks": ["string", "string", "string"],
-      "unlocked": true
-    },
-    {
-      "id": "fitness",
-      "category": "Fitness",
-      "icon": "◈",
-      "color": "#10B981",
-      "day": "Jour 8–14",
-      "title": "string",
-      "tasks": ["string", "string", "string"],
-      "unlocked": true
-    },
-    {
-      "id": "style",
-      "category": "Style",
-      "icon": "◇",
-      "color": "#8B5CF6",
-      "day": "Jour 8–21",
-      "title": "string",
-      "tasks": ["string", "string", "string"],
-      "unlocked": false
-    },
-    {
-      "id": "aura",
-      "category": "Aura",
-      "icon": "⬡",
-      "color": "#F59E0B",
-      "day": "Jour 14–30",
-      "title": "string",
-      "tasks": ["string", "string", "string"],
-      "unlocked": false
-    }
+    { "id": "skincare", "category": "Skincare", "icon": "✦", "color": "#3B82F6", "day": "Jour 1–7", "title": "string", "tasks": ["string", "string", "string"], "unlocked": true },
+    { "id": "grooming", "category": "Grooming", "icon": "✂", "color": "#06B6D4", "day": "Jour 1–7", "title": "string", "tasks": ["string", "string", "string"], "unlocked": true },
+    { "id": "fitness", "category": "Fitness", "icon": "◈", "color": "#10B981", "day": "Jour 8–14", "title": "string", "tasks": ["string", "string", "string"], "unlocked": true },
+    { "id": "style", "category": "Style", "icon": "◇", "color": "#8B5CF6", "day": "Jour 8–21", "title": "string", "tasks": ["string", "string", "string"], "unlocked": false },
+    { "id": "aura", "category": "Aura", "icon": "⬡", "color": "#F59E0B", "day": "Jour 14–30", "title": "string", "tasks": ["string", "string", "string"], "unlocked": false }
   ]
 }`
 

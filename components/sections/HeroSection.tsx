@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Button from '@/components/ui/Button'
+import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 
 export default function HeroSection() {
   const t = useTranslations('hero')
@@ -55,19 +56,14 @@ export default function HeroSection() {
               className="absolute rounded-full border border-blue-400/10 pointer-events-none"
               style={{ inset: '-32px', animation: 'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite', animationDelay: '1.5s' }}
             />
-            {/*
-              RÈGLE CLÉ : mix-blend-mode et filter ne doivent PAS être sur le même élément.
-              filter crée un contexte d'isolation qui empêche screen de fusionner avec la page.
-              → mix-blend-mode sur le wrapper div, AUCUN filter sur l'img.
-            */}
-            <div style={{ mixBlendMode: 'screen', display: 'inline-block', lineHeight: 0 }}>
+            <div style={{ display: 'inline-block', lineHeight: 0 }}>
               <Image
                 src="/logo.png"
                 alt="UPFACE AI"
                 width={200}
                 height={200}
                 priority
-                style={{ display: 'block' }}
+                style={UPFACE_LOGO_IMG_STYLE}
               />
             </div>
           </div>

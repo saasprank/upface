@@ -1,6 +1,7 @@
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import Image from 'next/image'
+import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 
 export default function Footer() {
   const t = useTranslations('footer')
@@ -13,9 +14,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div style={{ mixBlendMode: 'screen', display: 'inline-block', lineHeight: 0 }}>
-              <Image src="/logo.png" alt="UPFACE" width={30} height={30} style={{ display: 'block' }} />
-            </div>
+            <Image src="/logo.png" alt="UPFACE" width={30} height={30} style={UPFACE_LOGO_IMG_STYLE} />
             <span className="font-bold text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>
               UPFACE
             </span>

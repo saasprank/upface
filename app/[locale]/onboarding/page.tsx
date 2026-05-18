@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useLocale } from 'next-intl'
 import Link from 'next/link'
 import Image from 'next/image'
+import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -146,6 +147,7 @@ function OnboardingContent() {
     try {
       localStorage.setItem('upface_onboarding', JSON.stringify({ improve, dream, time, analysisId }))
     } catch { /* ignore */ }
+    // Flux : 3 questions → loader (/onboarding/generating + API) → paywall (/onboarding/routine-preview)
     router.push(`${prefix}/onboarding/generating`)
   }
 
@@ -158,9 +160,7 @@ function OnboardingContent() {
         style={{ height: 56, background: 'rgba(8,12,20,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
       >
         <Link href={`${prefix}/`} className="flex items-center gap-2">
-          <div style={{ mixBlendMode: 'screen', display: 'inline-block', lineHeight: 0 }}>
-            <Image src="/logo.png" alt="UPFACE" width={26} height={26} style={{ display: 'block' }} />
-          </div>
+          <Image src="/logo.png" alt="UPFACE" width={26} height={26} style={UPFACE_LOGO_IMG_STYLE} />
           <span className="font-bold text-sm text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>UPFACE</span>
         </Link>
 

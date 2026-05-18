@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
+import { isSupabaseConfigured } from '@/lib/supabase-config'
+import { isAuthUiHidden } from '@/lib/auth-ui'
 
 interface Scores {
   global: number
@@ -51,6 +53,7 @@ export default function DashboardHome() {
 
   const [scores, setScores] = useState<Scores | null>(null)
   const [routine, setRoutine] = useState<GeneratedRoutine | null>(null)
+  const [plan, setPlan] = useState<'free' | 'pro'>('free')
   const [streak] = useState(3)
   const [userName, setUserName] = useState('')
   const [history, setHistory] = useState<{ date: string; score: number }[]>([])
@@ -74,9 +77,38 @@ export default function DashboardHome() {
         const { createClient } = await import('@/lib/supabase')
         const supabase = createClient()
         const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
+
+        const relaxPaywall = !isSupabaseConfigured() || isAuthUiHidden()
+
+        if (!user) {
+          if (relaxPaywall) {
+            setPlan('pro')
+            try {
+              const r = localStorage.getItem('upface_routine')
+              if (r) setRoutine(JSON.parse(r) as GeneratedRoutine)
+            } catch { /* ignore */ }
+          }
+          return
+        }
 
         if (user.email) setUserName(user.email.split('@')[0])
+
+        let subscribed = relaxPaywall
+        if (!relaxPaywall) {
+          const { data: sub } = await supabase
+            .from('subscriptions')
+            .select('status')
+            .eq('user_id', user.id)
+            .in('status', ['active', 'trialing'])
+            .maybeSingle()
+          subscribed = !!sub
+        }
+        setPlan(subscribed ? 'pro' : 'free')
+
+        if (!subscribed) {
+          try { localStorage.removeItem('upface_routine') } catch { /* ignore */ }
+          setRoutine(null)
+        }
 
         // Last analysis for scores
         const { data: latest } = await supabase
@@ -117,17 +149,16 @@ export default function DashboardHome() {
             score: a.score_global as number,
           })))
         }
+
+        if (subscribed) {
+          try {
+            const r = localStorage.getItem('upface_routine')
+            if (r) setRoutine(JSON.parse(r) as GeneratedRoutine)
+          } catch { /* ignore */ }
+        }
       } catch { /* ignore */ }
     }
     void loadScores()
-  }, [])
-
-  // ── Routine from localStorage ────────────────────────────────────────────────
-  useEffect(() => {
-    try {
-      const r = localStorage.getItem('upface_routine')
-      if (r) setRoutine(JSON.parse(r) as GeneratedRoutine)
-    } catch { /* ignore */ }
   }, [])
 
   const score = scores?.global ?? 74
@@ -303,13 +334,13 @@ export default function DashboardHome() {
         </div>
       )}
 
-      {/* Action du jour */}
+      {/* Action du jour — routine IA réservée aux abonnés */}
       <div
         className="rounded-2xl p-4 mb-4"
         style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
       >
         <p className="text-xs font-medium mb-3" style={{ color: '#06B6D4' }}>ACTION DU JOUR</p>
-        {routine?.categories?.[0] ? (
+        {plan === 'pro' && routine?.categories?.[0] ? (
           <div>
             <p className="text-white font-semibold text-sm mb-1">{routine.categories[0].title}</p>
             <p className="text-xs mb-3" style={{ color: '#8B9DC3' }}>{routine.categories[0].tasks[0]}</p>
@@ -321,10 +352,32 @@ export default function DashboardHome() {
               Voir ma routine →
             </button>
           </div>
+        ) : plan === 'pro' ? (
+          <div>
+            <p className="text-sm mb-3" style={{ color: '#8B9DC3' }}>
+              Ta routine personnalisée sera mise à jour après chaque analyse Pro. Lance une analyse ou ouvre l&apos;onglet Routine.
+            </p>
+            <button
+              onClick={() => router.push(`/${locale}${NEW_ANALYSIS_LOCALE_PATH}`)}
+              className="w-full py-2.5 rounded-xl text-sm font-medium text-white"
+              style={{ background: 'linear-gradient(90deg, #3B82F6, #06B6D4)' }}
+            >
+              Nouvelle analyse
+            </button>
+          </div>
         ) : (
-          <p className="text-sm" style={{ color: '#8B9DC3' }}>
-            Lance ton analyse pour voir ton action du jour
-          </p>
+          <div>
+            <p className="text-sm mb-3" style={{ color: '#8B9DC3' }}>
+              La routine IA personnalisée est réservée aux membres Pro — elle s&apos;adapte à ton score et à tes objectifs après paiement.
+            </p>
+            <button
+              onClick={() => router.push(`/${locale}/onboarding/routine-preview`)}
+              className="w-full py-2.5 rounded-xl text-sm font-medium text-white"
+              style={{ background: 'linear-gradient(90deg, #3B82F6, #06B6D4)' }}
+            >
+              Débloquer Pro
+            </button>
+          </div>
         )}
       </div>
 

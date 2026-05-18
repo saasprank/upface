@@ -78,8 +78,11 @@ export default function FreeResultsView({
         potentiel,
         percentile: percentile ?? 34,
       }))
+      if (observations && Object.keys(observations).length > 0) {
+        localStorage.setItem('upface_observations', JSON.stringify(observations))
+      }
     } catch { /* ignore */ }
-  }, [scores, percentile, potentiel])
+  }, [scores, percentile, potentiel, observations])
 
   const scoreAfter = potentiel
 

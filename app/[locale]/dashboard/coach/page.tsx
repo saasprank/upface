@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
+import { isSupabaseConfigured } from '@/lib/supabase-config'
+import { isAuthUiHidden } from '@/lib/auth-ui'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -50,30 +52,54 @@ export default function CoachPage() {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    try {
-      const s = localStorage.getItem('upface_scores')
-      if (s) setScores(JSON.parse(s) as Scores)
-      const r = localStorage.getItem('upface_routine')
-      if (r) setRoutine(JSON.parse(r) as Routine)
-    } catch { /* ignore */ }
-
-    // Check subscription
-    const checkPlan = async () => {
+    const init = async () => {
       try {
         const { createClient } = await import('@/lib/supabase')
         const supabase = createClient()
         const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
-        const { data: sub } = await supabase
-          .from('subscriptions')
-          .select('status')
-          .eq('user_id', user.id)
-          .eq('status', 'active')
-          .single()
-        if (sub) setPlan('pro')
+        const relaxPaywall = !isSupabaseConfigured() || isAuthUiHidden()
+
+        if (!user) {
+          if (relaxPaywall) {
+            setPlan('pro')
+            try {
+              const s = localStorage.getItem('upface_scores')
+              if (s) setScores(JSON.parse(s) as Scores)
+              const r = localStorage.getItem('upface_routine')
+              if (r) setRoutine(JSON.parse(r) as Routine)
+            } catch { /* ignore */ }
+          }
+          return
+        }
+
+        let subscribed = relaxPaywall
+        if (!relaxPaywall) {
+          const { data: sub } = await supabase
+            .from('subscriptions')
+            .select('status')
+            .eq('user_id', user.id)
+            .in('status', ['active', 'trialing'])
+            .maybeSingle()
+          subscribed = !!sub
+        }
+        setPlan(subscribed ? 'pro' : 'free')
+
+        try {
+          const s = localStorage.getItem('upface_scores')
+          if (s) setScores(JSON.parse(s) as Scores)
+        } catch { /* ignore */ }
+
+        if (subscribed) {
+          try {
+            const r = localStorage.getItem('upface_routine')
+            if (r) setRoutine(JSON.parse(r) as Routine)
+          } catch { /* ignore */ }
+        } else {
+          setRoutine(null)
+        }
       } catch { /* ignore */ }
     }
-    void checkPlan()
+    void init()
   }, [])
 
   useEffect(() => {

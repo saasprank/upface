@@ -7,6 +7,8 @@ import Image from 'next/image'
 import ScanAnimation from '@/components/ui/ScanAnimation'
 import { createClient } from '@/lib/supabase'
 import { isAuthUiHidden } from '@/lib/auth-ui'
+import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
+import { syncSubscriberRoutineFromAnalyze } from '@/lib/routine-client'
 
 const MESSAGES_KEYS = [
   'step_1', 'step_2', 'step_3', 'step_4', 'step_5', 'step_6',
@@ -69,7 +71,13 @@ export default function AnalyzingPage() {
           body: JSON.stringify({ imageUrl: url, demo: isDemo }),
         })
 
-        const data = await res.json() as { analysisId?: string; error?: string }
+        const data = await res.json() as {
+          analysisId?: string
+          error?: string
+          scores?: Record<string, number>
+          observations?: Record<string, string>
+          freeAnalysis?: boolean
+        }
 
         // Aucun visage détecté → retour à /analyze avec message
         if (res.status === 422 && data.error === 'NO_FACE_DETECTED') {
@@ -78,6 +86,17 @@ export default function AnalyzingPage() {
         }
 
         if (!res.ok) throw new Error('Analysis failed')
+
+        // Sauvegarde les observations pour la génération de routine
+        if (data.observations) {
+          localStorage.setItem('upface_observations', JSON.stringify(data.observations))
+        }
+
+        await syncSubscriberRoutineFromAnalyze({
+          freeAnalysis: data.freeAnalysis,
+          scores: data.scores,
+          observations: data.observations,
+        })
 
         const id = data.analysisId ?? `demo-${Date.now()}`
         analysisIdRef.current = id
@@ -120,9 +139,7 @@ export default function AnalyzingPage() {
     >
       {/* Top branding */}
       <div className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-2">
-        <div style={{ mixBlendMode: 'screen', display: 'inline-block', lineHeight: 0 }}>
-          <Image src="/logo.png" alt="UPFACE" width={28} height={28} style={{ display: 'block' }} />
-        </div>
+        <Image src="/logo.png" alt="UPFACE" width={28} height={28} style={UPFACE_LOGO_IMG_STYLE} />
         <span className="font-bold text-sm text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>UPFACE</span>
       </div>
 
@@ -150,9 +167,7 @@ export default function AnalyzingPage() {
               <Image src={photoUrl} alt="Analyzing" fill className="object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <div style={{ mixBlendMode: 'screen', display: 'inline-block', lineHeight: 0 }}>
-                  <Image src="/logo.png" alt="UPFACE" width={96} height={96} style={{ display: 'block' }} />
-                </div>
+                <Image src="/logo.png" alt="UPFACE" width={96} height={96} style={UPFACE_LOGO_IMG_STYLE} />
               </div>
             )}
           </div>

@@ -208,8 +208,8 @@ function RoutineContent() {
             .from('subscriptions')
             .select('plan, status, price_id')
             .eq('user_id', user.id)
-            .eq('status', 'active')
-            .single()
+            .in('status', ['active', 'trialing'])
+            .maybeSingle()
           if (sub?.plan === 'pro') {
             setPlan('pro')
             setIsWeekly(sub.price_id === FREE_PRICE_ID)

@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { useState } from 'react'
 import Button from '@/components/ui/Button'
 import { isAuthUiHidden } from '@/lib/auth-ui'
+import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 
 export default function Navbar() {
   const t = useTranslations('nav')
@@ -28,9 +29,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href={`${prefix}/`} className="flex items-center gap-2 group">
-          <div style={{ mixBlendMode: 'screen', display: 'inline-block', lineHeight: 0 }}>
-            <Image src="/logo.png" alt="UPFACE" width={36} height={36} style={{ display: 'block' }} />
-          </div>
+          <Image src="/logo.png" alt="UPFACE" width={36} height={36} style={UPFACE_LOGO_IMG_STYLE} />
           <span
             className="font-bold text-lg tracking-tight text-[#EEF2FF] group-hover:text-blue-400 transition-colors"
             style={{ fontFamily: 'Satoshi, sans-serif' }}

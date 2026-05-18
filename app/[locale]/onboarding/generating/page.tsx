@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 
 const STEPS = [
@@ -22,56 +22,42 @@ export default function GeneratingPage() {
   const [currentStep, setCurrentStep] = useState(0)
   const [progress, setProgress] = useState(0)
 
-  const routineDone = useRef(false)
-  const animDone = useRef(false)
-
-  const tryRedirect = useCallback(() => {
-    if (routineDone.current && animDone.current) {
-      router.push(`${prefix}/onboarding/routine-preview`)
-    }
+  const goToPaywall = useCallback(() => {
+    router.replace(`${prefix}/onboarding/routine-preview`)
   }, [router, prefix])
 
   useEffect(() => {
-    // ── 1. Appel API génération routine ──────────────────
-    const fetchRoutine = async () => {
+    let intervalId: ReturnType<typeof setInterval> | undefined
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
+    let cancelled = false
+
+    const clearTimers = () => {
+      if (intervalId !== undefined) clearInterval(intervalId)
+      if (timeoutId !== undefined) clearTimeout(timeoutId)
+      intervalId = undefined
+      timeoutId = undefined
+    }
+
+    // Pas d'appel IA avant paiement — la routine est générée après Stripe (`routine-complete`).
+    const preparePaywallPreview = async () => {
       try {
-        const raw = localStorage.getItem('upface_onboarding')
-        const onboarding = raw ? (JSON.parse(raw) as Record<string, unknown>) : {}
-
-        const scoresRaw = localStorage.getItem('upface_scores')
-        const scores = scoresRaw ? (JSON.parse(scoresRaw) as Record<string, number>) : null
-
-        const res = await fetch('/api/generate-routine', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            improve: onboarding.improve ?? [],
-            dream: onboarding.dream ?? '',
-            time: onboarding.time ?? '',
-            scores,
-          }),
-        })
-
-        const data = await res.json() as { routine?: unknown; error?: string }
-        if (data.routine) {
-          localStorage.setItem('upface_routine', JSON.stringify(data.routine))
+        localStorage.removeItem('upface_routine')
+      } catch { /* ignore */ }
+      finally {
+        if (!cancelled) {
+          clearTimers()
+          goToPaywall()
         }
-      } catch (err) {
-        console.error('Routine generation failed:', err)
-        // On continue — routine-preview a un fallback statique
-      } finally {
-        routineDone.current = true
-        tryRedirect()
       }
     }
 
-    void fetchRoutine()
+    void preparePaywallPreview()
 
-    // ── 2. Animation progress ─────────────────────────────
+    // ── 2. Animation loader (purement visuelle jusqu’à redirection) ─────────────
     let elapsed = 0
     let stepIndex = 0
 
-    const interval = setInterval(() => {
+    intervalId = setInterval(() => {
       elapsed += 80
       setProgress(Math.min((elapsed / TOTAL) * 100, 98))
 
@@ -82,18 +68,15 @@ export default function GeneratingPage() {
       }
     }, 80)
 
-    const timeout = setTimeout(() => {
-      clearInterval(interval)
+    timeoutId = setTimeout(() => {
       setProgress(100)
-      animDone.current = true
-      tryRedirect()
     }, TOTAL + 300)
 
     return () => {
-      clearInterval(interval)
-      clearTimeout(timeout)
+      cancelled = true
+      clearTimers()
     }
-  }, [tryRedirect])
+  }, [goToPaywall])
 
   return (
     <div

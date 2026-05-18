@@ -15,6 +15,8 @@ import { useFacePoseGuide } from '@/hooks/useFacePoseGuide'
 import { createClient } from '@/lib/supabase'
 import { isSupabaseConfigured } from '@/lib/supabase-config'
 import { isAuthUiHidden } from '@/lib/auth-ui'
+import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
+import { syncSubscriberRoutineFromAnalyze } from '@/lib/routine-client'
 
 const FaceLandmarks = dynamic(() => import('@/components/analyze/FaceLandmarks'), { ssr: false })
 
@@ -27,11 +29,23 @@ async function fileToDataUrl(file: Blob): Promise<string> {
   })
 }
 
-async function parseAnalyzeResponse(res: Response): Promise<{ analysisId?: string; error?: string }> {
+async function parseAnalyzeResponse(res: Response): Promise<{
+  analysisId?: string
+  error?: string
+  observations?: Record<string, string>
+  scores?: Record<string, number>
+  freeAnalysis?: boolean
+}> {
   const text = await res.text()
   if (!text.trim()) return {}
   try {
-    return JSON.parse(text) as { analysisId?: string; error?: string }
+    return JSON.parse(text) as {
+      analysisId?: string
+      error?: string
+      observations?: Record<string, string>
+      scores?: Record<string, number>
+      freeAnalysis?: boolean
+    }
   } catch {
     return { error: 'INVALID_RESPONSE' }
   }
@@ -128,6 +142,17 @@ function AnalyzeContent() {
         throw new Error(data.error ?? 'Analysis failed')
       }
 
+      // Sauvegarde les observations pour la génération de routine
+      if (data.observations) {
+        localStorage.setItem('upface_observations', JSON.stringify(data.observations))
+      }
+
+      await syncSubscriberRoutineFromAnalyze({
+        freeAnalysis: data.freeAnalysis,
+        scores: data.scores,
+        observations: data.observations,
+      })
+
       const analysisId: string = data.analysisId ?? `demo-${Date.now()}`
       setState('redirecting')
 
@@ -212,9 +237,7 @@ function AnalyzeContent() {
         style={{ height: 56, background: 'rgba(8,12,20,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
       >
         <Link href={`${prefix}/`} className="flex items-center gap-2">
-          <div style={{ mixBlendMode: 'screen', display: 'inline-block', lineHeight: 0 }}>
-            <Image src="/logo.png" alt="UPFACE" width={28} height={28} style={{ display: 'block' }} />
-          </div>
+          <Image src="/logo.png" alt="UPFACE" width={28} height={28} style={UPFACE_LOGO_IMG_STYLE} />
           <span className="font-bold text-sm text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>
             UPFACE
           </span>

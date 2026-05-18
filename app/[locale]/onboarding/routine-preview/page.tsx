@@ -158,6 +158,12 @@ export default function RoutinePreviewPage() {
 
   useEffect(() => {
     try {
+      localStorage.removeItem('upface_routine')
+    } catch { /* ignore */ }
+  }, [])
+
+  useEffect(() => {
+    try {
       const raw = localStorage.getItem('upface_onboarding')
       if (raw) setOnboarding(JSON.parse(raw) as OnboardingData)
       const routineRaw = localStorage.getItem('upface_routine')

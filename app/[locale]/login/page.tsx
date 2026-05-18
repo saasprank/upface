@@ -8,6 +8,7 @@ import Image from 'next/image'
 import Button from '@/components/ui/Button'
 import { createClient } from '@/lib/supabase'
 import { authCallbackUrl, setAuthNextCookieClient } from '@/lib/auth-redirect'
+import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 
 export default function LoginPage() {
   const t = useTranslations('login')
@@ -61,9 +62,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <Link href={`${prefix}/`} className="flex items-center gap-2 mb-10 group">
-          <div style={{ mixBlendMode: 'screen', display: 'inline-block', lineHeight: 0 }}>
-            <Image src="/logo.png" alt="UPFACE" width={32} height={32} style={{ display: 'block' }} />
-          </div>
+          <Image src="/logo.png" alt="UPFACE" width={32} height={32} style={UPFACE_LOGO_IMG_STYLE} />
           <span className="font-bold text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>UPFACE</span>
         </Link>
 
