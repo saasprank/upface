@@ -74,36 +74,44 @@ export function useFaceMesh(
       } catch { rafRef.current = requestAnimationFrame(loop); return }
 
       if (landmarks && landmarks.length > 0) {
-        // Lignes mesh plus fines et transparentes
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)'
-        ctx.lineWidth = 0.4
+        const W = canvas.width
+        const H = canvas.height
 
+        // Clip en forme de goutte directement dans le canvas
+        ctx.save()
+        ctx.beginPath()
+        // Forme ovale centrée qui approxime le cadran goutte
+        const cx = W * 0.5
+        const cy = H * 0.46
+        const rx = W * 0.42
+        const ry = H * 0.44
+        ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2)
+        ctx.clip()
+
+        // Mesh
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)'
+        ctx.lineWidth = 0.4
         for (const conn of FACE_MESH_CONNECTIONS) {
           const start = landmarks[conn.start]
           const end = landmarks[conn.end]
           if (!start || !end) continue
-          const x1 = (1 - start.x) * canvas.width
-          const y1 = start.y * canvas.height
-          const x2 = (1 - end.x) * canvas.width
-          const y2 = end.y * canvas.height
           ctx.beginPath()
-          ctx.moveTo(x1, y1)
-          ctx.lineTo(x2, y2)
+          ctx.moveTo((1 - start.x) * W, start.y * H)
+          ctx.lineTo((1 - end.x) * W, end.y * H)
           ctx.stroke()
         }
 
-        // Moins de points cyan, plus petits
+        // Points cyan
         ctx.fillStyle = 'rgba(6, 182, 212, 0.9)'
-        const keyPoints = [33, 263, 1, 61, 291, 199]
-        for (const idx of keyPoints) {
+        for (const idx of [33, 263, 1, 61, 291, 199]) {
           const pt = landmarks[idx]
           if (!pt) continue
-          const x = (1 - pt.x) * canvas.width
-          const y = pt.y * canvas.height
           ctx.beginPath()
-          ctx.arc(x, y, 1.5, 0, Math.PI * 2)
+          ctx.arc((1 - pt.x) * W, pt.y * H, 1.5, 0, Math.PI * 2)
           ctx.fill()
         }
+
+        ctx.restore()
       }
 
       rafRef.current = requestAnimationFrame(loop)
