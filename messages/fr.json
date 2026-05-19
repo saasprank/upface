@@ -33,7 +33,7 @@
   },
   "analyzing": {
     "title": "Analyse en cours...",
-    "step_1": "Détection des landmarks faciaux...",
+    "step_1": "Analyse de ton visage...",
     "step_2": "Calcul des proportions dorées...",
     "step_3": "Analyse de la symétrie...",
     "step_4": "Évaluation de la qualité de peau...",
@@ -234,7 +234,7 @@
     "step_1_title": "Upload ta photo",
     "step_1_desc": "Importe une photo de face en bonne lumière. Formats JPG, PNG, HEIC, WEBP.",
     "step_2_title": "L'IA analyse 47 points",
-    "step_2_desc": "Notre modèle GPT-4o Vision détecte les landmarks faciaux et calcule les proportions.",
+    "step_2_desc": "Notre modèle GPT-4o Vision analyse ton visage et calcule les proportions.",
     "step_3_title": "Reçois ton score + routine",
     "step_3_desc": "Score détaillé par catégorie et routine personnalisée sur 30 jours."
   },

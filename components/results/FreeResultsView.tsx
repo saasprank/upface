@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import BeforeAfterSlider from './BeforeAfterSlider'
 
@@ -69,6 +69,18 @@ export default function FreeResultsView({
   analysisId, photoUrl, scores, observations, tier, percentile, prefix
 }: FreeResultsViewProps) {
   const potentiel = Math.min(95, scores.global + 14)
+  const [displayPhoto, setDisplayPhoto] = useState(photoUrl)
+
+  useEffect(() => {
+    if (photoUrl?.trim()) {
+      setDisplayPhoto(photoUrl)
+      return
+    }
+    try {
+      const fromSession = sessionStorage.getItem('upface_photo_url')
+      if (fromSession) setDisplayPhoto(fromSession)
+    } catch { /* ignore */ }
+  }, [photoUrl])
 
   // Persist scores to localStorage so dashboard & routine generator can use them
   useEffect(() => {
@@ -112,7 +124,7 @@ export default function FreeResultsView({
         {/* Before / After Slider */}
         <div className="mb-4">
           <BeforeAfterSlider
-            photoUrl={photoUrl}
+            photoUrl={displayPhoto}
             scoreBefore={scores.global}
             scoreAfter={scoreAfter}
           />

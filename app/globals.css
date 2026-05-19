@@ -164,10 +164,10 @@
 }
 
 @keyframes faceScanLine {
-  0%   { top: 0%; opacity: 0; }
-  5%   { opacity: 1; }
-  95%  { opacity: 1; }
-  100% { top: 100%; opacity: 0; }
+  0%   { top: 4%; opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { top: 96%; opacity: 0; }
 }
 
 @keyframes faceScanLineSVG {

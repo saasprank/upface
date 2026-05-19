@@ -5,9 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import Link from 'next/link'
 import Image from 'next/image'
-import dynamic from 'next/dynamic'
 import FaceCadran, { type AnalyzeState, type FaceCadranHandle, type CameraErrorCode } from '@/components/analyze/FaceCadran'
-import { faceClipUrl } from '@/components/analyze/faceSilhouette'
 import ScanInstructions from '@/components/analyze/ScanInstructions'
 import ScanProgressBar from '@/components/analyze/ScanProgressBar'
 import { SCAN_POSE_STEP_ORDER } from '@/lib/face-pose-heuristics'
@@ -17,8 +15,6 @@ import { isSupabaseConfigured } from '@/lib/supabase-config'
 import { isAuthUiHidden } from '@/lib/auth-ui'
 import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 import { syncSubscriberRoutineFromAnalyze } from '@/lib/routine-client'
-
-const FaceLandmarks = dynamic(() => import('@/components/analyze/FaceLandmarks'), { ssr: false })
 
 async function fileToDataUrl(file: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -243,7 +239,6 @@ function AnalyzeContent() {
 
   const isScanning = state === 'scanning' || state === 'redirecting'
   const showLaunch = state === 'idle'
-  const faceClip = faceClipUrl(faceMaskUid)
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: '#080C14' }}>
@@ -309,22 +304,6 @@ function AnalyzeContent() {
               onCameraError={handleCameraError}
             />
 
-            {isScanning && (
-              <>
-                <div
-                  className="hidden sm:block absolute inset-0 overflow-hidden pointer-events-none"
-                  style={{ clipPath: faceClip, WebkitClipPath: faceClip }}
-                >
-                  <FaceLandmarks W={250} H={320} visible={isScanning} />
-                </div>
-                <div
-                  className="block sm:hidden absolute inset-0 overflow-hidden pointer-events-none"
-                  style={{ clipPath: faceClip, WebkitClipPath: faceClip }}
-                >
-                  <FaceLandmarks W={200} H={255} visible={isScanning} />
-                </div>
-              </>
-            )}
           </div>
 
           {/* Error banner */}

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 const MESSAGES = [
-  'Détection des 47 landmarks faciaux...',
+  'Analyse de ta structure faciale...',
   'Calcul des proportions dorées (ratio Φ 1.618)...',
   'Analyse de la symétrie gauche/droite...',
   'Évaluation jawline & structure osseuse...',

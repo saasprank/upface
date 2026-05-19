@@ -33,7 +33,7 @@
   },
   "analyzing": {
     "title": "Analyzing...",
-    "step_1": "Detecting facial landmarks...",
+    "step_1": "Analyzing your face...",
     "step_2": "Calculating golden ratios...",
     "step_3": "Analyzing facial symmetry...",
     "step_4": "Evaluating skin quality...",
@@ -234,7 +234,7 @@
     "step_1_title": "Upload your photo",
     "step_1_desc": "Import a front-facing photo in good lighting. JPG, PNG, HEIC, WEBP formats.",
     "step_2_title": "AI analyzes 47 points",
-    "step_2_desc": "Our GPT-4o Vision model detects facial landmarks and calculates proportions.",
+    "step_2_desc": "Our GPT-4o Vision model analyzes your face and calculates proportions.",
     "step_3_title": "Get your score + routine",
     "step_3_desc": "Detailed score by category and 30-day personalized routine."
   },

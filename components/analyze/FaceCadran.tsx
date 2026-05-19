@@ -21,7 +21,7 @@ export interface FaceCadranHandle {
 export type CameraErrorCode = 'denied' | 'not_found' | 'generic'
 
 interface FaceCadranProps {
-  /** Stable id for SVG clipPath defs (shared with FaceLandmarks overlay on the page). */
+  /** Stable id for SVG clipPath defs on the face silhouette. */
   maskUid: string
   cameraActive: boolean
   state: AnalyzeState
@@ -200,19 +200,37 @@ const FaceCadran = forwardRef<FaceCadranHandle, FaceCadranProps>(
             </div>
           )}
 
-          {showGuides && (
-            <div style={{
-              position: 'absolute',
-              insetInline: 0, height: 1,
-              top: '38%',
-              background: 'linear-gradient(90deg, transparent, rgba(6,182,212,0.22), transparent)',
-              animation: 'faceScanLine 2.5s linear infinite',
-              pointerEvents: 'none',
-            }} />
-          )}
-
           {isScanning && (
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,12,20,0.25)', pointerEvents: 'none' }} />
+            <>
+              {/* Traînée lumineuse sous la barre */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  height: '22%',
+                  background: 'linear-gradient(to bottom, rgba(6,182,212,0.22) 0%, rgba(59,130,246,0.08) 45%, transparent 100%)',
+                  animation: 'faceScanLine 2.4s ease-in-out infinite',
+                  pointerEvents: 'none',
+                  zIndex: 4,
+                }}
+              />
+              {/* Barre IA qui balaie le visage */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: '6%',
+                  right: '6%',
+                  height: 2,
+                  borderRadius: 999,
+                  background: 'linear-gradient(90deg, transparent, #22D3EE 20%, #EEF2FF 50%, #22D3EE 80%, transparent)',
+                  boxShadow: '0 0 14px rgba(6,182,212,0.85), 0 0 28px rgba(59,130,246,0.45)',
+                  animation: 'faceScanLine 2.4s ease-in-out infinite',
+                  pointerEvents: 'none',
+                  zIndex: 5,
+                }}
+              />
+            </>
           )}
         </div>
 
