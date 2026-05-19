@@ -74,66 +74,38 @@ export function useFaceMesh(
       } catch { rafRef.current = requestAnimationFrame(loop); return }
 
       if (landmarks && landmarks.length > 0) {
-        // Calcule le bounding box réel du visage
-        let minX = 1, maxX = 0, minY = 1, maxY = 0
-        for (const lm of landmarks) {
-          if (lm.x < minX) minX = lm.x
-          if (lm.x > maxX) maxX = lm.x
-          if (lm.y < minY) minY = lm.y
-          if (lm.y > maxY) maxY = lm.y
-        }
+        // Coordonnées directes — pas de bounding box
+        const toX = (lm: NormalizedLandmark) => (1 - lm.x) * canvas.width
+        const toY = (lm: NormalizedLandmark) => lm.y * canvas.height
 
-        // Padding léger autour du visage
-        const pad = 0.02
-        minX = Math.max(0, minX - pad)
-        maxX = Math.min(1, maxX + pad)
-        minY = Math.max(0, minY - pad)
-        maxY = Math.min(1, maxY + pad)
-
-        // Fonction de mapping landmark → canvas (miroir X + bounding box)
-        const toCanvas = (lm: NormalizedLandmark) => ({
-          x: (1 - lm.x - minX) / (maxX - minX) * canvas.width,
-          y: (lm.y - minY) / (maxY - minY) * canvas.height,
-        })
-
-        // Clip ellipse sur le bounding box du visage
-        ctx.save()
-        ctx.beginPath()
-        const cx = canvas.width / 2
-        const cy = canvas.height / 2
-        const rx = canvas.width / 2
-        const ry = canvas.height / 2
-        ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2)
-        ctx.clip()
-
-        // Mesh
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)'
+        // Mesh triangulaire fin
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)'
         ctx.lineWidth = 0.5
+
         for (const conn of FACE_MESH_CONNECTIONS) {
-          const start = landmarks[conn.start]
-          const end = landmarks[conn.end]
-          if (!start || !end) continue
-          const p1 = toCanvas(start)
-          const p2 = toCanvas(end)
+          const s = landmarks[conn.start]
+          const e = landmarks[conn.end]
+          if (!s || !e) continue
           ctx.beginPath()
-          ctx.moveTo(p1.x, p1.y)
-          ctx.lineTo(p2.x, p2.y)
+          ctx.moveTo(toX(s), toY(s))
+          ctx.lineTo(toX(e), toY(e))
           ctx.stroke()
         }
 
-        // Points cyan clés
-        ctx.fillStyle = 'rgba(6, 182, 212, 0.9)'
-        const keyPoints = [33, 263, 1, 61, 291, 199]
-        for (const idx of keyPoints) {
+        // Points cyan uniquement sur zones clés du visage
+        // 33=oeil gauche, 263=oeil droit, 1=nez, 61=lèvre gauche, 291=lèvre droite, 168=entre yeux, 10=front, 152=menton
+        const KEY = [33, 263, 1, 61, 291, 168, 10, 152]
+        ctx.fillStyle = 'rgba(6, 182, 212, 1)'
+        ctx.shadowColor = '#06B6D4'
+        ctx.shadowBlur = 6
+        for (const idx of KEY) {
           const pt = landmarks[idx]
           if (!pt) continue
-          const p = toCanvas(pt)
           ctx.beginPath()
-          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2)
+          ctx.arc(toX(pt), toY(pt), 2.5, 0, Math.PI * 2)
           ctx.fill()
         }
-
-        ctx.restore()
+        ctx.shadowBlur = 0
       }
 
       rafRef.current = requestAnimationFrame(loop)
