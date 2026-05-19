@@ -74,40 +74,62 @@ export function useFaceMesh(
       } catch { rafRef.current = requestAnimationFrame(loop); return }
 
       if (landmarks && landmarks.length > 0) {
-        const W = canvas.width
-        const H = canvas.height
+        // Calcule le bounding box réel du visage
+        let minX = 1, maxX = 0, minY = 1, maxY = 0
+        for (const lm of landmarks) {
+          if (lm.x < minX) minX = lm.x
+          if (lm.x > maxX) maxX = lm.x
+          if (lm.y < minY) minY = lm.y
+          if (lm.y > maxY) maxY = lm.y
+        }
 
-        // Clip en forme de goutte directement dans le canvas
+        // Padding léger autour du visage
+        const pad = 0.02
+        minX = Math.max(0, minX - pad)
+        maxX = Math.min(1, maxX + pad)
+        minY = Math.max(0, minY - pad)
+        maxY = Math.min(1, maxY + pad)
+
+        // Fonction de mapping landmark → canvas (miroir X + bounding box)
+        const toCanvas = (lm: NormalizedLandmark) => ({
+          x: (1 - lm.x - minX) / (maxX - minX) * canvas.width,
+          y: (lm.y - minY) / (maxY - minY) * canvas.height,
+        })
+
+        // Clip ellipse sur le bounding box du visage
         ctx.save()
         ctx.beginPath()
-        // Forme ovale centrée qui approxime le cadran goutte
-        const cx = W * 0.5
-        const cy = H * 0.46
-        const rx = W * 0.42
-        const ry = H * 0.44
+        const cx = canvas.width / 2
+        const cy = canvas.height / 2
+        const rx = canvas.width / 2
+        const ry = canvas.height / 2
         ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2)
         ctx.clip()
 
         // Mesh
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)'
-        ctx.lineWidth = 0.4
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)'
+        ctx.lineWidth = 0.5
         for (const conn of FACE_MESH_CONNECTIONS) {
           const start = landmarks[conn.start]
           const end = landmarks[conn.end]
           if (!start || !end) continue
+          const p1 = toCanvas(start)
+          const p2 = toCanvas(end)
           ctx.beginPath()
-          ctx.moveTo((1 - start.x) * W, start.y * H)
-          ctx.lineTo((1 - end.x) * W, end.y * H)
+          ctx.moveTo(p1.x, p1.y)
+          ctx.lineTo(p2.x, p2.y)
           ctx.stroke()
         }
 
-        // Points cyan
+        // Points cyan clés
         ctx.fillStyle = 'rgba(6, 182, 212, 0.9)'
-        for (const idx of [33, 263, 1, 61, 291, 199]) {
+        const keyPoints = [33, 263, 1, 61, 291, 199]
+        for (const idx of keyPoints) {
           const pt = landmarks[idx]
           if (!pt) continue
+          const p = toCanvas(pt)
           ctx.beginPath()
-          ctx.arc((1 - pt.x) * W, pt.y * H, 1.5, 0, Math.PI * 2)
+          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2)
           ctx.fill()
         }
 
