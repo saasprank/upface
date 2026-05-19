@@ -75,6 +75,7 @@ function AnalyzeContent() {
   const [poseStepIndex, setPoseStepIndex] = useState(0)
 
   const getScanVideo = useCallback(() => cadranRef.current?.getVideo() ?? null, [])
+  const getVideoBounds = useCallback(() => cadranRef.current?.getVideoBounds() ?? null, [])
 
   // --- Camera handlers ---
   const handleCameraReady = useCallback(() => {
@@ -243,6 +244,7 @@ function AnalyzeContent() {
     state === 'scanning',
     getScanVideo,
     meshCanvasRef,
+    getVideoBounds,
   )
 
   const isScanning = state === 'scanning' || state === 'redirecting'

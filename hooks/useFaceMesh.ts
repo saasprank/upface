@@ -15,6 +15,7 @@ export function useFaceMesh(
   active: boolean,
   getVideo: () => HTMLVideoElement | null,
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
+  getVideoBounds: () => DOMRect | null,
 ) {
   const landmarkerRef = useRef<FaceLandmarker | null>(null)
   const rafRef = useRef<number | null>(null)
@@ -74,14 +75,23 @@ export function useFaceMesh(
       } catch { rafRef.current = requestAnimationFrame(loop); return }
 
       if (landmarks && landmarks.length > 0) {
-        // Coordonnées directes — pas de bounding box
-        const toX = (lm: NormalizedLandmark) => (1 - lm.x) * canvas.width
-        const toY = (lm: NormalizedLandmark) => lm.y * canvas.height
+        const canvasBounds = canvas.getBoundingClientRect()
+        const videoBounds = getVideoBounds()
+        if (!videoBounds) { rafRef.current = requestAnimationFrame(loop); return }
 
-        // Mesh triangulaire fin
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)'
+        // Offset du video dans le canvas
+        const offsetX = videoBounds.left - canvasBounds.left
+        const offsetY = videoBounds.top - canvasBounds.top
+        const vW = videoBounds.width
+        const vH = videoBounds.height
+
+        // Coordonnées landmark → canvas (miroir X car vidéo CSS mirrored)
+        const toX = (lm: NormalizedLandmark) => offsetX + (1 - lm.x) * vW
+        const toY = (lm: NormalizedLandmark) => offsetY + lm.y * vH
+
+        // Mesh
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)'
         ctx.lineWidth = 0.5
-
         for (const conn of FACE_MESH_CONNECTIONS) {
           const s = landmarks[conn.start]
           const e = landmarks[conn.end]
@@ -92,12 +102,11 @@ export function useFaceMesh(
           ctx.stroke()
         }
 
-        // Points cyan uniquement sur zones clés du visage
-        // 33=oeil gauche, 263=oeil droit, 1=nez, 61=lèvre gauche, 291=lèvre droite, 168=entre yeux, 10=front, 152=menton
-        const KEY = [33, 263, 1, 61, 291, 168, 10, 152]
+        // Points cyan avec glow
+        const KEY = [33, 263, 1, 61, 291, 168, 10, 152, 234, 454]
         ctx.fillStyle = 'rgba(6, 182, 212, 1)'
         ctx.shadowColor = '#06B6D4'
-        ctx.shadowBlur = 6
+        ctx.shadowBlur = 8
         for (const idx of KEY) {
           const pt = landmarks[idx]
           if (!pt) continue
@@ -119,5 +128,5 @@ export function useFaceMesh(
       landmarkerRef.current?.close()
       landmarkerRef.current = null
     }
-  }, [active, getVideo, canvasRef])
+  }, [active, getVideo, canvasRef, getVideoBounds])
 }

@@ -16,6 +16,7 @@ export interface FaceCadranHandle {
   captureFrame: () => Promise<File | null>
   /** Élément vidéo brute (sans miroir CSS) pour MediaPipe VIDEO */
   getVideo: () => HTMLVideoElement | null
+  getVideoBounds: () => DOMRect | null
 }
 
 export type CameraErrorCode = 'denied' | 'not_found' | 'generic'
@@ -95,6 +96,7 @@ const FaceCadran = forwardRef<FaceCadranHandle, FaceCadranProps>(
 
     useImperativeHandle(ref, () => ({
       getVideo: (): HTMLVideoElement | null => videoRef.current,
+      getVideoBounds: () => videoRef.current?.getBoundingClientRect() ?? null,
       async captureFrame(): Promise<File | null> {
         const video = videoRef.current
         if (!video || video.readyState < 2) return null
