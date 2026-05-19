@@ -5,20 +5,17 @@ import { useRouter } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import Link from 'next/link'
 import Image from 'next/image'
-import dynamic from 'next/dynamic'
 import FaceCadran, { type AnalyzeState, type FaceCadranHandle, type CameraErrorCode } from '@/components/analyze/FaceCadran'
-import { faceClipUrl } from '@/components/analyze/faceSilhouette'
 import ScanInstructions from '@/components/analyze/ScanInstructions'
 import ScanProgressBar from '@/components/analyze/ScanProgressBar'
 import { SCAN_POSE_STEP_ORDER } from '@/lib/face-pose-heuristics'
 import { useFacePoseGuide } from '@/hooks/useFacePoseGuide'
+import { useFaceMesh } from '@/hooks/useFaceMesh'
 import { createClient } from '@/lib/supabase'
 import { isSupabaseConfigured } from '@/lib/supabase-config'
 import { isAuthUiHidden } from '@/lib/auth-ui'
 import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 import { syncSubscriberRoutineFromAnalyze } from '@/lib/routine-client'
-
-const FaceLandmarks = dynamic(() => import('@/components/analyze/FaceLandmarks'), { ssr: false })
 
 async function fileToDataUrl(file: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -67,6 +64,7 @@ function AnalyzeContent() {
   const t = useTranslations('analyzeLive')
 
   const cadranRef = useRef<FaceCadranHandle>(null)
+  const meshCanvasRef = useRef<HTMLCanvasElement>(null)
   const finalizeOnceRef = useRef(false)
   const faceMaskUid = useId().replace(/:/g, '')
 
@@ -128,6 +126,13 @@ function AnalyzeContent() {
         imageBase64 = await fileToDataUrl(capturedFile)
       }
 
+      const photoForDisplay = imageUrl.trim() || imageBase64 || ''
+      if (photoForDisplay) {
+        try {
+          sessionStorage.setItem('upface_photo_url', photoForDisplay)
+        } catch { /* ignore */ }
+      }
+
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -140,6 +145,15 @@ function AnalyzeContent() {
         if (data.error === 'NO_FACE_DETECTED') throw new Error('no_face')
         if (data.error === 'IMAGE_REQUIRED') throw new Error('image_required')
         throw new Error(data.error ?? 'Analysis failed')
+      }
+
+      if (data.scores) {
+        try {
+          localStorage.setItem('upface_scores', JSON.stringify({
+            ...data.scores,
+            potentiel: Math.min(95, (data.scores.global ?? 70) + 14),
+          }))
+        } catch { /* ignore */ }
       }
 
       // Sauvegarde les observations pour la génération de routine
@@ -225,9 +239,14 @@ function AnalyzeContent() {
     onValidated: handlePoseValidated,
   })
 
+  useFaceMesh(
+    state === 'scanning',
+    getScanVideo,
+    meshCanvasRef,
+  )
+
   const isScanning = state === 'scanning' || state === 'redirecting'
   const showLaunch = state === 'idle'
-  const faceClip = faceClipUrl(faceMaskUid)
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: '#080C14' }}>
@@ -294,20 +313,11 @@ function AnalyzeContent() {
             />
 
             {isScanning && (
-              <>
-                <div
-                  className="hidden sm:block absolute inset-0 overflow-hidden pointer-events-none"
-                  style={{ clipPath: faceClip, WebkitClipPath: faceClip }}
-                >
-                  <FaceLandmarks W={250} H={320} visible={isScanning} />
-                </div>
-                <div
-                  className="block sm:hidden absolute inset-0 overflow-hidden pointer-events-none"
-                  style={{ clipPath: faceClip, WebkitClipPath: faceClip }}
-                >
-                  <FaceLandmarks W={200} H={255} visible={isScanning} />
-                </div>
-              </>
+              <canvas
+                ref={meshCanvasRef}
+                className="absolute inset-0 w-full h-full"
+                style={{ pointerEvents: 'none' }}
+              />
             )}
           </div>
 
