@@ -74,15 +74,14 @@ export function useFaceMesh(
       } catch { rafRef.current = requestAnimationFrame(loop); return }
 
       if (landmarks && landmarks.length > 0) {
-        // Dessine le mesh triangulaire style FaceKit
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)'
-        ctx.lineWidth = 0.5
+        // Lignes mesh plus fines et transparentes
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)'
+        ctx.lineWidth = 0.4
 
         for (const conn of FACE_MESH_CONNECTIONS) {
           const start = landmarks[conn.start]
           const end = landmarks[conn.end]
           if (!start || !end) continue
-          // Mirror X car la vidéo est en miroir CSS
           const x1 = (1 - start.x) * canvas.width
           const y1 = start.y * canvas.height
           const x2 = (1 - end.x) * canvas.width
@@ -93,16 +92,16 @@ export function useFaceMesh(
           ctx.stroke()
         }
 
-        // Points clés en cyan comme FaceKit
-        ctx.fillStyle = 'rgba(6, 182, 212, 0.8)'
-        const keyPoints = [33, 263, 1, 61, 291, 199, 94, 0, 24, 130, 359]
+        // Moins de points cyan, plus petits
+        ctx.fillStyle = 'rgba(6, 182, 212, 0.9)'
+        const keyPoints = [33, 263, 1, 61, 291, 199]
         for (const idx of keyPoints) {
           const pt = landmarks[idx]
           if (!pt) continue
           const x = (1 - pt.x) * canvas.width
           const y = pt.y * canvas.height
           ctx.beginPath()
-          ctx.arc(x, y, 2, 0, Math.PI * 2)
+          ctx.arc(x, y, 1.5, 0, Math.PI * 2)
           ctx.fill()
         }
       }

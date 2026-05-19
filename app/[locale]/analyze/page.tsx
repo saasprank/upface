@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import Link from 'next/link'
 import Image from 'next/image'
 import FaceCadran, { type AnalyzeState, type FaceCadranHandle, type CameraErrorCode } from '@/components/analyze/FaceCadran'
+import { faceClipUrl } from '@/components/analyze/faceSilhouette'
 import ScanInstructions from '@/components/analyze/ScanInstructions'
 import ScanProgressBar from '@/components/analyze/ScanProgressBar'
 import { SCAN_POSE_STEP_ORDER } from '@/lib/face-pose-heuristics'
@@ -247,6 +248,7 @@ function AnalyzeContent() {
 
   const isScanning = state === 'scanning' || state === 'redirecting'
   const showLaunch = state === 'idle'
+  const faceClip = faceClipUrl(faceMaskUid)
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: '#080C14' }}>
@@ -316,7 +318,11 @@ function AnalyzeContent() {
               <canvas
                 ref={meshCanvasRef}
                 className="absolute inset-0 w-full h-full"
-                style={{ pointerEvents: 'none' }}
+                style={{
+                  pointerEvents: 'none',
+                  clipPath: faceClip,
+                  WebkitClipPath: faceClip,
+                }}
               />
             )}
           </div>
