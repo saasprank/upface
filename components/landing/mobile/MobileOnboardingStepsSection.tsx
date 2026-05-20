@@ -25,7 +25,7 @@ const METRICS = [
 ] as const
 
 const PHASE_MS: Record<Phase, number> = {
-  upload: 5200,
+  upload: 3200,
   analysis: 8800,
   score: 5500,
 }
@@ -46,11 +46,7 @@ function UploadStepPanel() {
   const t = useTranslations('landing.upload')
 
   return (
-    <FaceOvalGuide
-      alignLabel={t('align_face')}
-      exampleImageSrc="/hero-face.png"
-      className="max-w-[220px]"
-    />
+    <FaceOvalGuide alignLabel={t('align_face')} className="max-w-[220px]" />
   )
 }
 

@@ -292,7 +292,7 @@
     "upload": {
       "label": "Step 01",
       "title": "Position your face",
-      "subtitle": "Align yourself within the frame, as shown in the example below.",
+      "subtitle": "Center your face in the frame to start the analysis.",
       "dropzone": "Drop your photo here",
       "formats": "JPG, PNG, HEIC · Max 10 MB",
       "align_face": "Align your face here",

@@ -292,7 +292,7 @@
     "upload": {
       "label": "Étape 01",
       "title": "Positionnez votre visage",
-      "subtitle": "Alignez-vous dans le cadran, comme sur l'exemple ci-dessous.",
+      "subtitle": "Centrez votre visage dans le cadran pour lancer l'analyse.",
       "dropzone": "Glissez votre photo ici",
       "formats": "JPG, PNG, HEIC · Max 10 Mo",
       "align_face": "Alignez votre visage ici",
