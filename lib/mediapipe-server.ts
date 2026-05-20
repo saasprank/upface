@@ -76,10 +76,16 @@ function applyNodePolyfillsForMediaPipe() {
 
 /** Retire les polyfills pour ne pas casser OpenAI (détecte `window` comme navigateur). */
 export function cleanupMediaPipePolyfills() {
-  delete (globalThis as typeof globalThis & { window?: unknown }).window
-  delete (globalThis as typeof globalThis & { document?: unknown }).document
-  delete (globalThis as typeof globalThis & { navigator?: unknown }).navigator
-  delete (globalThis as typeof globalThis & { __upfaceMpPolyfills?: boolean }).__upfaceMpPolyfills
+  const g = globalThis as typeof globalThis & {
+    window?: unknown
+    document?: unknown
+    navigator?: unknown
+    __upfaceMpPolyfills?: boolean
+  }
+  g.window = undefined
+  g.document = undefined
+  g.navigator = undefined
+  g.__upfaceMpPolyfills = undefined
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
