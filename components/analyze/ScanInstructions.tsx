@@ -8,33 +8,23 @@ import type { AnalyzeState } from './FaceCadran'
 
 const STEP_META: Record<PoseStepId, { text: string; sub: string; icon: ReactNode; last?: boolean }> = {
   center: {
-    text: 'Regarde droit vers la caméra',
-    sub: 'Yeux dans l\'axe, visage détendu',
+    text: 'Regarde la caméra',
+    sub: 'Visage centré, expression neutre',
     icon: <ArrowUpIcon />,
   },
   left: {
-    text: 'Tourne la tête à gauche',
-    sub: 'Environ 20°, reste naturel',
+    text: 'Tourne légèrement à gauche',
+    sub: 'Un petit mouvement suffit (~15°)',
     icon: <ArrowLeftIcon />,
   },
   center2: {
     text: 'Reviens face caméra',
-    sub: 'Repositionne-toi bien au centre',
+    sub: 'Replace ton visage au centre du cadre',
     icon: <ArrowUpIcon />,
-  },
-  up: {
-    text: 'Lève légèrement le menton',
-    sub: 'Garde le regard vers l\'objectif',
-    icon: <ArrowUpIcon />,
-  },
-  down: {
-    text: 'Baisse légèrement le menton',
-    sub: 'Juste quelques centimètres',
-    icon: <ArrowDownIcon />,
   },
   done: {
     text: 'Parfait — ne bouge plus !',
-    sub: 'On capture automatiquement l\'image',
+    sub: 'Capture automatique dans un instant',
     icon: <CheckIcon />,
     last: true,
   },
@@ -53,6 +43,7 @@ export interface ScanInstructionsProps {
   faceDetected: boolean
   poseMatch: boolean
   holdProgress: number
+  poseHintKey: string | null
 }
 
 export function ScanPoseInstructionCard({
@@ -66,8 +57,9 @@ export function ScanPoseInstructionCard({
 
   return (
     <div
-      className="absolute top-20 left-1/2 z-20 px-6 py-4 rounded-2xl text-center min-w-[260px] max-w-[90vw]"
+      className="absolute left-1/2 z-20 px-4 py-2.5 rounded-xl text-center w-[min(280px,calc(100vw-2rem))] pointer-events-none"
       style={{
+        top: 'calc(env(safe-area-inset-top, 0px) + 52px)',
         background: 'rgba(0,0,0,0.6)',
         backdropFilter: 'blur(8px)',
         opacity: visible ? 1 : 0,
@@ -77,11 +69,11 @@ export function ScanPoseInstructionCard({
       role="status"
       aria-live="polite"
     >
-      <p className="text-2xl mb-1 flex justify-center text-white">{current.icon}</p>
-      <p className="text-white font-bold text-lg" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+      <p className="text-base mb-0.5 flex justify-center text-white [&_svg]:w-6 [&_svg]:h-6">{current.icon}</p>
+      <p className="text-white font-bold text-sm leading-snug" style={{ fontFamily: 'Satoshi, sans-serif' }}>
         {current.text}
       </p>
-      <p className="text-sm mt-1" style={{ color: '#8B9DC3' }}>
+      <p className="text-xs mt-0.5 leading-snug" style={{ color: '#8B9DC3' }}>
         {current.sub}
       </p>
     </div>
@@ -91,15 +83,20 @@ export function ScanPoseInstructionCard({
 export default function ScanInstructions({
   state,
   submitting,
+  currentStepIndex,
   faceDetected,
   poseMatch,
   holdProgress,
+  poseHintKey,
 }: ScanInstructionsProps) {
   const t = useTranslations('analyzeLive')
+  const currentStep = getScanPoseStep(currentStepIndex)
 
   const isScanning = state === 'scanning' || state === 'redirecting'
 
   if (!isScanning) return null
+
+  const hintMessage = poseHintKey ? t(poseHintKey as 'pose_hint.center') : t('pose_hint.adjust')
 
   return (
     <div
@@ -111,7 +108,7 @@ export default function ScanInstructions({
         border: '1px solid rgba(255,255,255,0.08)',
         color: submitting ? '#8B9DC3'
           : !faceDetected ? '#FBBF24'
-            : poseMatch ? '#22D3EE' : '#64748B',
+            : poseMatch ? '#22D3EE' : '#94A3B8',
       }}
       role="status"
       aria-live="polite"
@@ -122,7 +119,7 @@ export default function ScanInstructions({
             <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeDasharray="32" strokeLinecap="round" opacity="0.25" />
             <path d="M12 2a10 10 0 0110 10" stroke="#3B82F6" strokeWidth="3" strokeLinecap="round" />
           </svg>
-          Envoi en cours…
+          {t('submitting')}
         </span>
       ) : !faceDetected ? (
         t('pose_no_face')
@@ -135,7 +132,10 @@ export default function ScanInstructions({
                 {t('pose_validating')}
               </>
             ) : (
-              t('pose_hold')
+              <>
+                <HoldPulse />
+                {t('pose_hold')}
+              </>
             )}
           </div>
           <div
@@ -146,13 +146,18 @@ export default function ScanInstructions({
               className="h-full rounded-full transition-[width] duration-100 ease-linear"
               style={{
                 width: `${Math.round(holdProgress * 100)}%`,
-                background: 'linear-gradient(90deg, #fff, rgba(255,255,255,0.6))',
+                background: 'linear-gradient(90deg, #22D3EE, rgba(34,211,238,0.5))',
               }}
             />
           </div>
         </div>
       ) : (
-        t('pose_hold')
+        <div className="space-y-1.5 text-center">
+          <p className="text-[#EEF2FF] font-bold">{currentStep.text}</p>
+          <p className="text-xs font-medium leading-snug" style={{ color: '#22D3EE' }}>
+            → {hintMessage}
+          </p>
+        </div>
       )}
     </div>
   )
@@ -163,6 +168,16 @@ function CheckMini() {
     <svg className="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
     </svg>
+  )
+}
+
+function HoldPulse() {
+  return (
+    <span
+      className="w-2 h-2 rounded-full shrink-0 animate-pulse"
+      style={{ background: '#22D3EE' }}
+      aria-hidden
+    />
   )
 }
 
@@ -178,14 +193,6 @@ function ArrowUpIcon() {
   return (
     <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
-    </svg>
-  )
-}
-
-function ArrowDownIcon() {
-  return (
-    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
     </svg>
   )
 }

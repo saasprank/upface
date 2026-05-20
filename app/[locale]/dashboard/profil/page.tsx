@@ -16,12 +16,14 @@ interface Subscription {
   current_period_end?: string
 }
 
-const WEEKLY_PRICE_ID = 'price_1TY1A8GblSMSnPvvdPTKjhWv'
-const MONTHLY_PRICE_ID = 'price_1TY1AWGblSMSnPvvpi6xztHb'
+const MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY
+const YEARLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRICE_YEARLY
+const LEGACY_WEEKLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRICE_WEEKLY
 
 function getPlanLabel(priceId: string | undefined): string {
-  if (priceId === WEEKLY_PRICE_ID) return 'Pro Hebdomadaire — 4,99€/sem'
-  if (priceId === MONTHLY_PRICE_ID) return 'Pro Mensuel — 14,99€/mois'
+  if (priceId === MONTHLY_PRICE_ID) return 'Pro Mensuel — 6,99€/mois'
+  if (priceId === YEARLY_PRICE_ID) return 'Pro Annuel — 42€/an'
+  if (priceId === LEGACY_WEEKLY_PRICE_ID) return 'Pro Hebdomadaire — 4,99€/sem'
   return 'Pro'
 }
 

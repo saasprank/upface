@@ -143,15 +143,6 @@ const ALL_TABS: { key: TabKey; label: string }[] = [
   { key: 'month3', label: 'Mois 3' },
 ]
 
-const WEEKLY_TABS: { key: TabKey; label: string }[] = [
-  { key: 'week1', label: 'Sem 1' },
-  { key: 'week2', label: 'Sem 2' },
-  { key: 'month2', label: 'Sem 3' },
-  { key: 'month3', label: 'Sem 4' },
-]
-
-const FREE_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRICE_WEEKLY
-
 const LEVEL_COLORS: Record<string, { bg: string; color: string }> = {
   Easy: { bg: 'rgba(16,185,129,0.12)', color: '#10B981' },
   Medium: { bg: 'rgba(245,158,11,0.12)', color: '#F59E0B' },
@@ -166,7 +157,6 @@ function RoutineContent() {
   const [activeTab, setActiveTab] = useState<TabKey>('week1')
   const [lastAnalysisId, setLastAnalysisId] = useState<string | null>(null)
   const [plan, setPlan] = useState<'free' | 'pro'>('free')
-  const [isWeekly, setIsWeekly] = useState(false)
   const [completed, setCompleted] = useState<Set<string>>(new Set())
 
   const focusParam = searchParams.get('focus') ?? ''
@@ -212,7 +202,6 @@ function RoutineContent() {
             .maybeSingle()
           if (sub?.plan === 'pro') {
             setPlan('pro')
-            setIsWeekly(sub.price_id === FREE_PRICE_ID)
           }
         }
       } catch { /* ignore */ }
@@ -223,8 +212,6 @@ function RoutineContent() {
   // Onglets selon le plan
   const TABS = plan === 'free'
     ? [{ key: 'week1' as TabKey, label: 'Semaine 1' }]
-    : isWeekly
-    ? WEEKLY_TABS
     : ALL_TABS
 
   const hasFilter = focusDimensions.length > 0

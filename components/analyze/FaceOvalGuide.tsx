@@ -87,7 +87,10 @@ export function FaceOvalScanOverlay({ alignLabel }: FaceOvalGuideProps) {
   return (
     <div
       className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center px-4"
-      style={{ paddingBottom: 'clamp(96px, 22vh, 160px)' }}
+      style={{
+        paddingTop: 'clamp(132px, 18vh, 168px)',
+        paddingBottom: 'clamp(96px, 22vh, 160px)',
+      }}
     >
       <div className={`relative ${FACE_OVAL_FRAME_CLASS}`}>
         <div

@@ -296,7 +296,7 @@ function AnalyzeContent() {
     setClientScores(scores)
   }, [])
 
-  const { faceDetected, poseMatch, holdProgress } = useFacePoseGuide({
+  const { faceDetected, poseMatch, holdProgress, poseHintKey } = useFacePoseGuide({
     active: state === 'scanning' && !finalizing,
     getVideo: getScanVideo,
     stepId: poseStepId,
@@ -399,7 +399,7 @@ function AnalyzeContent() {
         <CloseIcon />
       </button>
 
-      {isScanning && (
+      {isScanning && !finalizing && (
         <ScanPoseInstructionCard stepIndex={poseStepIndex} visible={instructionVisible} />
       )}
 
@@ -422,16 +422,10 @@ function AnalyzeContent() {
           faceDetected={faceDetected}
           poseMatch={poseMatch}
           holdProgress={holdProgress}
+          poseHintKey={poseHintKey}
         />
 
         <ScanProgressBar active={isScanning && !finalizing} duration={SCAN_POSE_STEP_ORDER.length * 2200} />
-
-        {finalizing && state !== 'redirecting' && (
-          <div className="flex items-center gap-2 text-xs text-[#8B9DC3]" style={{ fontFamily: 'Inter, sans-serif' }}>
-            <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
-            Finalisation de l&apos;analyse…
-          </div>
-        )}
       </div>
     </div>
   )

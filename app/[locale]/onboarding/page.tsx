@@ -146,7 +146,7 @@ function OnboardingContent() {
     try {
       localStorage.setItem('upface_onboarding', JSON.stringify({ improve, dream, time, analysisId }))
     } catch { /* ignore */ }
-    // Flux : 3 questions → loader (/onboarding/generating + API) → paywall (/onboarding/routine-preview)
+    // Flux : 3 questions → loader complet → retour aux résultats
     router.push(`${prefix}/onboarding/generating`)
   }
 

@@ -153,8 +153,8 @@ export default function RoutinePreviewPage() {
 
   const [routine, setRoutine] = useState<GeneratedRoutine | null>(null)
   const [, setOnboarding] = useState<OnboardingData | null>(null)
-  const [loadingPlan, setLoadingPlan] = useState<'weekly' | 'monthly' | null>(null)
-  const [selectedPlan, setSelectedPlan] = useState<'weekly' | 'monthly'>('monthly')
+  const [loadingPlan, setLoadingPlan] = useState<'monthly' | 'yearly' | null>(null)
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly')
   const [showPaywall, setShowPaywall] = useState(false)
 
   useEffect(() => {
@@ -175,16 +175,21 @@ export default function RoutinePreviewPage() {
   const categories = routine?.categories ?? ROUTINE_FALLBACK
   const headline = routine?.headline ?? 'Ton plan personnalisé sur 30 jours'
 
-  const handleSelectPlan = async (plan: 'weekly' | 'monthly') => {
+  const handleSelectPlan = async (plan: 'monthly' | 'yearly') => {
     setLoadingPlan(plan)
     try {
       const { createClient } = await import('@/lib/supabase')
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
 
-      const priceId = plan === 'weekly'
-        ? process.env.NEXT_PUBLIC_STRIPE_PRICE_WEEKLY!
-        : process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY!
+      const priceId = plan === 'monthly'
+        ? process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY!
+        : process.env.NEXT_PUBLIC_STRIPE_PRICE_YEARLY!
+
+      if (!priceId) {
+        console.error('Missing Stripe price ID for plan:', plan)
+        return
+      }
 
       const res = await fetch('/api/checkout', {
         method: 'POST',
@@ -271,61 +276,42 @@ export default function RoutinePreviewPage() {
             </div>
           </div>
 
-          {/* Plan mensuel */}
-          <button
-            onClick={() => setSelectedPlan('monthly')}
-            className="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl mb-2 transition-all"
-            style={{
-              background: selectedPlan === 'monthly' ? 'rgba(59,130,246,0.12)' : 'transparent',
-              border: selectedPlan === 'monthly' ? '2px solid #3B82F6' : '1px solid rgba(255,255,255,0.1)',
-            }}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ border: selectedPlan === 'monthly' ? '2px solid #3B82F6' : '2px solid #8B9DC3' }}
-              >
-                {selectedPlan === 'monthly' && (
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ background: '#3B82F6' }} />
-                )}
-              </div>
-              <div className="text-left">
-                <p className="text-white font-bold text-sm">UPFACE PRO MENSUEL</p>
-                <p className="text-xs" style={{ color: '#8B9DC3' }}>soit 3,75€/semaine</p>
-              </div>
-            </div>
-            <p className="text-white font-bold">
-              14,99€<span className="text-xs font-normal" style={{ color: '#8B9DC3' }}>/mois</span>
-            </p>
-          </button>
+          <div className="grid grid-cols-2 gap-2.5 mb-4">
+            <button
+              type="button"
+              onClick={() => setSelectedPlan('monthly')}
+              className="rounded-2xl px-3 py-3 text-left transition-all active:scale-[0.98]"
+              style={{
+                background: '#0D1321',
+                border: selectedPlan === 'monthly' ? '2px solid #3B82F6' : '1px solid rgba(59,130,246,0.15)',
+              }}
+            >
+              <p className="text-[11px] font-medium mb-1" style={{ color: '#8B9DC3' }}>Mensuel</p>
+              <p className="text-xl font-bold text-white leading-none">6,99€</p>
+              <p className="text-[10px] mt-1" style={{ color: '#3D4F6E' }}>/ mois</p>
+            </button>
 
-          {/* Plan hebdo */}
-          <button
-            onClick={() => setSelectedPlan('weekly')}
-            className="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl mb-4 transition-all"
-            style={{
-              background: selectedPlan === 'weekly' ? 'rgba(59,130,246,0.12)' : 'transparent',
-              border: selectedPlan === 'weekly' ? '2px solid #3B82F6' : '1px solid rgba(255,255,255,0.1)',
-            }}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ border: selectedPlan === 'weekly' ? '2px solid #3B82F6' : '2px solid #8B9DC3' }}
+            <button
+              type="button"
+              onClick={() => setSelectedPlan('yearly')}
+              className="relative rounded-2xl px-3 py-3 text-left transition-all active:scale-[0.98]"
+              style={{
+                background: '#0D1321',
+                border: selectedPlan === 'yearly' ? '2px solid #06B6D4' : '1px solid rgba(6,182,212,0.35)',
+                boxShadow: selectedPlan === 'yearly' ? '0 0 20px rgba(6,182,212,0.12)' : 'none',
+              }}
+            >
+              <span
+                className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-md"
+                style={{ background: 'rgba(6,182,212,0.18)', color: '#06B6D4' }}
               >
-                {selectedPlan === 'weekly' && (
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ background: '#3B82F6' }} />
-                )}
-              </div>
-              <div className="text-left">
-                <p className="text-white font-bold text-sm">UPFACE PRO HEBDOMADAIRE</p>
-                <p className="text-xs" style={{ color: '#8B9DC3' }}>Accès immédiat</p>
-              </div>
-            </div>
-            <p className="text-white font-bold">
-              4,99€<span className="text-xs font-normal" style={{ color: '#8B9DC3' }}>/sem</span>
-            </p>
-          </button>
+                -50%
+              </span>
+              <p className="text-[11px] font-medium mb-1" style={{ color: '#06B6D4' }}>Annuel</p>
+              <p className="text-xl font-bold text-white leading-none">42€</p>
+              <p className="text-[10px] mt-1 leading-snug" style={{ color: '#3D4F6E' }}>/ an · soit 3,50€/mois</p>
+            </button>
+          </div>
 
           {/* CTA gradient */}
           <button
@@ -352,7 +338,7 @@ export default function RoutinePreviewPage() {
 
   // ── État 1 : Routine preview ──────────────────────────
   return (
-    <div className="min-h-screen pb-28" style={{ background: '#080C14' }}>
+    <div className="min-h-screen pb-[280px]" style={{ background: '#080C14' }}>
 
       {/* Header */}
       <div
@@ -415,24 +401,82 @@ export default function RoutinePreviewPage() {
         </div>
       </div>
 
-      {/* Bouton fixe bas */}
+      {/* Pricing + CTA fixe bas */}
       <div
         className="fixed bottom-0 left-0 right-0 px-4 pb-8 pt-4"
-        style={{ background: 'linear-gradient(to top, #080C14 80%, transparent)' }}
+        style={{ background: 'linear-gradient(to top, #080C14 88%, transparent)' }}
       >
+        <div className="flex justify-center mb-3">
+          <div
+            className="px-3 py-1 rounded-full text-[11px] font-medium"
+            style={{ background: 'rgba(16,185,129,0.12)', color: '#10B981', border: '1px solid rgba(16,185,129,0.25)' }}
+          >
+            • 127 utilisateurs ont débloqué leur routine aujourd&apos;hui
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2.5 mb-3">
+          <button
+            type="button"
+            onClick={() => setSelectedPlan('monthly')}
+            className="rounded-2xl px-3 py-3 text-left transition-all active:scale-[0.98]"
+            style={{
+              background: '#0D1321',
+              border: selectedPlan === 'monthly' ? '2px solid #3B82F6' : '1px solid rgba(59,130,246,0.15)',
+            }}
+          >
+            <p className="text-[11px] font-medium mb-1" style={{ color: '#8B9DC3' }}>Mensuel</p>
+            <p className="text-xl font-bold text-white leading-none">6,99€</p>
+            <p className="text-[10px] mt-1" style={{ color: '#3D4F6E' }}>/ mois</p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setSelectedPlan('yearly')}
+            className="relative rounded-2xl px-3 py-3 text-left transition-all active:scale-[0.98]"
+            style={{
+              background: '#0D1321',
+              border: selectedPlan === 'yearly' ? '2px solid #06B6D4' : '1px solid rgba(6,182,212,0.35)',
+              boxShadow: selectedPlan === 'yearly' ? '0 0 20px rgba(6,182,212,0.12)' : 'none',
+            }}
+          >
+            <span
+              className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-md"
+              style={{ background: 'rgba(6,182,212,0.18)', color: '#06B6D4' }}
+            >
+              -50%
+            </span>
+            <p className="text-[11px] font-medium mb-1" style={{ color: '#06B6D4' }}>Annuel</p>
+            <p className="text-xl font-bold text-white leading-none">42€</p>
+            <p className="text-[10px] mt-1 leading-snug" style={{ color: '#3D4F6E' }}>/ an · soit 3,50€/mois</p>
+          </button>
+        </div>
+
         <button
-          onClick={() => setShowPaywall(true)}
-          className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-center gap-2 active:scale-95 transition-all"
+          type="button"
+          onClick={() => void handleSelectPlan(selectedPlan)}
+          disabled={loadingPlan !== null}
+          className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-60"
           style={{
             background: 'linear-gradient(90deg, #3B82F6, #06B6D4)',
             boxShadow: '0 0 24px rgba(59,130,246,0.35)',
           }}
         >
-          Débloque ta routine complète
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-          </svg>
+          {loadingPlan !== null ? (
+            <div className="w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+          ) : (
+            <>
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              Commencer ma routine complète
+            </>
+          )}
         </button>
+
+        <p className="text-center text-[10px] mt-2.5" style={{ color: '#3D4F6E' }}>
+          Annulable à tout moment · Paiement sécurisé Stripe
+        </p>
       </div>
     </div>
   )

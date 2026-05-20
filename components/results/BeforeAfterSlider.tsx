@@ -25,25 +25,27 @@ const AFTER_FACE_MASK =
 const AFTER_JAW_MASK =
   'radial-gradient(ellipse 54% 34% at 50% 82%, #000 40%, transparent 78%)'
 
-/** Flou fort sur toute la zone « après » — le visage reste une promesse, pas une révélation. */
-const AFTER_HEAVY_BLUR = 'blur(22px)'
+/** Flou progressif : fond plus doux, visage/mâchoire plus lisibles pour suggérer le potentiel. */
+const AFTER_BASE_BLUR = 'blur(14px)'
+const AFTER_DETAIL_BLUR = 'blur(9px)'
+const AFTER_FACE_BLUR = 'blur(6px)'
 
 function AfterPhotoLayers({ photoUrl }: { photoUrl: string }) {
   return (
     <>
-      {/* Fond entièrement flouté */}
+      {/* Fond légèrement flouté */}
       <img
         src={photoUrl}
         alt=""
         className="absolute inset-0 w-full h-full object-cover"
         style={{
-          filter: `${AFTER_HEAVY_BLUR} brightness(0.86) saturate(0.9)`,
-          transform: 'scale(1.14)',
+          filter: `${AFTER_BASE_BLUR} brightness(0.92) saturate(0.95)`,
+          transform: 'scale(1.1)',
         }}
         draggable={false}
       />
 
-      {/* Mâchoire légèrement affinée / redessinée (visible en silhouette sous le flou) */}
+      {/* Mâchoire légèrement affinée / redessinée */}
       <img
         src={photoUrl}
         alt=""
@@ -54,12 +56,12 @@ function AfterPhotoLayers({ photoUrl }: { photoUrl: string }) {
           maskImage: AFTER_JAW_MASK,
           transform: 'scale(1.07) scaleX(0.9)',
           transformOrigin: '50% 88%',
-          filter: `${AFTER_HEAVY_BLUR} brightness(1.06) contrast(1.14) saturate(1.08)`,
+          filter: `${AFTER_DETAIL_BLUR} brightness(1.08) contrast(1.16) saturate(1.1)`,
         }}
         draggable={false}
       />
 
-      {/* Visage global légèrement harmonisé (symétrie / structure) */}
+      {/* Visage harmonisé — zone la plus nette pour lire le potentiel */}
       <img
         src={photoUrl}
         alt="Après — potentiel"
@@ -69,7 +71,7 @@ function AfterPhotoLayers({ photoUrl }: { photoUrl: string }) {
           maskImage: AFTER_FACE_MASK,
           transform: 'scale(1.045)',
           transformOrigin: '50% 36%',
-          filter: `${AFTER_HEAVY_BLUR} brightness(1.12) contrast(1.08) saturate(1.18)`,
+          filter: `${AFTER_FACE_BLUR} brightness(1.14) contrast(1.1) saturate(1.2)`,
         }}
         draggable={false}
       />
@@ -244,7 +246,7 @@ function PlaceholderFace({ enhanced }: { enhanced: boolean }) {
         background: enhanced
           ? 'linear-gradient(160deg, #0f1729 0%, #0a1628 50%, #061018 100%)'
           : '#0D1321',
-        filter: enhanced ? 'blur(18px) brightness(1.06)' : 'none',
+        filter: enhanced ? 'blur(12px) brightness(1.08)' : 'none',
       }}
     >
       <svg width="80" height="100" viewBox="0 0 100 127" fill="none">

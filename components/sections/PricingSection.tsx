@@ -17,7 +17,7 @@ const CrossIcon = () => (
   </svg>
 )
 
-type PlanId = 'free' | 'weekly' | 'monthly'
+type PlanId = 'free' | 'monthly' | 'yearly'
 
 export default function PricingSection() {
   const t = useTranslations('pricing')
@@ -55,12 +55,12 @@ export default function PricingSection() {
       ],
     },
     {
-      id: 'weekly',
-      name: t('weekly_name'),
-      price: t('weekly_price'),
-      period: t('weekly_period'),
-      desc: t('weekly_desc'),
-      cta: t('cta_weekly'),
+      id: 'monthly',
+      name: t('monthly_name'),
+      price: t('monthly_price'),
+      period: t('monthly_period'),
+      desc: t('monthly_desc'),
+      cta: t('cta_monthly'),
       ctaVariant: 'outline',
       featured: false,
       features: [
@@ -72,12 +72,12 @@ export default function PricingSection() {
       ],
     },
     {
-      id: 'monthly',
-      name: t('monthly_name'),
-      price: t('monthly_price'),
-      period: t('monthly_period'),
-      desc: t('monthly_desc'),
-      cta: t('cta_pro'),
+      id: 'yearly',
+      name: t('yearly_name'),
+      price: t('yearly_price'),
+      period: t('yearly_period'),
+      desc: t('yearly_desc'),
+      cta: t('cta_yearly'),
       ctaVariant: 'primary',
       featured: true,
       badge: t('save_badge'),

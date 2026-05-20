@@ -5,6 +5,7 @@ import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision'
 import type { NormalizedLandmark } from '@mediapipe/tasks-vision'
 import {
   computeRawPoseSignals,
+  getPoseHintKey,
   landmarksUsable,
   poseMatchesStep,
   smoothPoseSignals,
@@ -16,7 +17,7 @@ const MEDIAPIPE_VERSION = '0.10.35'
 const WASM_CDN_BASE = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MEDIAPIPE_VERSION}/wasm`
 const MODEL_PATH = '/models/face_landmarker.task'
 
-const STABLE_HOLD_MS = 760
+const STABLE_HOLD_MS = 520
 
 interface UseFacePoseGuideOptions {
   active: boolean
@@ -31,6 +32,7 @@ interface UseFacePoseGuideResult {
   faceDetected: boolean
   poseMatch: boolean
   holdProgress: number
+  poseHintKey: string | null
 }
 
 export function useFacePoseGuide({
@@ -44,6 +46,7 @@ export function useFacePoseGuide({
   const [faceDetected, setFaceDetected] = useState(false)
   const [poseMatch, setPoseMatch] = useState(false)
   const [holdProgress, setHoldProgress] = useState(0)
+  const [poseHintKey, setPoseHintKey] = useState<string | null>(null)
 
   const smoothRef = useRef<PoseSmoothState | null>(null)
   const prevPoseMatchRef = useRef(false)
@@ -69,6 +72,7 @@ export function useFacePoseGuide({
     emittedForStepRef.current = null
     setHoldProgress(0)
     setPoseMatch(false)
+    setPoseHintKey(null)
   }, [stepId])
 
   useEffect(() => {
@@ -106,8 +110,8 @@ export function useFacePoseGuide({
           },
           runningMode: 'VIDEO',
           numFaces: 1,
-          minFacePresenceConfidence: 0.42,
-          minTrackingConfidence: 0.42,
+          minFacePresenceConfidence: 0.38,
+          minTrackingConfidence: 0.38,
           outputFaceBlendshapes: false,
         })
 
@@ -180,6 +184,7 @@ export function useFacePoseGuide({
       const matchNow = poseMatchesStep(sidEmit, smooth, prevPoseMatchRef.current)
       prevPoseMatchRef.current = matchNow
       setPoseMatch(matchNow)
+      setPoseHintKey(getPoseHintKey(sidEmit, smooth, matchNow))
 
       /** Évite un second appel avant que React applique `stepIdx` suivant */
       if (matchNow && emittedForStepRef.current === sidEmit) {
@@ -231,5 +236,5 @@ export function useFacePoseGuide({
     }
   }, [active, getVideo])
 
-  return { faceDetected, poseMatch, holdProgress }
+  return { faceDetected, poseMatch, holdProgress, poseHintKey }
 }

@@ -9,8 +9,6 @@ export const SCAN_POSE_STEP_ORDER = [
   'center',
   'left',
   'center2',
-  'up',
-  'down',
   'done',
 ] as const
 
@@ -22,7 +20,7 @@ export interface PoseSmoothState {
   pitchT: number
 }
 
-const EMA_ALPHA = 0.38
+const EMA_ALPHA = 0.32
 
 export function smoothPoseSignals(
   prev: PoseSmoothState | null,
@@ -56,21 +54,13 @@ export function computeRawPoseSignals(lm: NormalizedLandmark[]): { yaw: number; 
   const spanY = chin.y - top.y
   if (!(spanY > 1e-4)) return null
 
-  // Position verticale normalisée du nez dans le tiers visage (~0.45 neutre frontal)
   const pitchT = (nose.y - top.y) / spanY
 
   return { yaw, pitchT }
 }
 
 /**
- * Matching avec hysteresis douce : fenêtres légèrement différentes pour
- * "neutre" vs poses latérales pour limiter les oscillations.
- *
- * Convention du yaw :
- *   Le flux vidéo est affiché en miroir (scaleX(-1)) mais MediaPipe lit les
- *   pixels bruts non mirrorés. Quand l'utilisateur tourne sa tête vers SA
- *   gauche (côté gauche du miroir), le nez se déplace vers la DROITE dans la
- *   frame brute → yaw = nose.x - eyeMidX est POSITIF.
+ * Matching avec hysteresis douce : fenêtres élargies pour faciliter la validation mobile.
  */
 export function poseMatchesStep(
   stepId: PoseStepId,
@@ -80,35 +70,53 @@ export function poseMatchesStep(
   const yaw = s.yaw
   const pt = s.pitchT
 
-  /** Fenêtres neutres horizontales */
-  const yawNeutralLoose  = 0.038
-  const yawNeutralCenter = prevMatch ? 0.030 : 0.022
+  const yawNeutralLoose = 0.055
+  const yawNeutralCenter = prevMatch ? 0.048 : 0.038
 
-  const pitchLow = prevMatch ? 0.390 : 0.380   // menton levé
-  const pitchHi  = prevMatch ? 0.540 : 0.550   // menton baissé
+  const pitchLow = prevMatch ? 0.400 : 0.392
+  const pitchHi = prevMatch ? 0.520 : 0.528
   const pitchNeutralBand = pt >= pitchLow && pt <= pitchHi
 
-  /**
-   * Tête pivotée vers la gauche de l'utilisateur (miroir) :
-   * dans la frame brute non mirrorée → yaw POSITIF.
-   * Seuil bas pour être déclenchable facilement, max pour éviter faux positifs.
-   */
-  const yawLeftMin = prevMatch ? 0.022 : 0.028
-  const yawLeftMax = 0.14
+  const yawLeftMin = prevMatch ? 0.012 : 0.016
+  const yawLeftMax = 0.20
 
   switch (stepId) {
     case 'center':
     case 'center2':
       return Math.abs(yaw) < yawNeutralCenter && pitchNeutralBand
     case 'left':
-      return yaw >= yawLeftMin && yaw <= yawLeftMax && pt <= pitchHi + 0.03
-    case 'up':
-      return Math.abs(yaw) < yawNeutralLoose && pt < pitchLow
-    case 'down':
-      return Math.abs(yaw) < yawNeutralLoose && pt > pitchHi
+      return yaw >= yawLeftMin && yaw <= yawLeftMax && pt <= pitchHi + 0.05
     case 'done':
-      return Math.abs(yaw) < yawNeutralCenter && pitchNeutralBand
+      return Math.abs(yaw) < yawNeutralLoose && pitchNeutralBand
     default:
       return false
+  }
+}
+
+/** Clé i18n pour guider l'utilisateur quand la pose n'est pas encore reconnue. */
+export function getPoseHintKey(
+  stepId: PoseStepId,
+  s: PoseSmoothState,
+  match: boolean,
+): string | null {
+  if (match) return null
+
+  const yaw = s.yaw
+  const pt = s.pitchT
+
+  switch (stepId) {
+    case 'center':
+    case 'center2':
+    case 'done':
+      if (Math.abs(yaw) > 0.032) return 'pose_hint.center'
+      if (pt < 0.388) return 'pose_hint.chin_up'
+      if (pt > 0.542) return 'pose_hint.chin_down'
+      return 'pose_hint.center'
+    case 'left':
+      if (yaw < 0.012) return 'pose_hint.turn_left'
+      if (yaw > 0.19) return 'pose_hint.turn_left_less'
+      return 'pose_hint.turn_left'
+    default:
+      return 'pose_hint.adjust'
   }
 }
