@@ -1,15 +1,16 @@
 'use client'
 
-import { useState, useCallback, useRef, useId, Suspense, useEffect } from 'react'
+import { useState, useCallback, useRef, Suspense, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import Link from 'next/link'
 import Image from 'next/image'
 import FaceCadran, { type AnalyzeState, type FaceCadranHandle, type CameraErrorCode } from '@/components/analyze/FaceCadran'
-import ScanInstructions from '@/components/analyze/ScanInstructions'
+import ScanInstructions, { ScanPoseInstructionCard } from '@/components/analyze/ScanInstructions'
 import ScanProgressBar from '@/components/analyze/ScanProgressBar'
 import { SCAN_POSE_STEP_ORDER } from '@/lib/face-pose-heuristics'
 import { useFacePoseGuide } from '@/hooks/useFacePoseGuide'
+import { useFaceMesh } from '@/hooks/useFaceMesh'
 import { createClient } from '@/lib/supabase'
 import { isSupabaseConfigured } from '@/lib/supabase-config'
 import { isAuthUiHidden } from '@/lib/auth-ui'
@@ -56,6 +57,14 @@ function CameraLaunchIcon({ className }: { className?: string }) {
   )
 }
 
+function CloseIcon() {
+  return (
+    <svg width={20} height={20} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  )
+}
+
 function AnalyzeContent() {
   const router = useRouter()
   const locale = useLocale() as string
@@ -63,20 +72,19 @@ function AnalyzeContent() {
   const t = useTranslations('analyzeLive')
 
   const cadranRef = useRef<FaceCadranHandle>(null)
+  const meshCanvasRef = useRef<HTMLCanvasElement>(null)
   const finalizeOnceRef = useRef(false)
-  const faceMaskUid = useId().replace(/:/g, '')
 
   const [state, setState] = useState<AnalyzeState>('idle')
   const [cameraActive, setCameraActive] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [finalizing, setFinalizing] = useState(false)
   const [poseStepIndex, setPoseStepIndex] = useState(0)
+  const [instructionVisible, setInstructionVisible] = useState(true)
 
   const getScanVideo = useCallback(() => cadranRef.current?.getVideo() ?? null, [])
 
-  // --- Camera handlers ---
   const handleCameraReady = useCallback(() => {
-    // Auto-start scanning immediately — no button needed
     setState('scanning')
   }, [])
 
@@ -96,7 +104,15 @@ function AnalyzeContent() {
     setState('loading_camera')
   }
 
-  // --- Dernière pose validée (auto) puis envoi ---
+  const handleCancelScan = () => {
+    setCameraActive(false)
+    setState('idle')
+    setError(null)
+    setPoseStepIndex(0)
+    setFinalizing(false)
+    finalizeOnceRef.current = false
+  }
+
   const handleInstructionsDone = useCallback(async () => {
     if (finalizeOnceRef.current) return
     finalizeOnceRef.current = true
@@ -154,7 +170,6 @@ function AnalyzeContent() {
         } catch { /* ignore */ }
       }
 
-      // Sauvegarde les observations pour la génération de routine
       if (data.observations) {
         localStorage.setItem('upface_observations', JSON.stringify(data.observations))
       }
@@ -227,6 +242,13 @@ function AnalyzeContent() {
     }
   }, [state])
 
+  useEffect(() => {
+    if (state !== 'scanning' && state !== 'redirecting') return
+    setInstructionVisible(false)
+    const id = requestAnimationFrame(() => setInstructionVisible(true))
+    return () => cancelAnimationFrame(id)
+  }, [poseStepIndex, state])
+
   const poseStepId = SCAN_POSE_STEP_ORDER[Math.min(poseStepIndex, SCAN_POSE_STEP_ORDER.length - 1)]
 
   const { faceDetected, poseMatch, holdProgress } = useFacePoseGuide({
@@ -237,36 +259,32 @@ function AnalyzeContent() {
     onValidated: handlePoseValidated,
   })
 
+  useFaceMesh(
+    (state === 'scanning' || state === 'redirecting') && !finalizing,
+    getScanVideo,
+    meshCanvasRef,
+  )
+
   const isScanning = state === 'scanning' || state === 'redirecting'
   const showLaunch = state === 'idle'
 
-  return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#080C14' }}>
-
-      <header
-        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 sm:px-6"
-        style={{ height: 56, background: 'rgba(8,12,20,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
-      >
-        <Link href={`${prefix}/`} className="flex items-center gap-2">
-          <Image src="/logo.png" alt="UPFACE" width={28} height={28} style={UPFACE_LOGO_IMG_STYLE} />
-          <span className="font-bold text-sm text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>
-            UPFACE
-          </span>
-        </Link>
-
-        <div
-          className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
-          style={{ background: '#1E2A3E', border: '1px solid rgba(59,130,246,0.2)', color: '#8B9DC3' }}
+  if (showLaunch) {
+    return (
+      <div className="min-h-screen flex flex-col" style={{ background: '#080C14' }}>
+        <header
+          className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 sm:px-6"
+          style={{ height: 56, background: 'rgba(8,12,20,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
         >
-          Étape 1 / 3
-        </div>
-      </header>
+          <Link href={`${prefix}/`} className="flex items-center gap-2">
+            <Image src="/logo.png" alt="UPFACE" width={28} height={28} style={UPFACE_LOGO_IMG_STYLE} />
+            <span className="font-bold text-sm text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+              UPFACE
+            </span>
+          </Link>
+        </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center px-4 pt-14 pb-10" style={{ minHeight: '100dvh' }}>
-        <div className="flex flex-col items-center gap-6 w-full max-w-md">
-
-          {/* Marketing copy — visible only in idle state */}
-          {showLaunch && (
+        <main className="flex-1 flex flex-col items-center justify-center px-4 pt-14 pb-10" style={{ minHeight: '100dvh' }}>
+          <div className="flex flex-col items-center gap-6 w-full max-w-md">
             <section className="w-full text-center space-y-2 px-1 animate-fade-in">
               <h1
                 className="text-lg sm:text-xl font-bold tracking-tight text-[#EEF2FF]"
@@ -291,33 +309,16 @@ function AnalyzeContent() {
                 {t('privacy')}
               </p>
             </section>
-          )}
 
-          {/* Cadran */}
-          <div className="relative shrink-0">
-            <FaceCadran
-              ref={cadranRef}
-              maskUid={faceMaskUid}
-              cameraActive={cameraActive}
-              state={state}
-              onCameraReady={handleCameraReady}
-              onCameraError={handleCameraError}
-            />
+            {error && (
+              <div
+                className="w-full flex items-start gap-2 px-4 py-3 rounded-xl text-sm text-center"
+                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#EF4444' }}
+              >
+                {error}
+              </div>
+            )}
 
-          </div>
-
-          {/* Error banner */}
-          {error && (
-            <div
-              className="w-full flex items-start gap-2 px-4 py-3 rounded-xl text-sm text-center"
-              style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#EF4444' }}
-            >
-              {error}
-            </div>
-          )}
-
-          {/* Launch button — idle only */}
-          {showLaunch && (
             <button
               type="button"
               onClick={handleLaunchCamera}
@@ -332,41 +333,84 @@ function AnalyzeContent() {
                 cursor: 'pointer',
                 boxShadow: '0 4px 24px rgba(59,130,246,0.25)',
               }}
-              onMouseEnter={e => {
-                e.currentTarget.style.filter = 'brightness(1.08)'
-                e.currentTarget.style.boxShadow = '0 0 20px rgba(59,130,246,0.35), 0 4px 24px rgba(59,130,246,0.25)'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.filter = 'brightness(1)'
-                e.currentTarget.style.boxShadow = '0 4px 24px rgba(59,130,246,0.25)'
-              }}
             >
               <CameraLaunchIcon />
               {t('launch')}
             </button>
-          )}
+          </div>
+        </main>
+      </div>
+    )
+  }
 
-          <ScanInstructions
-            state={state}
-            submitting={finalizing}
-            currentStepIndex={poseStepIndex}
-            faceDetected={faceDetected}
-            poseMatch={poseMatch}
-            holdProgress={holdProgress}
-          />
+  return (
+    <div className="fixed inset-0 bg-black z-50">
+      <FaceCadran
+        ref={cadranRef}
+        cameraActive={cameraActive}
+        state={state}
+        onCameraReady={handleCameraReady}
+        onCameraError={handleCameraError}
+      />
 
-          <ScanProgressBar active={isScanning && !finalizing} duration={SCAN_POSE_STEP_ORDER.length * 2200} />
+      <canvas
+        ref={meshCanvasRef}
+        className="fixed inset-0 w-full h-full pointer-events-none"
+        style={{ zIndex: 10 }}
+        aria-hidden
+      />
 
-          {/* Pendant l&apos;API */}
-          {finalizing && state !== 'redirecting' && (
-            <div className="flex items-center gap-2 text-xs text-[#8B9DC3]" style={{ fontFamily: 'Inter, sans-serif' }}>
-              <div className="w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-              Finalisation de l&apos;analyse…
-            </div>
-          )}
+      <button
+        type="button"
+        onClick={handleCancelScan}
+        className="absolute top-4 left-4 z-30 flex items-center justify-center rounded-full"
+        style={{
+          width: 40,
+          height: 40,
+          background: 'rgba(0,0,0,0.55)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          color: '#fff',
+        }}
+        aria-label={locale === 'fr' ? 'Annuler le scan' : 'Cancel scan'}
+      >
+        <CloseIcon />
+      </button>
 
+      {isScanning && (
+        <ScanPoseInstructionCard stepIndex={poseStepIndex} visible={instructionVisible} />
+      )}
+
+      {error && (
+        <div
+          className="absolute top-24 left-4 right-4 z-30 mx-auto max-w-sm px-4 py-3 rounded-xl text-sm text-center"
+          style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', color: '#FCA5A5', backdropFilter: 'blur(8px)' }}
+        >
+          {error}
         </div>
-      </main>
+      )}
+
+      <div className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8 pt-10 flex flex-col items-center gap-4"
+        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 55%, transparent 100%)' }}
+      >
+        <ScanInstructions
+          state={state}
+          submitting={finalizing}
+          currentStepIndex={poseStepIndex}
+          faceDetected={faceDetected}
+          poseMatch={poseMatch}
+          holdProgress={holdProgress}
+        />
+
+        <ScanProgressBar active={isScanning && !finalizing} duration={SCAN_POSE_STEP_ORDER.length * 2200} />
+
+        {finalizing && state !== 'redirecting' && (
+          <div className="flex items-center gap-2 text-xs text-[#8B9DC3]" style={{ fontFamily: 'Inter, sans-serif' }}>
+            <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+            Finalisation de l&apos;analyse…
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -374,8 +418,8 @@ function AnalyzeContent() {
 export default function AnalyzePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#080C14] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-white border-t-transparent animate-spin" />
       </div>
     }>
       <AnalyzeContent />

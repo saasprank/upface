@@ -57,10 +57,10 @@ export default function ScanProgressBar({ active, duration = 8000 }: ScanProgres
   if (!active) return null
 
   return (
-    <div className="flex flex-col items-center gap-3 w-full max-w-xs mx-auto">
+    <div className="flex flex-col items-center gap-3 w-full max-w-sm mx-auto">
       {/* Message */}
       <p
-        className="text-xs text-center"
+        className="text-sm text-center"
         style={{
           color: '#8B9DC3',
           opacity: msgVisible ? 1 : 0,
@@ -75,22 +75,22 @@ export default function ScanProgressBar({ active, duration = 8000 }: ScanProgres
       </p>
 
       {/* Bar */}
-      <div className="w-full" style={{ maxWidth: 280 }}>
+      <div className="w-full">
         <div
           className="h-1 rounded-full overflow-hidden"
-          style={{ background: 'rgba(59,130,246,0.15)' }}
+          style={{ background: 'rgba(255,255,255,0.12)' }}
         >
           <div
             className="h-full rounded-full"
             style={{
               width: `${progress}%`,
-              background: 'linear-gradient(90deg, #3B82F6, #06B6D4)',
+              background: 'linear-gradient(90deg, rgba(255,255,255,0.85), rgba(255,255,255,0.45))',
               transition: 'width 0.1s linear',
             }}
           />
         </div>
-        <p className="text-xs text-center mt-2" style={{ color: '#3D4F6E' }}>
-          Analyse en cours... <span style={{ color: '#8B9DC3' }}>{Math.round(progress)}%</span>
+        <p className="text-xs text-center mt-2" style={{ color: '#8B9DC3' }}>
+          Analyse en cours… <span style={{ color: '#EEF2FF' }}>{Math.round(progress)}%</span>
         </p>
       </div>
     </div>
