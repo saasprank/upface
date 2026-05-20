@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import ScoreRing from '@/components/ui/ScoreRing'
 import MetricBar from '@/components/landing/shared/MetricBar'
-import { FACE_OVAL_FRAME_CLASS } from '@/components/analyze/FaceOvalGuide'
+import LiveFaceScanFrame from '@/components/landing/shared/LiveFaceScanFrame'
 
 const PHASES = ['capture', 'analysis', 'score'] as const
 type Phase = (typeof PHASES)[number]
@@ -42,49 +42,19 @@ function analysisStepState(index: number, progress: number): AnalysisStepState {
 
 function CaptureFace({ activeTipIndex }: { activeTipIndex: number }) {
   const t = useTranslations('landing.upload')
+  const tAnalysis = useTranslations('landing.analysis')
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className={`relative ${FACE_OVAL_FRAME_CLASS} max-w-[200px]`}>
-        <div className="absolute inset-[6%] overflow-hidden rounded-[50%] z-0">
-          <Image
-            src="/hero-face.png"
-            alt=""
-            fill
-            className="object-cover object-top scale-[1.12]"
-            sizes="200px"
-          />
-          <motion.div
-            className="absolute left-[10%] right-[10%] h-px z-10"
-            style={{
-              background: 'linear-gradient(90deg, transparent, rgba(6,182,212,0.85), transparent)',
-              boxShadow: '0 0 10px rgba(6,182,212,0.5)',
-            }}
-            animate={{ top: ['12%', '88%', '12%'] }}
-            transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <div
-            className="absolute inset-0 z-10 pointer-events-none"
-            style={{
-              background: 'linear-gradient(to bottom, rgba(8,12,20,0.25) 0%, transparent 35%, transparent 65%, rgba(8,12,20,0.35) 100%)',
-            }}
-          />
-        </div>
-        <svg viewBox="0 0 240 320" className="relative z-[1] w-full h-full" fill="none" aria-hidden>
-          <ellipse cx="120" cy="160" rx="98" ry="138" stroke="rgba(238,242,255,0.75)" strokeWidth="2" />
-          <line x1="28" y1="162" x2="212" y2="162" stroke="#06B6D4" strokeWidth="1.5" strokeOpacity="0.85" />
-        </svg>
-        <p
-          className="absolute left-0 right-0 top-[52%] z-[2] text-[8px] tracking-[0.16em] text-[#8B9DC3] uppercase text-center"
-          style={{ fontFamily: 'Inter, sans-serif' }}
-        >
-          {t('align_face')}
-        </p>
-      </div>
+    <div className="flex flex-col items-center gap-3 w-full">
+      <LiveFaceScanFrame
+        alignLabel={t('align_face')}
+        scanningLabel={tAnalysis('scanning')}
+        compact
+      />
 
       <motion.p
         key={activeTipIndex}
-        className="text-sm font-semibold text-[#EEF2FF] text-center px-4"
+        className="text-sm font-semibold text-[#EEF2FF] text-center px-2"
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -6 }}
@@ -93,7 +63,7 @@ function CaptureFace({ activeTipIndex }: { activeTipIndex: number }) {
         {t(CAPTURE_TIPS[activeTipIndex])}
       </motion.p>
 
-      <div className="w-full space-y-2 mt-1">
+      <div className="w-full space-y-2">
         {CAPTURE_TIPS.map((tipKey, i) => {
           const done = i < activeTipIndex
           const active = i === activeTipIndex
