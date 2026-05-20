@@ -1,11 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useTranslations, useLocale } from 'next-intl'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { isAuthUiHidden } from '@/lib/auth-ui'
-import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 
 export default function Navbar() {
   const t = useTranslations('nav')
@@ -20,112 +18,170 @@ export default function Navbar() {
     { href: `${prefix}/#faq`, label: t('faq') },
   ]
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
+
+  const closeMenu = () => setMenuOpen(false)
+
   return (
-    <header
-      className="fixed top-0 left-0 right-0 z-50"
-      style={{
-        background: 'rgba(8,12,20,0.75)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
-        borderBottom: '1px solid rgba(59,130,246,0.08)',
-      }}
-    >
-      <div className="max-w-[375px] sm:max-w-6xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
-        <Link href={`${prefix}/`} className="flex items-center gap-2 group">
-          <Image src="/logo.png" alt="UPFACE" width={28} height={28} style={UPFACE_LOGO_IMG_STYLE} className="sm:w-9 sm:h-9" />
-          <span
-            className="font-bold text-base sm:text-lg tracking-tight text-[#EEF2FF]"
+    <>
+      <header
+        className="fixed top-0 left-0 right-0 z-50"
+        style={{
+          background: 'rgba(8,12,20,0.75)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          borderBottom: '1px solid rgba(59,130,246,0.08)',
+        }}
+      >
+        <div className="w-full max-w-6xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
+          <Link
+            href={`${prefix}/`}
+            className="font-bold text-base sm:text-lg tracking-tight text-[#EEF2FF] hover:opacity-90 transition-opacity"
             style={{ fontFamily: 'Satoshi, sans-serif' }}
           >
             UPFACE
-          </span>
-        </Link>
-
-        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm text-[#8B9DC3] hover:text-[#EEF2FF] transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="hidden md:flex items-center gap-2">
-          {!hideAuthUi && (
-            <Link
-              href={`${prefix}/login`}
-              className="text-sm text-[#8B9DC3] hover:text-[#EEF2FF] px-3 py-1.5 transition-colors"
-            >
-              {t('login')}
-            </Link>
-          )}
-          <Link
-            href={`${prefix}/analyze`}
-            className="text-sm font-semibold px-4 py-2 rounded-xl text-[#EEF2FF] transition-all hover:opacity-90"
-            style={{
-              background: 'linear-gradient(135deg, #3B82F6, #06B6D4)',
-              boxShadow: '0 0 20px rgba(59,130,246,0.2)',
-            }}
-          >
-            {t('cta')}
           </Link>
-        </div>
 
-        <div className="flex md:hidden items-center gap-2">
-          <Link
-            href={`${prefix}/analyze`}
-            className="text-[11px] font-semibold px-3 py-1.5 rounded-lg text-[#EEF2FF]"
-            style={{ background: 'linear-gradient(135deg, #3B82F6, #06B6D4)' }}
-          >
-            {t('cta')}
-          </Link>
-          <button
-            className="p-2 text-[#8B9DC3]"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Menu"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {menuOpen && (
-        <div
-          className="md:hidden border-t"
-          style={{ background: 'rgba(8,12,20,0.95)', borderColor: 'rgba(59,130,246,0.08)' }}
-        >
-          <div className="max-w-[375px] mx-auto px-4 py-4 flex flex-col gap-1">
+          <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-[#8B9DC3] py-3 border-b border-[rgba(255,255,255,0.04)]"
-                onClick={() => setMenuOpen(false)}
+                className="text-sm text-[#8B9DC3] hover:text-[#EEF2FF] transition-colors"
               >
                 {link.label}
               </Link>
             ))}
+          </nav>
+
+          <div className="hidden md:flex items-center gap-2 ml-auto">
             {!hideAuthUi && (
               <Link
                 href={`${prefix}/login`}
-                className="text-sm text-[#8B9DC3] py-3"
-                onClick={() => setMenuOpen(false)}
+                className="text-sm text-[#8B9DC3] hover:text-[#EEF2FF] px-3 py-1.5 transition-colors"
               >
                 {t('login')}
               </Link>
             )}
+            <Link
+              href={`${prefix}/analyze`}
+              className="text-sm font-semibold px-4 py-2 rounded-xl text-[#EEF2FF] transition-all hover:opacity-90"
+              style={{
+                background: 'linear-gradient(135deg, #3B82F6, #06B6D4)',
+                boxShadow: '0 0 20px rgba(59,130,246,0.2)',
+              }}
+            >
+              {t('cta')}
+            </Link>
           </div>
+
+          <button
+            type="button"
+            className="md:hidden ml-auto p-2 text-[#8B9DC3] hover:text-[#EEF2FF] transition-colors"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          </button>
         </div>
-      )}
-    </header>
+      </header>
+
+      {/* Backdrop */}
+      <div
+        className={`fixed inset-0 z-[60] md:hidden transition-opacity duration-300 ${
+          menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        style={{ background: 'rgba(4,8,16,0.72)', backdropFilter: 'blur(4px)' }}
+        onClick={closeMenu}
+        aria-hidden={!menuOpen}
+      />
+
+      {/* Right sidebar */}
+      <aside
+        className={`fixed top-0 right-0 z-[70] h-[100dvh] w-[min(300px,88vw)] md:hidden flex flex-col transition-transform duration-300 ease-out ${
+          menuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        style={{
+          background: '#0D1321',
+          borderLeft: '1px solid rgba(59,130,246,0.12)',
+          boxShadow: '-8px 0 40px rgba(0,0,0,0.45)',
+        }}
+        aria-hidden={!menuOpen}
+      >
+        <div
+          className="flex items-center justify-between px-5 h-14 shrink-0"
+          style={{ borderBottom: '1px solid rgba(59,130,246,0.08)' }}
+        >
+          <span
+            className="text-[10px] tracking-[0.22em] uppercase text-cyan"
+            style={{ fontFamily: 'var(--font-mono)' }}
+          >
+            Menu
+          </span>
+          <button
+            type="button"
+            onClick={closeMenu}
+            className="p-2 rounded-xl text-[#8B9DC3] hover:text-[#EEF2FF] transition-colors"
+            style={{ background: 'rgba(255,255,255,0.04)' }}
+            aria-label="Fermer"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <nav className="flex-1 px-4 py-6 flex flex-col gap-1 overflow-y-auto">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm font-medium text-[#EEF2FF] px-4 py-3.5 rounded-xl transition-colors hover:bg-[rgba(59,130,246,0.08)]"
+              style={{ border: '1px solid transparent' }}
+              onClick={closeMenu}
+            >
+              {link.label}
+            </Link>
+          ))}
+          {!hideAuthUi && (
+            <Link
+              href={`${prefix}/login`}
+              className="text-sm text-[#8B9DC3] px-4 py-3.5 rounded-xl transition-colors hover:text-[#EEF2FF] hover:bg-[rgba(255,255,255,0.04)]"
+              onClick={closeMenu}
+            >
+              {t('login')}
+            </Link>
+          )}
+        </nav>
+
+        <div
+          className="p-4 shrink-0"
+          style={{
+            borderTop: '1px solid rgba(59,130,246,0.08)',
+            background: 'rgba(8,12,20,0.6)',
+          }}
+        >
+          <Link
+            href={`${prefix}/analyze`}
+            className="flex items-center justify-center w-full h-12 rounded-xl text-sm font-semibold text-[#EEF2FF] transition-all active:scale-[0.98]"
+            style={{
+              background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)',
+              boxShadow: '0 0 24px rgba(59,130,246,0.25)',
+            }}
+            onClick={closeMenu}
+          >
+            {t('cta')}
+          </Link>
+        </div>
+      </aside>
+    </>
   )
 }

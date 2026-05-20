@@ -12,7 +12,7 @@ export default async function FaqJsonLd() {
       name: t(`${key}_question`),
       acceptedAnswer: {
         '@type': 'Answer',
-        text: t(`${key}_answer`),
+        text: t(`${key}_answer`).replace(/\n/g, ' '),
       },
     })),
   }

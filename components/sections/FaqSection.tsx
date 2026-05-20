@@ -67,7 +67,7 @@ export default function FaqSection() {
                   itemProp="acceptedAnswer"
                   itemType="https://schema.org/Answer"
                 >
-                  <p className="text-sm leading-relaxed text-[#8B9DC3]" itemProp="text">
+                  <p className="text-sm leading-relaxed text-[#8B9DC3] whitespace-pre-line" itemProp="text">
                     {t(`${key}_answer`)}
                   </p>
                 </div>
