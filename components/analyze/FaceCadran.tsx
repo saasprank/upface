@@ -19,10 +19,12 @@ interface FaceCadranProps {
   state: AnalyzeState
   onCameraReady: () => void
   onCameraError: (code: CameraErrorCode) => void
+  scanPoseMatch?: boolean
+  scanHoldProgress?: number
 }
 
 const FaceCadran = forwardRef<FaceCadranHandle, FaceCadranProps>(
-  function FaceCadran({ cameraActive, state, onCameraReady, onCameraError }, ref) {
+  function FaceCadran({ cameraActive, state, onCameraReady, onCameraError, scanPoseMatch = false, scanHoldProgress = 0 }, ref) {
     const t = useTranslations('analyzeLive')
 
     const videoRef = useRef<HTMLVideoElement>(null)
@@ -130,7 +132,11 @@ const FaceCadran = forwardRef<FaceCadranHandle, FaceCadranProps>(
         />
 
         {showVideo && (
-          <FaceOvalScanOverlay alignLabel={t('align_face')} />
+          <FaceOvalScanOverlay
+            alignLabel={t('align_face')}
+            poseMatch={scanPoseMatch}
+            holdProgress={scanHoldProgress}
+          />
         )}
 
         {isLoading && (

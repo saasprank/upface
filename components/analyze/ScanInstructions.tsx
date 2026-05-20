@@ -7,24 +7,29 @@ import { SCAN_POSE_STEP_ORDER, type PoseStepId } from '@/lib/face-pose-heuristic
 import type { AnalyzeState } from './FaceCadran'
 
 const STEP_META: Record<PoseStepId, { text: string; sub: string; icon: ReactNode; last?: boolean }> = {
-  center: {
-    text: 'Regarde la caméra',
-    sub: 'Visage centré, expression neutre',
-    icon: <ArrowUpIcon />,
+  right: {
+    text: 'Tourne légèrement à droite',
+    sub: 'Un petit mouvement suffit (~15°)',
+    icon: <ArrowRightIcon />,
   },
   left: {
     text: 'Tourne légèrement à gauche',
     sub: 'Un petit mouvement suffit (~15°)',
     icon: <ArrowLeftIcon />,
   },
-  center2: {
-    text: 'Reviens face caméra',
-    sub: 'Replace ton visage au centre du cadre',
+  up: {
+    text: 'Lève légèrement le menton',
+    sub: 'Garde le regard vers l\'objectif',
     icon: <ArrowUpIcon />,
   },
-  done: {
-    text: 'Parfait — ne bouge plus !',
-    sub: 'Capture automatique dans un instant',
+  down: {
+    text: 'Baisse légèrement le menton',
+    sub: 'Juste quelques centimètres',
+    icon: <ArrowDownIcon />,
+  },
+  center: {
+    text: 'Regarde face caméra',
+    sub: 'Visage centré, ne bouge plus',
     icon: <CheckIcon />,
     last: true,
   },
@@ -193,6 +198,22 @@ function ArrowUpIcon() {
   return (
     <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+    </svg>
+  )
+}
+
+function ArrowRightIcon() {
+  return (
+    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+    </svg>
+  )
+}
+
+function ArrowDownIcon() {
+  return (
+    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
     </svg>
   )
 }

@@ -232,10 +232,13 @@
     "submitting": "Sending…",
     "pose_hint": {
       "center": "Center your face in the oval frame",
+      "turn_right": "Slowly turn your head to your right",
+      "turn_right_less": "A bit too far — come back slightly toward center",
       "turn_left": "Slowly turn your head to your left",
       "turn_left_less": "A bit too far — come back slightly toward center",
       "chin_up": "Raise your chin very slightly",
       "chin_down": "Lower your chin very slightly",
+      "hold": "Hold this position…",
       "adjust": "Adjust your position based on the hint above"
     },
     "errors": {

@@ -6,13 +6,18 @@
 import type { NormalizedLandmark } from '@mediapipe/tasks-vision'
 
 export const SCAN_POSE_STEP_ORDER = [
-  'center',
+  'right',
   'left',
-  'center2',
-  'done',
+  'up',
+  'down',
+  'center',
 ] as const
 
 export type PoseStepId = (typeof SCAN_POSE_STEP_ORDER)[number]
+
+/** Plage de progression par étape : Droite 0–20, Gauche 20–40, etc. */
+export const SCAN_STEP_PROGRESS_SEGMENT = 20
+export const SCAN_MAX_PROGRESS = 99
 
 /** État lissé (EMA) pour réduire le jitter entre frames vidéo */
 export interface PoseSmoothState {
@@ -61,6 +66,10 @@ export function computeRawPoseSignals(lm: NormalizedLandmark[]): { yaw: number; 
 
 /**
  * Matching avec hysteresis douce : fenêtres élargies pour faciliter la validation mobile.
+ *
+ * Convention yaw (frame brute, miroir côté UI) :
+ * - Tête vers la gauche de l'utilisateur → yaw positif
+ * - Tête vers la droite de l'utilisateur → yaw négatif
  */
 export function poseMatchesStep(
   stepId: PoseStepId,
@@ -70,27 +79,50 @@ export function poseMatchesStep(
   const yaw = s.yaw
   const pt = s.pitchT
 
-  const yawNeutralLoose = 0.055
   const yawNeutralCenter = prevMatch ? 0.048 : 0.038
-
   const pitchLow = prevMatch ? 0.400 : 0.392
   const pitchHi = prevMatch ? 0.520 : 0.528
   const pitchNeutralBand = pt >= pitchLow && pt <= pitchHi
 
   const yawLeftMin = prevMatch ? 0.012 : 0.016
   const yawLeftMax = 0.20
+  const yawRightMin = prevMatch ? 0.012 : 0.016
+  const yawRightMax = 0.20
 
   switch (stepId) {
-    case 'center':
-    case 'center2':
-      return Math.abs(yaw) < yawNeutralCenter && pitchNeutralBand
+    case 'right':
+      return yaw <= -yawRightMin && yaw >= -yawRightMax && pt <= pitchHi + 0.05
     case 'left':
       return yaw >= yawLeftMin && yaw <= yawLeftMax && pt <= pitchHi + 0.05
-    case 'done':
-      return Math.abs(yaw) < yawNeutralLoose && pitchNeutralBand
+    case 'up':
+      return Math.abs(yaw) < 0.055 && pt < pitchLow
+    case 'down':
+      return Math.abs(yaw) < 0.055 && pt > pitchHi
+    case 'center':
+      return Math.abs(yaw) < yawNeutralCenter && pitchNeutralBand
     default:
       return false
   }
+}
+
+/** Progression 0–99 liée aux étapes de pose + maintien en cours (1,5 s par étape). */
+export function computeScanProgress(
+  stepIndex: number,
+  holdProgress: number,
+  totalSteps = SCAN_POSE_STEP_ORDER.length,
+): number {
+  if (totalSteps <= 0) return 0
+  const safeIndex = Math.max(0, Math.min(stepIndex, totalSteps - 1))
+  const clampedHold = Math.max(0, Math.min(holdProgress, 1))
+
+  const isLastStep = safeIndex === totalSteps - 1
+  const segmentSize = isLastStep
+    ? SCAN_MAX_PROGRESS - (totalSteps - 1) * SCAN_STEP_PROGRESS_SEGMENT
+    : SCAN_STEP_PROGRESS_SEGMENT
+
+  const base = safeIndex * SCAN_STEP_PROGRESS_SEGMENT
+  const raw = base + clampedHold * segmentSize
+  return Math.min(SCAN_MAX_PROGRESS, Math.round(raw))
 }
 
 /** Clé i18n pour guider l'utilisateur quand la pose n'est pas encore reconnue. */
@@ -105,17 +137,25 @@ export function getPoseHintKey(
   const pt = s.pitchT
 
   switch (stepId) {
-    case 'center':
-    case 'center2':
-    case 'done':
-      if (Math.abs(yaw) > 0.032) return 'pose_hint.center'
-      if (pt < 0.388) return 'pose_hint.chin_up'
-      if (pt > 0.542) return 'pose_hint.chin_down'
-      return 'pose_hint.center'
+    case 'right':
+      if (yaw > -0.012) return 'pose_hint.turn_right'
+      if (yaw < -0.19) return 'pose_hint.turn_right_less'
+      return 'pose_hint.turn_right'
     case 'left':
       if (yaw < 0.012) return 'pose_hint.turn_left'
       if (yaw > 0.19) return 'pose_hint.turn_left_less'
       return 'pose_hint.turn_left'
+    case 'up':
+      if (pt >= 0.395) return 'pose_hint.hold'
+      return 'pose_hint.chin_up'
+    case 'down':
+      if (pt <= 0.535) return 'pose_hint.hold'
+      return 'pose_hint.chin_down'
+    case 'center':
+      if (Math.abs(yaw) > 0.032) return 'pose_hint.center'
+      if (pt < 0.388) return 'pose_hint.chin_up'
+      if (pt > 0.542) return 'pose_hint.chin_down'
+      return 'pose_hint.center'
     default:
       return 'pose_hint.adjust'
   }

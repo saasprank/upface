@@ -232,10 +232,13 @@
     "submitting": "Envoi en cours…",
     "pose_hint": {
       "center": "Centre ton visage dans le cadre ovale",
+      "turn_right": "Tourne lentement la tête vers ta droite",
+      "turn_right_less": "C'est un peu trop — reviens légèrement au centre",
       "turn_left": "Tourne lentement la tête vers ta gauche",
       "turn_left_less": "C'est un peu trop — reviens légèrement au centre",
       "chin_up": "Relève très légèrement le menton",
       "chin_down": "Baisse très légèrement le menton",
+      "hold": "Maintiens cette position…",
       "adjust": "Ajuste ta position selon l'indication ci-dessus"
     },
     "errors": {

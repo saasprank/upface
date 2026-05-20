@@ -7,11 +7,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import FaceCadran, { type AnalyzeState, type FaceCadranHandle, type CameraErrorCode } from '@/components/analyze/FaceCadran'
 import FaceOvalGuide from '@/components/analyze/FaceOvalGuide'
-import ScanInstructions, { ScanPoseInstructionCard } from '@/components/analyze/ScanInstructions'
 import ScanProgressBar from '@/components/analyze/ScanProgressBar'
-import { SCAN_POSE_STEP_ORDER } from '@/lib/face-pose-heuristics'
+import { ScanPoseInstructionCard } from '@/components/analyze/ScanInstructions'
+import { SCAN_POSE_STEP_ORDER, computeScanProgress } from '@/lib/face-pose-heuristics'
 import { useFacePoseGuide } from '@/hooks/useFacePoseGuide'
-import { useFaceMesh } from '@/hooks/useFaceMesh'
 import { createClient } from '@/lib/supabase'
 import { requiresAccountForAnalyze, analyzeReturnPath } from '@/lib/auth-ui'
 import UpfaceLogo from '@/components/ui/UpfaceLogo'
@@ -75,7 +74,6 @@ function AnalyzeContent() {
   const t = useTranslations('analyzeLive')
 
   const cadranRef = useRef<FaceCadranHandle>(null)
-  const meshCanvasRef = useRef<HTMLCanvasElement>(null)
   const finalizeOnceRef = useRef(false)
   const autoStartAttemptedRef = useRef(false)
   const clientScoresRef = useRef<{
@@ -296,7 +294,7 @@ function AnalyzeContent() {
     setClientScores(scores)
   }, [])
 
-  const { faceDetected, poseMatch, holdProgress, poseHintKey } = useFacePoseGuide({
+  const { poseMatch, holdProgress } = useFacePoseGuide({
     active: state === 'scanning' && !finalizing,
     getVideo: getScanVideo,
     stepId: poseStepId,
@@ -305,10 +303,10 @@ function AnalyzeContent() {
     onLandmarks: handleLandmarks,
   })
 
-  useFaceMesh(
-    (state === 'scanning' || state === 'redirecting') && !finalizing,
-    getScanVideo,
-    meshCanvasRef,
+  const scanProgress = computeScanProgress(
+    poseStepIndex,
+    holdProgress,
+    SCAN_POSE_STEP_ORDER.length,
   )
 
   const isScanning = state === 'scanning' || state === 'redirecting'
@@ -373,13 +371,8 @@ function AnalyzeContent() {
         state={state}
         onCameraReady={handleCameraReady}
         onCameraError={handleCameraError}
-      />
-
-      <canvas
-        ref={meshCanvasRef}
-        className="fixed inset-0 w-full h-full pointer-events-none"
-        style={{ zIndex: 10 }}
-        aria-hidden
+        scanPoseMatch={poseMatch}
+        scanHoldProgress={holdProgress}
       />
 
       <button
@@ -412,20 +405,16 @@ function AnalyzeContent() {
         </div>
       )}
 
-      <div className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8 pt-10 flex flex-col items-center gap-4"
+      <div className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8 pt-6 flex flex-col items-center"
         style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 55%, transparent 100%)' }}
       >
-        <ScanInstructions
-          state={state}
-          submitting={finalizing}
-          currentStepIndex={poseStepIndex}
-          faceDetected={faceDetected}
-          poseMatch={poseMatch}
-          holdProgress={holdProgress}
-          poseHintKey={poseHintKey}
-        />
-
-        <ScanProgressBar active={isScanning && !finalizing} duration={SCAN_POSE_STEP_ORDER.length * 2200} />
+        {finalizing ? (
+          <p className="text-sm font-medium text-[#8B9DC3]" style={{ fontFamily: 'Inter, sans-serif' }}>
+            Envoi en cours…
+          </p>
+        ) : (
+          <ScanProgressBar active={isScanning} progress={scanProgress} />
+        )}
       </div>
     </div>
   )

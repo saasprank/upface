@@ -17,7 +17,7 @@ const MEDIAPIPE_VERSION = '0.10.35'
 const WASM_CDN_BASE = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MEDIAPIPE_VERSION}/wasm`
 const MODEL_PATH = '/models/face_landmarker.task'
 
-const STABLE_HOLD_MS = 520
+const STABLE_HOLD_MS = 1500
 
 interface UseFacePoseGuideOptions {
   active: boolean
