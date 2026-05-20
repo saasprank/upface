@@ -10,7 +10,7 @@ export default function MobileStatsSection() {
   const keys = ['points', 'speed', 'accuracy', 'analyses'] as const
 
   return (
-    <section className="px-4 py-10 border-y border-[rgba(59,130,246,0.08)]">
+    <section className="px-4 py-10">
       <MotionStagger className="grid grid-cols-2 gap-3 max-w-[375px] mx-auto">
         {keys.map((key, i) => (
           <MotionStaggerItem key={key}>

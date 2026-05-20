@@ -292,11 +292,23 @@
       "subtitle": "Une photo face caméra suffit pour lancer l'analyse IA.",
       "dropzone": "Glissez votre photo ici",
       "formats": "JPG, PNG, HEIC · Max 10 Mo",
+      "align_face": "Alignez votre visage ici",
       "tips_title": "Conseils pour une meilleure analyse",
       "tip1": "Regardez la caméra directement",
       "tip2": "Visage dégagé, sans filtre",
       "tip3": "Bonne lumière naturelle",
       "tip4": "Sans lunettes de soleil"
+    },
+    "tutorial": {
+      "phase_capture_label": "Étape 01",
+      "phase_capture_title": "Positionnez votre visage",
+      "phase_capture_subtitle": "Suivez les instructions pour un scan optimal.",
+      "phase_analysis_label": "Étape 02",
+      "phase_analysis_title": "Analyse en cours",
+      "phase_analysis_subtitle": "Notre IA cartographie votre visage en temps réel.",
+      "phase_score_label": "Étape 03",
+      "phase_score_title": "Votre score révélé",
+      "phase_score_subtitle": "Un rapport scientifique détaillé, généré par IA."
     },
     "analysis": {
       "label": "Étape 02",

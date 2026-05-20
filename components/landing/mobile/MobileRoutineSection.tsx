@@ -15,7 +15,7 @@ export default function MobileRoutineSection() {
   const prefix = locale === 'fr' ? '' : `/${locale}`
 
   return (
-    <section id="routine" className="px-4 py-16" style={{ background: '#0D1321' }}>
+    <section id="routine" className="px-4 py-16">
       <div className="max-w-[375px] mx-auto">
         <MotionReveal>
           <SectionHeader label={t('label')} title={t('title')} subtitle={t('subtitle')} />

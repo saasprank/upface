@@ -10,7 +10,7 @@ export default function FaqSection() {
   const t = useTranslations('faq')
 
   return (
-    <section id="faq" className="px-4 py-16 pb-20" style={{ background: '#080C14' }}>
+    <section id="faq" className="px-4 py-16 pb-8">
       <div className="max-w-[375px] mx-auto">
         <MotionReveal>
           <SectionHeader title={t('title')} />

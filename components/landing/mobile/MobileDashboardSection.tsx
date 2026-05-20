@@ -31,7 +31,7 @@ export default function MobileDashboardSection() {
   }).join(' ')
 
   return (
-    <section className="px-4 py-16" style={{ background: '#0D1321' }}>
+    <section className="px-4 py-16">
       <div className="max-w-[375px] mx-auto">
         <MotionReveal>
           <SectionHeader label={t('label')} title={t('title')} subtitle={t('subtitle')} />

@@ -13,32 +13,12 @@ export default function MobileHeroSection() {
 
   return (
     <section className="relative min-h-[100dvh] flex flex-col overflow-hidden px-4 pt-20 pb-8">
-      {/* Immersive background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'radial-gradient(ellipse 120% 80% at 50% 20%, rgba(59,130,246,0.12) 0%, transparent 55%)',
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px)
-            `,
-            backgroundSize: '32px 32px',
-            maskImage: 'radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 80%)',
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(8,12,20,0.85) 100%)',
-          }}
-        />
-      </div>
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 90% 55% at 50% 35%, rgba(59,130,246,0.08) 0%, transparent 65%)',
+        }}
+      />
 
       <div className="relative z-10 flex flex-col flex-1 max-w-[375px] mx-auto w-full">
         {/* Title */}

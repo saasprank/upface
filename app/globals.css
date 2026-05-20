@@ -124,6 +124,43 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  .landing-page-bg {
+    position: relative;
+    isolation: isolate;
+    background-color: #080C14;
+  }
+
+  .landing-page-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(rgba(59, 130, 246, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59, 130, 246, 0.025) 1px, transparent 1px),
+      radial-gradient(ellipse 120% 70% at 50% -5%, rgba(59, 130, 246, 0.1) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 95% 45%, rgba(6, 182, 212, 0.05) 0%, transparent 55%),
+      radial-gradient(ellipse 65% 45% at 5% 75%, rgba(59, 130, 246, 0.06) 0%, transparent 55%),
+      linear-gradient(
+        180deg,
+        #05070A 0%,
+        #080C14 12%,
+        #0A1020 28%,
+        #080C14 44%,
+        #0A1020 60%,
+        #080C14 76%,
+        #0A1020 92%,
+        #080C14 100%
+      );
+    background-size: 48px 48px, 48px 48px, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+  }
+
+  .landing-page-bg > * {
+    position: relative;
+    z-index: 1;
+  }
 }
 
 @keyframes pulse-dot {
