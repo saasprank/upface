@@ -2,9 +2,7 @@
 
 import { useTranslations, useLocale } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
-import Button from '@/components/ui/Button'
-import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
+import FaceOvalGuide from '@/components/analyze/FaceOvalGuide'
 
 export default function HeroSection() {
   const t = useTranslations('hero')
@@ -12,137 +10,59 @@ export default function HeroSection() {
   const router = useRouter()
   const prefix = locale === 'fr' ? '' : `/${locale}`
 
-  const stats = [
-    { label: t('stat_points') },
-    { label: t('stat_speed') },
-    { label: t('stat_accuracy') },
-    { label: t('stat_analyses') },
-  ]
-
   return (
-    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
-      {/* Radial glow */}
+    <section className="relative min-h-screen flex flex-col items-center justify-center pt-16 px-4 overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse 800px 600px at 50% 40%, rgba(59,130,246,0.07) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse 700px 500px at 50% 45%, rgba(59,130,246,0.07) 0%, transparent 70%)',
         }}
       />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full py-20 sm:py-28">
-        <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-
-          {/* Hero logo */}
-          <div
-            className="relative mb-6 animate-fade-in-up"
-            style={{ animationDelay: '0s' }}
+      <div className="relative z-10 flex flex-col items-center w-full max-w-lg mx-auto text-center gap-8 sm:gap-10">
+        <h1 className="space-y-1">
+          <span
+            className="block text-2xl sm:text-3xl md:text-4xl font-black tracking-[0.12em] text-[#EEF2FF] uppercase"
+            style={{ fontFamily: 'Satoshi, sans-serif' }}
           >
-            {/* Halo de lueur SÉPARÉ — filter ici, pas sur le logo */}
-            <div
-              className="absolute pointer-events-none"
-              style={{
-                inset: '-30px',
-                borderRadius: '50%',
-                filter: 'blur(28px)',
-                background: 'radial-gradient(ellipse 55% 55% at 50% 50%, rgba(59,130,246,0.35) 0%, rgba(6,182,212,0.12) 50%, transparent 70%)',
-              }}
-            />
-            {/* Anneaux pulsants */}
-            <div
-              className="absolute rounded-full border border-blue-500/20 pointer-events-none"
-              style={{ inset: '-16px', animation: 'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite' }}
-            />
-            <div
-              className="absolute rounded-full border border-blue-400/10 pointer-events-none"
-              style={{ inset: '-32px', animation: 'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite', animationDelay: '1.5s' }}
-            />
-            <div style={{ display: 'inline-block', lineHeight: 0 }}>
-              <Image
-                src="/logo.png"
-                alt="UPFACE AI"
-                width={200}
-                height={200}
-                priority
-                style={UPFACE_LOGO_IMG_STYLE}
-              />
-            </div>
-          </div>
-
-          {/* Animated pill badge */}
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-medium mb-8 animate-fade-in-up"
-            style={{
-              background: 'rgba(59,130,246,0.08)',
-              borderColor: 'rgba(59,130,246,0.25)',
-              color: '#8B9DC3',
-            }}
+            {t('title_line1')}
+          </span>
+          <span
+            className="block text-3xl sm:text-4xl md:text-5xl font-black tracking-[0.1em] uppercase text-gradient-blue"
+            style={{ fontFamily: 'Satoshi, sans-serif' }}
           >
-            <span
-              className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse-dot"
-              style={{ animationDelay: '0s' }}
-            />
-            {t('badge')}
-          </div>
+            {t('title_line2')}
+          </span>
+        </h1>
 
-          {/* H1 */}
-          <h1
-            className="text-gradient text-4xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight mb-6 animate-fade-in-up"
-            style={{ animationDelay: '0.1s', fontFamily: 'Satoshi, sans-serif' }}
-          >
-            {t('title')}
-          </h1>
+        <FaceOvalGuide alignLabel={t('align_face')} />
 
-          {/* Subtitle */}
-          <p
-            className="text-[#8B9DC3] text-lg sm:text-xl leading-relaxed max-w-xl mb-10 animate-fade-in-up"
-            style={{ animationDelay: '0.2s' }}
-          >
-            {t('subtitle')}
-          </p>
+        <button
+          type="button"
+          onClick={() => router.push(`${prefix}/analyze`)}
+          className="w-full max-w-md flex items-center justify-center gap-2 font-bold transition-all active:scale-[0.98]"
+          style={{
+            height: 56,
+            borderRadius: 9999,
+            background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)',
+            color: '#EEF2FF',
+            fontSize: 16,
+            fontFamily: 'Satoshi, sans-serif',
+            boxShadow: '0 0 40px rgba(59,130,246,0.35), 0 4px 24px rgba(59,130,246,0.25)',
+          }}
+        >
+          {t('cta_primary')}
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </button>
 
-          {/* CTAs */}
-          <div
-            className="flex flex-col sm:flex-row items-center gap-3 mb-14 animate-fade-in-up"
-            style={{ animationDelay: '0.3s' }}
-          >
-            <Button
-              size="lg"
-              onClick={() => router.push(`${prefix}/analyze`)}
-              className="w-full sm:w-auto"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              {t('cta_primary')}
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => document.getElementById('score-demo')?.scrollIntoView({ behavior: 'smooth' })}
-              className="w-full sm:w-auto"
-            >
-              {t('cta_secondary')}
-            </Button>
-          </div>
-
-          {/* Stats row */}
-          <div
-            className="flex flex-wrap items-center justify-center gap-0 animate-fade-in-up"
-            style={{ animationDelay: '0.4s' }}
-          >
-            {stats.map((stat, i) => (
-              <div key={i} className="flex items-center">
-                <div className="px-5 py-2 text-center">
-                  <p className="text-sm font-semibold text-[#EEF2FF]">{stat.label}</p>
-                </div>
-                {i < stats.length - 1 && (
-                  <div className="w-px h-6 bg-[rgba(255,255,255,0.08)]" />
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
+        <p
+          className="text-[9px] sm:text-[10px] tracking-[0.22em] text-[#3D4F6E] uppercase"
+          style={{ fontFamily: 'Inter, sans-serif' }}
+        >
+          {t('footer_tagline')}
+        </p>
       </div>
     </section>
   )

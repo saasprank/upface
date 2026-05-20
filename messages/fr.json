@@ -1,18 +1,24 @@
 {
   "nav": {
+    "features": "Fonctionnalités",
     "howItWorks": "Comment ça marche",
     "analyze": "Analyse",
     "routine": "Routine",
     "pricing": "Tarifs",
+    "faq": "FAQ",
     "login": "Connexion",
-    "cta": "Analyser gratuitement"
+    "cta": "Démarrer"
   },
   "hero": {
     "badge": "IA · 3D Facial Mapping",
     "title": "Découvrez votre score d'attractivité",
+    "title_line1": "Analysez votre",
+    "title_line2": "potentiel",
     "subtitle": "Notre IA analyse 47 points de votre visage en 8 secondes. Score précis, routine personnalisée, progression semaine après semaine.",
-    "cta_primary": "Analyser gratuitement",
+    "align_face": "Alignez votre visage ici",
+    "cta_primary": "Analyser mon visage",
     "cta_secondary": "Voir un exemple",
+    "footer_tagline": "Analyse IA gratuite · 100% anonyme",
     "stat_points": "47 points",
     "stat_speed": "8 secondes",
     "stat_accuracy": "94% précision",
@@ -45,9 +51,13 @@
     "teaser_subtitle": "Créez votre compte pour révéler votre score complet",
     "teaser_title_scan": "Ton analyse est prête",
     "teaser_subtitle_scan": "Crée ton compte gratuit pour débloquer ton rapport détaillé.",
+    "teaser_title_before_scan": "Analyse ton visage en direct",
+    "teaser_subtitle_before_scan": "Crée ton compte gratuit pour lancer le scan IA.",
     "title": "Créez votre compte pour voir vos résultats",
+    "title_before_scan": "Crée ton compte pour lancer ton analyse",
     "title_after_scan": "Crée ton compte pour voir ton analyse",
     "subtitle_form": "Gratuit, sans carte bancaire.",
+    "subtitle_before_scan": "Inscription rapide — accès immédiat à la caméra et au scan.",
     "subtitle_after_scan": "Une fois connecté, tu accèdes tout de suite à ton avant/après et ton rapport.",
     "google": "Continuer avec Google",
     "or": "ou",
@@ -57,6 +67,7 @@
     "hide_password": "Masquer",
     "gdpr": "J'accepte la politique de confidentialité",
     "submit": "Voir mes résultats",
+    "submit_before_scan": "Lancer mon analyse",
     "already": "Déjà un compte ?",
     "login_link": "Se connecter"
   },
@@ -203,6 +214,7 @@
     "step1": "Face caméra, bonne lumière.",
     "step2": "Sans filtres ni lunettes foncées.",
     "launch": "Lancer mon analyse",
+    "align_face": "Alignez votre visage ici",
     "analyze": "Analyser maintenant",
     "privacy": "La caméra ne s’allume qu’après ton clic.",
     "placeholder": "Aperçu caméra ici",
@@ -243,6 +255,17 @@
     "privacy": "Confidentialité",
     "terms": "CGU",
     "contact": "Contact"
+  },
+  "faq": {
+    "title": "Questions fréquentes",
+    "q1_question": "L'analyse est-elle vraiment gratuite ?",
+    "q1_answer": "Oui. L'analyse faciale complète est 100% gratuite. Tu reçois ton score global et 3 critères détaillés. La routine complète est disponible en Pro.",
+    "q2_question": "Mes photos sont-elles sécurisées ?",
+    "q2_answer": "Tes photos sont supprimées automatiquement après 30 jours. Nous ne les vendons jamais et elles sont hébergées en Europe (RGPD).",
+    "q3_question": "En combien de temps vais-je voir des résultats ?",
+    "q3_answer": "Les premiers résultats visibles apparaissent en 4 à 8 semaines. La plupart des utilisateurs gagnent entre 5 et 15 points en 2 mois.",
+    "q4_question": "Puis-je annuler mon abonnement ?",
+    "q4_answer": "Oui, à tout moment depuis ton profil. Aucun engagement, aucune pénalité."
   },
   "common": {
     "loading": "Chargement...",

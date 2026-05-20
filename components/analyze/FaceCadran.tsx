@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useImperativeHandle, forwardRef } from 'react'
 import { useTranslations } from 'next-intl'
+import { FaceOvalScanOverlay } from '@/components/analyze/FaceOvalGuide'
 
 export type AnalyzeState = 'idle' | 'loading_camera' | 'camera_ready' | 'scanning' | 'redirecting'
 
@@ -127,6 +128,10 @@ const FaceCadran = forwardRef<FaceCadranHandle, FaceCadranProps>(
             transition: 'opacity 0.4s ease',
           }}
         />
+
+        {showVideo && (
+          <FaceOvalScanOverlay alignLabel={t('align_face')} />
+        )}
 
         {isLoading && (
           <div

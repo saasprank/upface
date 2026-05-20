@@ -1,19 +1,19 @@
 'use client'
 
 import { useState, useCallback, useRef, Suspense, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import Link from 'next/link'
 import Image from 'next/image'
 import FaceCadran, { type AnalyzeState, type FaceCadranHandle, type CameraErrorCode } from '@/components/analyze/FaceCadran'
+import FaceOvalGuide from '@/components/analyze/FaceOvalGuide'
 import ScanInstructions, { ScanPoseInstructionCard } from '@/components/analyze/ScanInstructions'
 import ScanProgressBar from '@/components/analyze/ScanProgressBar'
 import { SCAN_POSE_STEP_ORDER } from '@/lib/face-pose-heuristics'
 import { useFacePoseGuide } from '@/hooks/useFacePoseGuide'
 import { useFaceMesh } from '@/hooks/useFaceMesh'
 import { createClient } from '@/lib/supabase'
-import { isSupabaseConfigured } from '@/lib/supabase-config'
-import { isAuthUiHidden } from '@/lib/auth-ui'
+import { requiresAccountForAnalyze, analyzeReturnPath } from '@/lib/auth-ui'
 import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 import { syncSubscriberRoutineFromAnalyze } from '@/lib/routine-client'
 import { computeClientScores } from '@/lib/client-face-scores'
@@ -69,6 +69,7 @@ function CloseIcon() {
 
 function AnalyzeContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const locale = useLocale() as string
   const prefix = locale === 'fr' ? '' : `/${locale}`
   const t = useTranslations('analyzeLive')
@@ -76,6 +77,7 @@ function AnalyzeContent() {
   const cadranRef = useRef<FaceCadranHandle>(null)
   const meshCanvasRef = useRef<HTMLCanvasElement>(null)
   const finalizeOnceRef = useRef(false)
+  const autoStartAttemptedRef = useRef(false)
   const clientScoresRef = useRef<{
     symetrie: number
     proportions: number
@@ -110,11 +112,39 @@ function AnalyzeContent() {
     setState('idle')
   }, [t])
 
-  const handleLaunchCamera = () => {
+  const startCameraSession = useCallback(() => {
     setError(null)
     setCameraActive(true)
     setState('loading_camera')
-  }
+  }, [])
+
+  const handleLaunchCamera = useCallback(async () => {
+    if (requiresAccountForAnalyze()) {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.user) {
+        router.push(`${prefix}/signup?next=${encodeURIComponent(analyzeReturnPath(prefix))}`)
+        return
+      }
+    }
+    startCameraSession()
+  }, [prefix, router, startCameraSession])
+
+  useEffect(() => {
+    if (searchParams.get('start') !== '1') return
+    if (state !== 'idle' || autoStartAttemptedRef.current) return
+    autoStartAttemptedRef.current = true
+
+    void (async () => {
+      if (requiresAccountForAnalyze()) {
+        const supabase = createClient()
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.user) return
+      }
+      startCameraSession()
+      router.replace(analyzeReturnPath(prefix, false))
+    })()
+  }, [searchParams, state, prefix, router, startCameraSession])
 
   const handleCancelScan = () => {
     setCameraActive(false)
@@ -125,6 +155,7 @@ function AnalyzeContent() {
     setClientScores(null)
     clientScoresRef.current = null
     finalizeOnceRef.current = false
+    autoStartAttemptedRef.current = false
   }
 
   const handleInstructionsDone = useCallback(async () => {
@@ -202,17 +233,7 @@ function AnalyzeContent() {
       setState('redirecting')
 
       const resultsPath = `${prefix}/results/${analysisId}`
-      if (!isSupabaseConfigured() || isAuthUiHidden()) {
-        router.push(resultsPath)
-        return
-      }
-
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user) {
-        router.push(resultsPath)
-      } else {
-        router.push(`${prefix}/signup?next=${encodeURIComponent(resultsPath)}`)
-      }
+      router.push(resultsPath)
     } catch (err) {
       finalizeOnceRef.current = false
       const msg = err instanceof Error ? err.message : ''
@@ -309,31 +330,8 @@ function AnalyzeContent() {
         </header>
 
         <main className="flex-1 flex flex-col items-center justify-center px-4 pt-14 pb-10" style={{ minHeight: '100dvh' }}>
-          <div className="flex flex-col items-center gap-6 w-full max-w-md">
-            <section className="w-full text-center space-y-2 px-1 animate-fade-in">
-              <h1
-                className="text-lg sm:text-xl font-bold tracking-tight text-[#EEF2FF]"
-                style={{ fontFamily: 'Satoshi, sans-serif' }}
-              >
-                {t('title')}
-              </h1>
-              <p className="text-xs sm:text-sm leading-snug text-[#8B9DC3]" style={{ fontFamily: 'Inter, sans-serif' }}>
-                {t('subtitle')}
-              </p>
-              <ul className="text-left text-xs sm:text-sm text-[#A8B8D4] space-y-1.5 pt-1" style={{ fontFamily: 'Inter, sans-serif' }}>
-                <li className="flex gap-2 items-start">
-                  <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-[#3B82F6]" aria-hidden />
-                  <span>{t('step1')}</span>
-                </li>
-                <li className="flex gap-2 items-start">
-                  <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-[#3B82F6]" aria-hidden />
-                  <span>{t('step2')}</span>
-                </li>
-              </ul>
-              <p className="text-[11px] sm:text-xs text-[#5C6B85]" style={{ fontFamily: 'Inter, sans-serif' }}>
-                {t('privacy')}
-              </p>
-            </section>
+          <div className="flex flex-col items-center gap-8 w-full max-w-lg">
+            <FaceOvalGuide alignLabel={t('align_face')} />
 
             {error && (
               <div
@@ -347,21 +345,25 @@ function AnalyzeContent() {
             <button
               type="button"
               onClick={handleLaunchCamera}
-              className="w-full flex items-center justify-center gap-2.5 font-bold transition-all"
+              className="w-full max-w-md flex items-center justify-center gap-2.5 font-bold transition-all active:scale-[0.98]"
               style={{
                 height: 56,
-                borderRadius: 14,
+                borderRadius: 9999,
                 background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)',
                 color: '#EEF2FF',
-                fontSize: 17,
+                fontSize: 16,
                 fontFamily: 'Satoshi, sans-serif',
                 cursor: 'pointer',
-                boxShadow: '0 4px 24px rgba(59,130,246,0.25)',
+                boxShadow: '0 0 40px rgba(59,130,246,0.35), 0 4px 24px rgba(59,130,246,0.25)',
               }}
             >
               <CameraLaunchIcon />
               {t('launch')}
             </button>
+
+            <p className="text-[9px] sm:text-[10px] tracking-[0.18em] text-[#3D4F6E] uppercase text-center" style={{ fontFamily: 'Inter, sans-serif' }}>
+              {t('privacy')}
+            </p>
           </div>
         </main>
       </div>

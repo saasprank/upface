@@ -19,6 +19,7 @@ function SignupForm() {
   const prefix = locale === 'fr' ? '' : `/${locale}`
 
   const nextUrl = searchParams.get('next') ?? `${prefix}/dashboard`
+  const isAnalyzeGate = nextUrl.includes('/analyze')
   const isResultsGate = nextUrl.includes('/results/')
 
   const [email, setEmail] = useState('')
@@ -159,9 +160,11 @@ function SignupForm() {
               className="text-2xl font-black text-[#EEF2FF] mb-2"
               style={{ fontFamily: 'Satoshi, sans-serif' }}
             >
-              {isResultsGate ? t('teaser_title_scan') : t('teaser_title')}
+              {isAnalyzeGate ? t('teaser_title_before_scan') : isResultsGate ? t('teaser_title_scan') : t('teaser_title')}
             </h2>
-            <p className="text-sm text-[#8B9DC3]">{isResultsGate ? t('teaser_subtitle_scan') : t('teaser_subtitle')}</p>
+            <p className="text-sm text-[#8B9DC3]">
+              {isAnalyzeGate ? t('teaser_subtitle_before_scan') : isResultsGate ? t('teaser_subtitle_scan') : t('teaser_subtitle')}
+            </p>
           </div>
 
           {/* Preview bars */}
@@ -198,9 +201,11 @@ function SignupForm() {
             className="text-2xl font-black text-[#EEF2FF] mb-2"
             style={{ fontFamily: 'Satoshi, sans-serif' }}
           >
-            {isResultsGate ? t('title_after_scan') : t('title')}
+            {isAnalyzeGate ? t('title_before_scan') : isResultsGate ? t('title_after_scan') : t('title')}
           </h1>
-          <p className="text-sm text-[#8B9DC3] mb-8">{isResultsGate ? t('subtitle_after_scan') : t('subtitle_form')}</p>
+          <p className="text-sm text-[#8B9DC3] mb-8">
+            {isAnalyzeGate ? t('subtitle_before_scan') : isResultsGate ? t('subtitle_after_scan') : t('subtitle_form')}
+          </p>
 
           {/* Google OAuth */}
           <Button
@@ -279,7 +284,7 @@ function SignupForm() {
             )}
 
             <Button type="submit" size="lg" className="w-full" loading={loading}>
-              {t('submit')}
+              {isAnalyzeGate ? t('submit_before_scan') : t('submit')}
             </Button>
           </form>
 

@@ -1,18 +1,24 @@
 {
   "nav": {
+    "features": "Features",
     "howItWorks": "How It Works",
     "analyze": "Analyze",
     "routine": "Routine",
     "pricing": "Pricing",
+    "faq": "FAQ",
     "login": "Sign In",
-    "cta": "Analyze for free"
+    "cta": "Get started"
   },
   "hero": {
     "badge": "AI · 3D Facial Mapping",
     "title": "Discover your attractiveness score",
+    "title_line1": "Analyze your",
+    "title_line2": "potential",
     "subtitle": "Our AI analyzes 47 points on your face in 8 seconds. Precise score, personalized routine, week-over-week progress.",
-    "cta_primary": "Analyze for free",
+    "align_face": "Align your face here",
+    "cta_primary": "Analyze my face",
     "cta_secondary": "See an example",
+    "footer_tagline": "Free AI analysis · 100% anonymous",
     "stat_points": "47 points",
     "stat_speed": "8 seconds",
     "stat_accuracy": "94% accuracy",
@@ -45,9 +51,13 @@
     "teaser_subtitle": "Create your account to reveal your full score",
     "teaser_title_scan": "Your scan is ready",
     "teaser_subtitle_scan": "Create a free account to unlock your detailed report.",
+    "teaser_title_before_scan": "Analyze your face live",
+    "teaser_subtitle_before_scan": "Create a free account to start the AI scan.",
     "title": "Create your account to see your results",
+    "title_before_scan": "Create your account to start your analysis",
     "title_after_scan": "Create your account to see your analysis",
     "subtitle_form": "Free — no credit card.",
+    "subtitle_before_scan": "Quick signup — instant access to the camera and scan.",
     "subtitle_after_scan": "Once signed in, you’ll see your before/after and full breakdown right away.",
     "google": "Continue with Google",
     "or": "or",
@@ -57,6 +67,7 @@
     "hide_password": "Hide",
     "gdpr": "I accept the privacy policy",
     "submit": "See my results",
+    "submit_before_scan": "Start my analysis",
     "already": "Already have an account?",
     "login_link": "Sign in"
   },
@@ -203,6 +214,7 @@
     "step1": "Face the camera, decent lighting.",
     "step2": "No filters or dark sunglasses.",
     "launch": "Start my analysis",
+    "align_face": "Align your face here",
     "analyze": "Analyze now",
     "privacy": "Camera turns on only after you tap.",
     "placeholder": "Camera preview here",
@@ -243,6 +255,17 @@
     "privacy": "Privacy",
     "terms": "Terms",
     "contact": "Contact"
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "q1_question": "Is the analysis really free?",
+    "q1_answer": "Yes. The full facial analysis is 100% free. You get your overall score and 3 detailed criteria. The full routine is available on Pro.",
+    "q2_question": "Are my photos secure?",
+    "q2_answer": "Your photos are automatically deleted after 30 days. We never sell them and they are hosted in Europe (GDPR).",
+    "q3_question": "How long until I see results?",
+    "q3_answer": "The first visible results appear in 4 to 8 weeks. Most users gain between 5 and 15 points in 2 months.",
+    "q4_question": "Can I cancel my subscription?",
+    "q4_answer": "Yes, at any time from your profile. No commitment, no penalty."
   },
   "common": {
     "loading": "Loading...",

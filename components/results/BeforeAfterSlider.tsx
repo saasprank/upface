@@ -18,9 +18,73 @@ function isDisplayablePhoto(url: string): boolean {
   )
 }
 
-/** Filtres « après » : peau plus lumineuse, même cadrage que l’original. */
+/** Masques pour suggérer un visage « amélioré » sous le flou. */
 const AFTER_FACE_MASK =
-  'radial-gradient(ellipse 34% 42% at 50% 36%, #000 58%, transparent 78%)'
+  'radial-gradient(ellipse 38% 48% at 50% 38%, #000 52%, transparent 82%)'
+
+const AFTER_JAW_MASK =
+  'radial-gradient(ellipse 54% 34% at 50% 82%, #000 40%, transparent 78%)'
+
+/** Flou fort sur toute la zone « après » — le visage reste une promesse, pas une révélation. */
+const AFTER_HEAVY_BLUR = 'blur(22px)'
+
+function AfterPhotoLayers({ photoUrl }: { photoUrl: string }) {
+  return (
+    <>
+      {/* Fond entièrement flouté */}
+      <img
+        src={photoUrl}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{
+          filter: `${AFTER_HEAVY_BLUR} brightness(0.86) saturate(0.9)`,
+          transform: 'scale(1.14)',
+        }}
+        draggable={false}
+      />
+
+      {/* Mâchoire légèrement affinée / redessinée (visible en silhouette sous le flou) */}
+      <img
+        src={photoUrl}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{
+          WebkitMaskImage: AFTER_JAW_MASK,
+          maskImage: AFTER_JAW_MASK,
+          transform: 'scale(1.07) scaleX(0.9)',
+          transformOrigin: '50% 88%',
+          filter: `${AFTER_HEAVY_BLUR} brightness(1.06) contrast(1.14) saturate(1.08)`,
+        }}
+        draggable={false}
+      />
+
+      {/* Visage global légèrement harmonisé (symétrie / structure) */}
+      <img
+        src={photoUrl}
+        alt="Après — potentiel"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{
+          WebkitMaskImage: AFTER_FACE_MASK,
+          maskImage: AFTER_FACE_MASK,
+          transform: 'scale(1.045)',
+          transformOrigin: '50% 36%',
+          filter: `${AFTER_HEAVY_BLUR} brightness(1.12) contrast(1.08) saturate(1.18)`,
+        }}
+        draggable={false}
+      />
+
+      {/* Lueur cyan « potentiel » */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 42% 50% at 50% 38%, rgba(6,182,212,0.16) 0%, transparent 70%)',
+        }}
+      />
+    </>
+  )
+}
 
 export default function BeforeAfterSlider({ photoUrl, scoreBefore, scoreAfter }: BeforeAfterSliderProps) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -66,40 +130,10 @@ export default function BeforeAfterSlider({ photoUrl, scoreBefore, scoreAfter }:
       onMouseDown={onMouseDown}
       onTouchStart={() => { dragging.current = true }}
     >
-      {/* APRÈS (droite) — même photo, fond flouté + visage « amélioré » */}
+      {/* APRÈS (droite) — photo floutée + silhouette visage/mâchoire « améliorée » */}
       <div className="absolute inset-0">
         {hasPhoto ? (
-          <>
-            <img
-              src={photoUrl}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{
-                filter: 'blur(9px) brightness(0.88) saturate(0.92)',
-                transform: 'scale(1.06)',
-              }}
-              draggable={false}
-            />
-            <img
-              src={photoUrl}
-              alt="Après — potentiel"
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{
-                filter: 'brightness(1.14) contrast(1.07) saturate(1.22) blur(0.6px)',
-                WebkitMaskImage: AFTER_FACE_MASK,
-                maskImage: AFTER_FACE_MASK,
-                transform: 'scale(1.02)',
-              }}
-              draggable={false}
-            />
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  'radial-gradient(ellipse 38% 46% at 50% 36%, rgba(6,182,212,0.14) 0%, transparent 72%)',
-              }}
-            />
-          </>
+          <AfterPhotoLayers photoUrl={photoUrl} />
         ) : (
           <PlaceholderFace enhanced />
         )}
@@ -210,7 +244,7 @@ function PlaceholderFace({ enhanced }: { enhanced: boolean }) {
         background: enhanced
           ? 'linear-gradient(160deg, #0f1729 0%, #0a1628 50%, #061018 100%)'
           : '#0D1321',
-        filter: enhanced ? 'blur(6px) brightness(1.08)' : 'none',
+        filter: enhanced ? 'blur(18px) brightness(1.06)' : 'none',
       }}
     >
       <svg width="80" height="100" viewBox="0 0 100 127" fill="none">

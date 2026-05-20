@@ -11,3 +11,17 @@
 export function isAuthUiHidden(): boolean {
   return process.env.NEXT_PUBLIC_HIDE_AUTH_UI !== 'false'
 }
+
+/** Compte requis pour lancer le scan (prod Supabase + auth visible). */
+export function requiresAccountForAnalyze(): boolean {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+  if (!url || !key || url.includes('placeholder.supabase.co') || key === 'placeholder-key') {
+    return false
+  }
+  return !isAuthUiHidden()
+}
+
+export function analyzeReturnPath(prefix: string, autoStart = true): string {
+  return autoStart ? `${prefix}/analyze?start=1` : `${prefix}/analyze`
+}

@@ -66,12 +66,12 @@ export function ScanPoseInstructionCard({
 
   return (
     <div
-      className="absolute top-16 left-1/2 -translate-x-1/2 z-20 px-6 py-4 rounded-2xl text-center min-w-[260px] max-w-[90vw]"
+      className="absolute top-20 left-1/2 z-20 px-6 py-4 rounded-2xl text-center min-w-[260px] max-w-[90vw]"
       style={{
         background: 'rgba(0,0,0,0.6)',
         backdropFilter: 'blur(8px)',
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translate(-50%, 0)' : 'translate(-50%, 6px)',
+        transform: visible ? 'translate(-50%, 0)' : 'translate(-50%, -6px)',
         transition: 'opacity 0.25s ease, transform 0.25s ease',
       }}
       role="status"
