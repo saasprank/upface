@@ -14,19 +14,21 @@ interface FaceOvalGuideProps {
   exampleImageSrc?: string
 }
 
-function OvalSvg({ className = '' }: { className?: string }) {
+function OvalSvg({ className = '', showGuideLine = true }: { className?: string; showGuideLine?: boolean }) {
   return (
     <svg viewBox="0 0 240 320" className={`w-full h-full ${className}`} fill="none" aria-hidden>
       <ellipse cx="120" cy="160" rx="98" ry="138" stroke={OVAL_STROKE} strokeWidth="2" />
-      <line
-        x1="28"
-        y1="162"
-        x2="212"
-        y2="162"
-        stroke={GUIDE_LINE}
-        strokeWidth="1.5"
-        strokeOpacity="0.85"
-      />
+      {showGuideLine && (
+        <line
+          x1="28"
+          y1="162"
+          x2="212"
+          y2="162"
+          stroke={GUIDE_LINE}
+          strokeWidth="1.5"
+          strokeOpacity="0.85"
+        />
+      )}
     </svg>
   )
 }
@@ -59,7 +61,7 @@ export default function FaceOvalGuide({
           />
         </div>
       )}
-      <OvalSvg className="relative z-[1]" />
+      <OvalSvg className="relative z-[1]" showGuideLine={!exampleImageSrc} />
       <p
         className="absolute left-0 right-0 top-[52%] z-[2] text-[9px] sm:text-[10px] tracking-[0.18em] text-[#8B9DC3] uppercase text-center"
         style={{ fontFamily: 'Inter, sans-serif' }}

@@ -44,49 +44,13 @@ function getAnalysisStepState(index: number, progress: number): AnalysisStepStat
 
 function UploadStepPanel() {
   const t = useTranslations('landing.upload')
-  const tips = [t('tip1'), t('tip2'), t('tip3'), t('tip4')] as const
 
   return (
-    <div>
-      <div
-        className="relative rounded-2xl py-5 px-4 overflow-hidden"
-        style={{
-          background: 'rgba(13,19,33,0.8)',
-          border: '1px solid rgba(59,130,246,0.12)',
-          boxShadow: 'inset 0 0 40px rgba(59,130,246,0.04)',
-        }}
-      >
-        <motion.div
-          className="absolute inset-x-8 h-px top-[18%] pointer-events-none z-[3]"
-          style={{
-            background: 'linear-gradient(90deg, transparent, rgba(6,182,212,0.7), transparent)',
-            boxShadow: '0 0 10px rgba(6,182,212,0.4)',
-          }}
-          animate={{ top: ['18%', '72%', '18%'] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
-        <FaceOvalGuide
-          alignLabel={t('align_face')}
-          exampleImageSrc="/hero-face.png"
-          className="max-w-[220px]"
-        />
-      </div>
-
-      <div className="mt-6 space-y-2.5">
-        <p className="text-[10px] tracking-[0.18em] uppercase text-[#3D4F6E] mb-3">{t('tips_title')}</p>
-        {tips.map((tip) => (
-          <div key={tip} className="flex items-center gap-3 text-xs text-[#8B9DC3]">
-            <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 bg-[rgba(16,185,129,0.12)] border border-[rgba(16,185,129,0.25)]">
-              <svg className="w-3 h-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-            </span>
-            {tip}
-          </div>
-        ))}
-      </div>
-    </div>
+    <FaceOvalGuide
+      alignLabel={t('align_face')}
+      exampleImageSrc="/hero-face.png"
+      className="max-w-[220px]"
+    />
   )
 }
 
