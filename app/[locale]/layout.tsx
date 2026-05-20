@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages, getLocale } from 'next-intl/server'
+import { getMessages } from 'next-intl/server'
+import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { routing } from '@/lib/i18n'
+import FaqJsonLd from '@/components/sections/FaqJsonLd'
 import '../globals.css'
 
 export const metadata: Metadata = {
@@ -26,6 +28,10 @@ interface LocaleLayoutProps {
   params: Promise<{ locale: string }>
 }
 
+function isLandingPath(pathname: string) {
+  return pathname === '/' || pathname === '/en'
+}
+
 export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
   const { locale } = await params
 
@@ -34,6 +40,8 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   }
 
   const messages = await getMessages()
+  const pathname = (await headers()).get('x-url-path') ?? ''
+  const showFaqJsonLd = isLandingPath(pathname)
 
   return (
     <html lang={locale} className="dark">
@@ -51,6 +59,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
+        {showFaqJsonLd && <FaqJsonLd />}
       </head>
       <body className="bg-[#080C14] text-[#EEF2FF] antialiased">
         <NextIntlClientProvider messages={messages} locale={locale}>

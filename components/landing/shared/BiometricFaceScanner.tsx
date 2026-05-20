@@ -1,7 +1,7 @@
 'use client'
 
-import Image from 'next/image'
 import { motion } from 'framer-motion'
+import ProtectImageArea from '@/components/ui/ProtectImageArea'
 
 const LANDMARKS: [number, number][] = [
   [120, 68], [88, 88], [152, 88], [72, 118], [168, 118],
@@ -25,10 +25,7 @@ export default function BiometricFaceScanner({ compact = false, showHud = true }
   const width = compact ? 240 : 320
 
   return (
-    <div
-      className="relative mx-auto select-none"
-      style={{ width, height }}
-    >
+    <ProtectImageArea className="mx-auto" style={{ width, height }}>
       {/* Ambient glow */}
       <motion.div
         className="absolute inset-0 rounded-full pointer-events-none"
@@ -70,13 +67,11 @@ export default function BiometricFaceScanner({ compact = false, showHud = true }
           WebkitMaskImage: 'radial-gradient(ellipse 48% 52% at 50% 42%, black 55%, transparent 100%)',
         }}
       >
-        <Image
-          src="/hero-face.png"
-          alt=""
-          fill
-          priority
-          className="object-cover object-top scale-[1.08]"
-          sizes="(max-width: 400px) 320px, 400px"
+        <div
+          role="img"
+          aria-hidden
+          className="absolute inset-0 bg-cover bg-top scale-[1.08] pointer-events-none"
+          style={{ backgroundImage: 'url(/hero-face.png)' }}
         />
 
         {/* Scan line */}
@@ -164,7 +159,7 @@ export default function BiometricFaceScanner({ compact = false, showHud = true }
           background: 'radial-gradient(ellipse 100% 100% at 50% 100%, rgba(6,182,212,0.2) 0%, transparent 70%)',
         }}
       />
-    </div>
+    </ProtectImageArea>
   )
 }
 

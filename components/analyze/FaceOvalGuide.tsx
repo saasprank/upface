@@ -1,5 +1,7 @@
 'use client'
 
+import ProtectImageArea from '@/components/ui/ProtectImageArea'
+
 /** Même cadran ovale que la landing MVP — une seule source de vérité. */
 export const FACE_OVAL_FRAME_CLASS = 'w-full max-w-[260px] sm:max-w-[300px] aspect-[3/4]'
 
@@ -9,6 +11,7 @@ const GUIDE_LINE = '#06B6D4'
 interface FaceOvalGuideProps {
   alignLabel: string
   className?: string
+  exampleImageSrc?: string
 }
 
 function OvalSvg({ className = '' }: { className?: string }) {
@@ -29,18 +32,52 @@ function OvalSvg({ className = '' }: { className?: string }) {
 }
 
 /** Cadran statique (landing, écran pré-scan). */
-export default function FaceOvalGuide({ alignLabel, className = '' }: FaceOvalGuideProps) {
-  return (
-    <div className={`relative mx-auto ${FACE_OVAL_FRAME_CLASS} ${className}`}>
-      <OvalSvg />
+export default function FaceOvalGuide({
+  alignLabel,
+  className = '',
+  exampleImageSrc,
+}: FaceOvalGuideProps) {
+  const content = (
+    <>
+      {exampleImageSrc && (
+        <div
+          className="absolute overflow-hidden pointer-events-none"
+          style={{ inset: '6% 11%', borderRadius: '50%' }}
+        >
+          <div
+            role="img"
+            aria-hidden
+            className="absolute inset-0 bg-cover bg-top scale-[1.06] pointer-events-none"
+            style={{ backgroundImage: `url(${exampleImageSrc})` }}
+          />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                'linear-gradient(to bottom, rgba(8,12,20,0.25) 0%, transparent 28%, transparent 72%, rgba(8,12,20,0.35) 100%)',
+            }}
+          />
+        </div>
+      )}
+      <OvalSvg className="relative z-[1]" />
       <p
-        className="absolute left-0 right-0 top-[52%] text-[9px] sm:text-[10px] tracking-[0.18em] text-[#8B9DC3] uppercase text-center"
+        className="absolute left-0 right-0 top-[52%] z-[2] text-[9px] sm:text-[10px] tracking-[0.18em] text-[#8B9DC3] uppercase text-center"
         style={{ fontFamily: 'Inter, sans-serif' }}
       >
         {alignLabel}
       </p>
-    </div>
+    </>
   )
+
+  if (exampleImageSrc) {
+    return (
+      <ProtectImageArea className={`mx-auto ${FACE_OVAL_FRAME_CLASS} ${className}`}>
+        {content}
+      </ProtectImageArea>
+    )
+  }
+
+  return <div className={`relative mx-auto ${FACE_OVAL_FRAME_CLASS} ${className}`}>{content}</div>
 }
 
 /** Overlay plein écran pendant le scan — vidéo visible dans l’ovale uniquement. */

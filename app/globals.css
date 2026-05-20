@@ -107,6 +107,20 @@
     border-radius: 12px;
   }
 
+  .no-image-save {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .no-image-save img,
+  .no-image-save picture,
+  .no-image-save [data-nimg] {
+    -webkit-user-drag: none;
+    pointer-events: none;
+    -webkit-touch-callout: none;
+  }
+
   .animate-smooth {
     transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }

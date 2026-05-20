@@ -117,10 +117,10 @@ export default function MobileAnalysisSection() {
                   </linearGradient>
                 </defs>
               </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="absolute inset-0 flex flex-col items-center justify-center px-3">
                 <motion.span
                   key={progress}
-                  className="text-3xl font-black text-[#EEF2FF]"
+                  className="text-2xl font-black text-[#EEF2FF] leading-none"
                   style={{ fontFamily: 'Satoshi, sans-serif' }}
                   initial={{ opacity: 0.6, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -128,12 +128,19 @@ export default function MobileAnalysisSection() {
                 >
                   {progress}%
                 </motion.span>
-                <span
-                  className="text-[9px] tracking-[0.16em] uppercase text-cyan mt-0.5"
-                  style={{ fontFamily: 'var(--font-mono)' }}
-                >
-                  {t('scanning')}
-                </span>
+                <div className="mt-1 flex flex-col items-center max-w-[4.25rem]">
+                  {t('scanning')
+                    .split('\n')
+                    .map((line) => (
+                      <span
+                        key={line}
+                        className="text-[7px] tracking-[0.05em] uppercase text-cyan leading-[1.2] text-center"
+                        style={{ fontFamily: 'var(--font-mono)' }}
+                      >
+                        {line}
+                      </span>
+                    ))}
+                </div>
               </div>
             </div>
 

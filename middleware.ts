@@ -1,5 +1,5 @@
 import createMiddleware from 'next-intl/middleware'
-import { type NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { routing } from './lib/i18n'
 import { isAuthUiHidden } from './lib/auth-ui'
 
@@ -32,7 +32,14 @@ export async function middleware(request: NextRequest) {
   }
 
   // Run next-intl middleware
-  const response = intlMiddleware(request)
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-url-path', pathname)
+  const requestWithPath = new NextRequest(request.url, {
+    headers: requestHeaders,
+    method: request.method,
+  })
+
+  const response = intlMiddleware(requestWithPath)
 
   // Only refresh Supabase session if credentials are configured
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
