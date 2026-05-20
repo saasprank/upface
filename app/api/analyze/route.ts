@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { analyzeImage } from '@/lib/analyze'
-import { analyzeFaceWithMediaPipe } from '@/lib/mediapipe-server'
+import { analyzeFaceWithMediaPipe, cleanupMediaPipePolyfills } from '@/lib/mediapipe-server'
 
 export const runtime = 'nodejs'
 
@@ -117,6 +117,8 @@ export async function POST(request: NextRequest) {
         console.log('[analyze] MediaPipe OK:', objectiveScores)
       } catch (err) {
         console.error('[analyze] MediaPipe failed, using neutral anchors:', err)
+      } finally {
+        cleanupMediaPipePolyfills()
       }
     }
 
