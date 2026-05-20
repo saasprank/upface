@@ -1,37 +1,41 @@
 import type { NormalizedLandmark } from '@mediapipe/tasks-vision'
 
+/** Mêmes indices que mediapipe-server.ts / Face Landmarker. */
 export function computeClientScores(landmarks: NormalizedLandmark[]) {
-  // Symétrie : compare distances gauche/droite
   const leftEye = landmarks[33]
   const rightEye = landmarks[263]
-  const nose = landmarks[1]
-  const leftMouth = landmarks[61]
-  const rightMouth = landmarks[291]
-
-  const eyeSymmetry = 1 - Math.abs(
-    Math.abs(nose.x - leftEye.x) - Math.abs(rightEye.x - nose.x)
-  ) * 10
-
-  const mouthSymmetry = 1 - Math.abs(
-    Math.abs(nose.x - leftMouth.x) - Math.abs(rightMouth.x - nose.x)
-  ) * 10
-
-  const symetrie = Math.round(Math.min(100, Math.max(50, (eyeSymmetry + mouthSymmetry) / 2 * 100)))
-
-  // Proportions : ratio doré (idéal = 1.618)
-  const foreheadTop = landmarks[10]
+  const nose = landmarks[4]
+  const top = landmarks[10]
   const chin = landmarks[152]
-  const faceHeight = Math.abs(chin.y - foreheadTop.y)
-  const faceWidth = Math.abs(rightEye.x - leftEye.x) * 2.5
-  const ratio = faceHeight / (faceWidth || 0.001)
-  const goldenDiff = Math.abs(ratio - 1.618)
-  const proportions = Math.round(Math.min(100, Math.max(50, 100 - goldenDiff * 30)))
+  const jawLeft = landmarks[172]
+  const jawRight = landmarks[397]
 
-  // Structure : angle mandibulaire
-  const jawLeft = landmarks[234]
-  const jawRight = landmarks[454]
-  const jawWidth = Math.abs(jawRight.x - jawLeft.x)
-  const structure = Math.round(Math.min(100, Math.max(50, jawWidth * 180)))
+  if (!leftEye || !rightEye || !nose || !top || !chin || !jawLeft || !jawRight) {
+    return { symetrie: 65, proportions: 63, structure: 61 }
+  }
+
+  const eyeMidX = (leftEye.x + rightEye.x) / 2
+  const noseOffset = Math.abs(nose.x - eyeMidX)
+  const symetrie = Math.round(Math.max(0, Math.min(100, 100 - noseOffset * 2000)))
+
+  const faceHeight = Math.abs(chin.y - top.y)
+  const faceWidth = Math.abs(jawRight.x - jawLeft.x) || 0.001
+  const ratio = faceHeight / faceWidth
+  const PHI = 1.618
+  const deviation = Math.abs(ratio - PHI) / PHI
+  const proportions = Math.round(Math.max(0, Math.min(100, 100 - deviation * 200)))
+
+  const vL = { x: jawLeft.x - chin.x, y: jawLeft.y - chin.y }
+  const vR = { x: jawRight.x - chin.x, y: jawRight.y - chin.y }
+  const magL = Math.sqrt(vL.x ** 2 + vL.y ** 2)
+  const magR = Math.sqrt(vR.x ** 2 + vR.y ** 2)
+  let structure = 65
+  if (magL > 0 && magR > 0) {
+    const cosAngle = (vL.x * vR.x + vL.y * vR.y) / (magL * magR)
+    const angle = Math.acos(Math.max(-1, Math.min(1, cosAngle))) * (180 / Math.PI)
+    const deviationAngle = Math.abs(angle - 117.5)
+    structure = Math.round(Math.max(0, Math.min(100, 100 - deviationAngle * 2)))
+  }
 
   return { symetrie, proportions, structure }
 }

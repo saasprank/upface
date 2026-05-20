@@ -10,6 +10,7 @@ import FaceOvalGuide from '@/components/analyze/FaceOvalGuide'
 import ScanProgressBar from '@/components/analyze/ScanProgressBar'
 import { ScanPoseInstructionCard } from '@/components/analyze/ScanInstructions'
 import { SCAN_POSE_STEP_ORDER, computeScanProgress } from '@/lib/face-pose-heuristics'
+import { saveAnalysisSession, type AnalysisSessionPayload } from '@/lib/analysis-session'
 import { useFacePoseGuide } from '@/hooks/useFacePoseGuide'
 import { createClient } from '@/lib/supabase'
 import { requiresAccountForAnalyze, analyzeReturnPath } from '@/lib/auth-ui'
@@ -31,7 +32,9 @@ async function parseAnalyzeResponse(res: Response): Promise<{
   analysisId?: string
   error?: string
   observations?: Record<string, string>
-  scores?: Record<string, number>
+  scores?: AnalysisSessionPayload['scores']
+  tier?: string
+  percentile?: number
   freeAnalysis?: boolean
 }> {
   const text = await res.text()
@@ -41,7 +44,9 @@ async function parseAnalyzeResponse(res: Response): Promise<{
       analysisId?: string
       error?: string
       observations?: Record<string, string>
-      scores?: Record<string, number>
+      scores?: AnalysisSessionPayload['scores']
+      tier?: string
+      percentile?: number
       freeAnalysis?: boolean
     }
   } catch {
@@ -228,6 +233,17 @@ function AnalyzeContent() {
       })
 
       const analysisId: string = data.analysisId ?? `demo-${Date.now()}`
+
+      if (data.scores) {
+        saveAnalysisSession(analysisId, {
+          scores: data.scores,
+          observations: data.observations,
+          tier: data.tier,
+          percentile: data.percentile,
+          freeAnalysis: data.freeAnalysis,
+        })
+      }
+
       setState('redirecting')
 
       const resultsPath = `${prefix}/results/${analysisId}`

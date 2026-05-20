@@ -7,7 +7,7 @@ import ScoreRing from '@/components/ui/ScoreRing'
 import TraitCard from '@/components/ui/TraitCard'
 import BilanSection from '@/components/ui/BilanSection'
 import ShareButton from '@/components/results/ShareButton'
-import FreeResultsView from '@/components/results/FreeResultsView'
+import FreeResultsWithSession from '@/components/results/FreeResultsWithSession'
 import { isSupabaseConfigured } from '@/lib/supabase-config'
 import { isAuthUiHidden } from '@/lib/auth-ui'
 
@@ -101,7 +101,7 @@ async function checkSubscription(userId: string | undefined): Promise<boolean> {
       .from('subscriptions').select('status').eq('user_id', userId).single()
     return sub?.status === 'active' || sub?.status === 'trialing'
   } catch {
-    return true // demo mode → show full results
+    return false
   }
 }
 
@@ -186,13 +186,13 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
       aura:        analysis.score_aura        ?? analysis.scores?.aura        ?? 58,
     }
     return (
-      <FreeResultsView
+      <FreeResultsWithSession
         analysisId={id}
         photoUrl={analysis.photo_url ?? ''}
-        scores={scores}
-        observations={analysis.observations ?? {}}
-        tier={analysis.tier ?? 'average'}
-        percentile={analysis.percentile ?? 40}
+        serverScores={scores}
+        serverObservations={analysis.observations ?? {}}
+        serverTier={analysis.tier ?? 'average'}
+        serverPercentile={analysis.percentile ?? 40}
         prefix={prefix}
       />
     )

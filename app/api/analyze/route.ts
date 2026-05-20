@@ -1,5 +1,12 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { analyzeImage } from '@/lib/analyze'
+import {
+  buildFreeObservations,
+  deriveFullScoresFromObjective,
+  derivePercentile,
+  getTierFromGlobal,
+} from '@/lib/derive-analysis-scores'
+import { resolveObjectiveScoresFromImage } from '@/lib/resolve-objective-scores'
 
 export const runtime = 'nodejs'
 
@@ -51,8 +58,7 @@ async function checkUserSubscription(userId: string | null): Promise<boolean> {
       .single()
     return sub?.status === 'active' || sub?.status === 'trialing'
   } catch {
-    // Table doesn't exist yet (dev/demo) → grant full access
-    return true
+    return false
   }
 }
 
@@ -77,8 +83,7 @@ export async function POST(request: NextRequest) {
       userId = session?.user?.id ?? null
       isSubscribed = await checkUserSubscription(userId)
     } catch {
-      // Demo mode — no Supabase configured, grant full access
-      isSubscribed = true
+      isSubscribed = false
     }
 
     // Image → Buffer from base64 payload if provided
@@ -92,21 +97,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'IMAGE_REQUIRED' }, { status: 400 })
     }
 
+    const { scores: objectiveScores, faceDetected } = await resolveObjectiveScoresFromImage(
+      imageBuffer,
+      trimmedUrl,
+      clientScores,
+    )
+
+    if (!demo && !faceDetected) {
+      return NextResponse.json({ error: 'NO_FACE_DETECTED' }, { status: 422 })
+    }
+
     let analysisId = `demo-${Date.now()}`
 
     // ── 2. Freemium preview (no GPT-4o) ───────────────────────────────────────
     if (!isSubscribed) {
-      const previewScores = {
-        global:      Math.floor(Math.random() * 15) + 52,
-        symetrie:    Math.floor(Math.random() * 20) + 48,
-        proportions: Math.floor(Math.random() * 18) + 45,
-        structure:   Math.floor(Math.random() * 20) + 48,
-        peau:        Math.floor(Math.random() * 15) + 45,
-        grooming:    Math.floor(Math.random() * 18) + 48,
-        aura:        Math.floor(Math.random() * 15) + 50,
-      }
-      const previewTier = previewScores.global >= 65 ? 'average' : 'below'
-      const previewPercentile = Math.floor(Math.random() * 30) + 40
+      const fullScores = deriveFullScoresFromObjective(objectiveScores)
+      const previewTier = getTierFromGlobal(fullScores.global)
+      const previewPercentile = derivePercentile(fullScores.global)
+      const previewObservations = buildFreeObservations(fullScores)
 
       try {
         const { createClient } = await import('@/lib/supabase-server')
@@ -116,15 +124,16 @@ export async function POST(request: NextRequest) {
           .insert({
             user_id:           userId,
             photo_url:         trimmedUrl,
-            score_global:      previewScores.global,
-            score_symetrie:    previewScores.symetrie,
-            score_proportions: previewScores.proportions,
-            score_structure:   previewScores.structure,
-            score_peau:        previewScores.peau,
-            score_grooming:    previewScores.grooming,
-            score_aura:        previewScores.aura,
+            score_global:      fullScores.global,
+            score_symetrie:    fullScores.symetrie,
+            score_proportions: fullScores.proportions,
+            score_structure:   fullScores.structure,
+            score_peau:        fullScores.peau,
+            score_grooming:    fullScores.grooming,
+            score_aura:        fullScores.aura,
             tier:              previewTier,
             percentile:        previewPercentile,
+            observations:      previewObservations,
           })
           .select('id')
           .single()
@@ -133,18 +142,11 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         analysisId,
-        scores: previewScores,
+        scores: fullScores,
         tier: previewTier,
         percentile: previewPercentile,
         freeAnalysis: true,
-        observations: {
-          symetrie:    'Bonne symétrie générale avec quelques asymétries notables.',
-          proportions: 'Proportions dans la moyenne, des améliorations sont possibles.',
-          structure:   'Structure faciale correcte, jawline perfectible.',
-          peau:        'Quelques imperfections visibles, texture améliorable.',
-          grooming:    'Entretien correct mais plusieurs points à optimiser.',
-          aura:        'Présence modérée, du potentiel à développer.',
-        },
+        observations: previewObservations,
         routine: null,
         routinePreview: null,
       })
@@ -152,7 +154,6 @@ export async function POST(request: NextRequest) {
 
     // ── 3. GPT-4o Vision analysis (subscribers) ───────────────────────────────
 
-    // Image → Buffer (priorité : corps base64, puis URL publique)
     if (!imageBuffer && trimmedUrl) {
       try {
         const res = await fetch(trimmedUrl)
@@ -163,20 +164,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const randInt = (min: number, max: number) =>
-      Math.floor(Math.random() * (max - min + 1)) + min
-
-    const objectiveScores = clientScores ?? {
-      symetrie:    randInt(65, 85),
-      proportions: randInt(62, 82),
-      structure:   randInt(60, 80),
-    }
-
-    if (clientScores) {
-      console.log('[analyze] Using client MediaPipe scores:', objectiveScores)
-    } else {
-      console.log('[analyze] Using neutral anchors (no client scores)')
-    }
+    console.log('[analyze] Objective scores (MediaPipe):', objectiveScores)
 
     // GPT-4o Vision
     console.log('[analyze] Calling GPT-4o Vision…')

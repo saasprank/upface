@@ -56,7 +56,7 @@ export function getTier(globalScore: number): AnalysisTier {
 }
 
 /** Borne un score GPT autour de la référence MediaPipe (±delta). */
-function clampScoreAroundRef(ref: number, value: number | undefined, delta = 8): number {
+function clampScoreAroundRef(ref: number, value: number | undefined, delta = 12): number {
   const v = typeof value === 'number' && !Number.isNaN(value) ? value : ref
   const lo = Math.max(0, ref - delta)
   const hi = Math.min(100, ref + delta)
