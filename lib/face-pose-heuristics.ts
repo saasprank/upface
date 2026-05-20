@@ -105,15 +105,17 @@ export function poseMatchesStep(
   }
 }
 
-/** Progression 0–99 liée aux étapes de pose + maintien en cours (1,5 s par étape). */
+/** Progression 0–99 liée aux étapes de pose + phase API (étape finale). */
 export function computeScanProgress(
   stepIndex: number,
   holdProgress: number,
   totalSteps = SCAN_POSE_STEP_ORDER.length,
+  apiProgress = 0,
 ): number {
   if (totalSteps <= 0) return 0
   const safeIndex = Math.max(0, Math.min(stepIndex, totalSteps - 1))
   const clampedHold = Math.max(0, Math.min(holdProgress, 1))
+  const clampedApi = Math.max(0, Math.min(apiProgress, 1))
 
   const isLastStep = safeIndex === totalSteps - 1
   const segmentSize = isLastStep
@@ -121,6 +123,12 @@ export function computeScanProgress(
     : SCAN_STEP_PROGRESS_SEGMENT
 
   const base = safeIndex * SCAN_STEP_PROGRESS_SEGMENT
+
+  if (isLastStep) {
+    const p = Math.max(clampedHold, clampedApi)
+    return Math.min(SCAN_MAX_PROGRESS, Math.round(base + p * segmentSize))
+  }
+
   const raw = base + clampedHold * segmentSize
   return Math.min(SCAN_MAX_PROGRESS, Math.round(raw))
 }

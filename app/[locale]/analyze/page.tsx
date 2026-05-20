@@ -10,6 +10,7 @@ import FaceOvalGuide from '@/components/analyze/FaceOvalGuide'
 import ScanProgressBar from '@/components/analyze/ScanProgressBar'
 import { ScanPoseInstructionCard } from '@/components/analyze/ScanInstructions'
 import { SCAN_POSE_STEP_ORDER, computeScanProgress } from '@/lib/face-pose-heuristics'
+import { getScanTiming, SCAN_ESTIMATED_API_MS } from '@/lib/scan-timing'
 import { saveAnalysisSession, type AnalysisSessionPayload } from '@/lib/analysis-session'
 import { useFacePoseGuide } from '@/hooks/useFacePoseGuide'
 import { createClient } from '@/lib/supabase'
@@ -77,10 +78,13 @@ function AnalyzeContent() {
   const locale = useLocale() as string
   const prefix = locale === 'fr' ? '' : `/${locale}`
   const t = useTranslations('analyzeLive')
+  const scanTiming = getScanTiming()
 
   const cadranRef = useRef<FaceCadranHandle>(null)
   const finalizeOnceRef = useRef(false)
   const autoStartAttemptedRef = useRef(false)
+  const apiStartedRef = useRef(false)
+  const apiStartedAtRef = useRef(0)
   const clientScoresRef = useRef<{
     symetrie: number
     proportions: number
@@ -91,6 +95,7 @@ function AnalyzeContent() {
   const [cameraActive, setCameraActive] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [finalizing, setFinalizing] = useState(false)
+  const [apiProgress, setApiProgress] = useState(0)
   const [poseStepIndex, setPoseStepIndex] = useState(0)
   const [instructionVisible, setInstructionVisible] = useState(true)
   const [clientScores, setClientScores] = useState<{
@@ -155,18 +160,96 @@ function AnalyzeContent() {
     setError(null)
     setPoseStepIndex(0)
     setFinalizing(false)
+    setApiProgress(0)
     setClientScores(null)
     clientScoresRef.current = null
     finalizeOnceRef.current = false
     autoStartAttemptedRef.current = false
+    apiStartedRef.current = false
   }
 
-  const handleInstructionsDone = useCallback(async () => {
-    if (finalizeOnceRef.current) return
-    finalizeOnceRef.current = true
-    setFinalizing(true)
-    setError(null)
+  const applyAnalysisSuccess = useCallback(
+    async (data: Awaited<ReturnType<typeof parseAnalyzeResponse>>) => {
+      if (data.scores) {
+        try {
+          localStorage.setItem('upface_scores', JSON.stringify({
+            ...data.scores,
+            potentiel: Math.min(95, (data.scores.global ?? 70) + 14),
+          }))
+        } catch { /* ignore */ }
+      }
 
+      if (data.observations) {
+        localStorage.setItem('upface_observations', JSON.stringify(data.observations))
+      }
+
+      const analysisId: string = data.analysisId ?? `demo-${Date.now()}`
+
+      if (data.scores) {
+        saveAnalysisSession(analysisId, {
+          scores: data.scores,
+          observations: data.observations,
+          tier: data.tier,
+          percentile: data.percentile,
+          freeAnalysis: data.freeAnalysis,
+        })
+      }
+
+      setApiProgress(1)
+      setState('redirecting')
+      router.replace(`${prefix}/results/${analysisId}`)
+
+      void syncSubscriberRoutineFromAnalyze({
+        freeAnalysis: data.freeAnalysis,
+        scores: data.scores,
+        observations: data.observations,
+      })
+    },
+    [prefix, router],
+  )
+
+  const handleAnalysisFailure = useCallback(
+    (err: unknown) => {
+      finalizeOnceRef.current = false
+      apiStartedRef.current = false
+      const msg = err instanceof Error ? err.message : ''
+      const aborted = err instanceof Error && err.name === 'AbortError'
+      setFinalizing(false)
+      setApiProgress(0)
+      if (aborted) {
+        setError(
+          locale === 'fr'
+            ? 'L\'analyse a pris trop de temps. Réessaie avec une bonne connexion.'
+            : 'Analysis timed out. Try again with a stable connection.',
+        )
+      } else if (msg === 'no_face') {
+        setError(
+          locale === 'fr'
+            ? 'Aucun visage détecté. Assure-toi que ton visage est bien éclairé et de face.'
+            : 'No face detected. Make sure your face is well lit and facing the camera.',
+        )
+      } else if (msg === 'capture_failed') {
+        setError(
+          locale === 'fr'
+            ? 'Impossible de capturer l\'image. Réessaie en gardant le visage dans le cadre.'
+            : 'Could not capture the image. Try again keeping your face in the frame.',
+        )
+      } else if (msg === 'image_required') {
+        setError(
+          locale === 'fr'
+            ? 'Photo non reçue par le serveur. Réessaie ou vérifie ta connexion.'
+            : 'The server did not receive your photo. Try again or check your connection.',
+        )
+      } else {
+        setError(locale === 'fr' ? 'Une erreur est survenue. Réessaie.' : 'Something went wrong. Please try again.')
+      }
+      setPoseStepIndex(0)
+      setState('scanning')
+    },
+    [locale],
+  )
+
+  const runAnalysisApi = useCallback(async () => {
     const controller = new AbortController()
     const requestTimeout = window.setTimeout(() => controller.abort(), 55_000)
 
@@ -218,89 +301,57 @@ function AnalyzeContent() {
         throw new Error(data.error ?? 'Analysis failed')
       }
 
-      if (data.scores) {
-        try {
-          localStorage.setItem('upface_scores', JSON.stringify({
-            ...data.scores,
-            potentiel: Math.min(95, (data.scores.global ?? 70) + 14),
-          }))
-        } catch { /* ignore */ }
-      }
-
-      if (data.observations) {
-        localStorage.setItem('upface_observations', JSON.stringify(data.observations))
-      }
-
-      const analysisId: string = data.analysisId ?? `demo-${Date.now()}`
-
-      if (data.scores) {
-        saveAnalysisSession(analysisId, {
-          scores: data.scores,
-          observations: data.observations,
-          tier: data.tier,
-          percentile: data.percentile,
-          freeAnalysis: data.freeAnalysis,
-        })
-      }
-
-      const resultsPath = `${prefix}/results/${analysisId}`
-      setState('redirecting')
-      router.replace(resultsPath)
-
-      void syncSubscriberRoutineFromAnalyze({
-        freeAnalysis: data.freeAnalysis,
-        scores: data.scores,
-        observations: data.observations,
-      })
+      await applyAnalysisSuccess(data)
     } catch (err) {
-      finalizeOnceRef.current = false
-      const msg = err instanceof Error ? err.message : ''
-      const aborted = err instanceof Error && err.name === 'AbortError'
-      setFinalizing(false)
-      if (aborted) {
-        setError(
-          locale === 'fr'
-            ? 'L\'analyse a pris trop de temps. Réessaie avec une bonne connexion.'
-            : 'Analysis timed out. Try again with a stable connection.'
-        )
-      } else if (msg === 'no_face') {
-        setError(
-          locale === 'fr'
-            ? 'Aucun visage détecté. Assure-toi que ton visage est bien éclairé et de face.'
-            : 'No face detected. Make sure your face is well lit and facing the camera.'
-        )
-      } else if (msg === 'capture_failed') {
-        setError(
-          locale === 'fr'
-            ? 'Impossible de capturer l\'image. Réessaie en gardant le visage dans le cadre.'
-            : 'Could not capture the image. Try again keeping your face in the frame.'
-        )
-      } else if (msg === 'image_required') {
-        setError(
-          locale === 'fr'
-            ? 'Photo non reçue par le serveur. Réessaie ou vérifie ta connexion.'
-            : 'The server did not receive your photo. Try again or check your connection.'
-        )
-      } else {
-        setError(locale === 'fr' ? 'Une erreur est survenue. Réessaie.' : 'Something went wrong. Please try again.')
-      }
-      setPoseStepIndex(0)
-      setState('scanning')
+      handleAnalysisFailure(err)
     } finally {
       window.clearTimeout(requestTimeout)
     }
-  }, [locale, prefix, router])
+  }, [applyAnalysisSuccess, handleAnalysisFailure])
+
+  const startAnalysisPhase = useCallback(() => {
+    if (apiStartedRef.current || finalizeOnceRef.current) return
+    finalizeOnceRef.current = true
+    apiStartedRef.current = true
+    apiStartedAtRef.current = performance.now()
+    setFinalizing(true)
+    setError(null)
+    setApiProgress(0)
+    void runAnalysisApi()
+  }, [runAnalysisApi])
 
   const handlePoseValidated = useCallback(() => {
     setPoseStepIndex(prev => {
       const lastIx = SCAN_POSE_STEP_ORDER.length - 1
-      if (prev >= lastIx) {
-        void handleInstructionsDone()
-        return prev
+      if (prev >= lastIx) return prev
+      const next = prev + 1
+      if (next === lastIx) {
+        queueMicrotask(() => startAnalysisPhase())
       }
-      return prev + 1
+      return next
     })
-  }, [handleInstructionsDone])
+  }, [startAnalysisPhase])
+
+  useEffect(() => {
+    if (state !== 'scanning' || poseStepIndex !== SCAN_POSE_STEP_ORDER.length - 1) return
+    if (!apiStartedRef.current) startAnalysisPhase()
+  }, [poseStepIndex, state, startAnalysisPhase])
+
+  useEffect(() => {
+    if (!finalizing || state !== 'scanning') return
+
+    const tick = () => {
+      const elapsed = performance.now() - apiStartedAtRef.current
+      setApiProgress(prev => {
+        const next = Math.min(0.96, elapsed / SCAN_ESTIMATED_API_MS)
+        return next > prev ? next : prev
+      })
+    }
+
+    tick()
+    const id = window.setInterval(tick, 80)
+    return () => window.clearInterval(id)
+  }, [finalizing, state])
 
   useEffect(() => {
     if (state === 'idle' || state === 'loading_camera' || state === 'camera_ready') {
@@ -324,18 +375,21 @@ function AnalyzeContent() {
   }, [])
 
   const { poseMatch, holdProgress } = useFacePoseGuide({
-    active: state === 'scanning' && !finalizing,
+    active: state === 'scanning',
     getVideo: getScanVideo,
     stepId: poseStepId,
-    frozen: finalizing,
+    frozen: false,
     onValidated: handlePoseValidated,
     onLandmarks: handleLandmarks,
+    holdMs: scanTiming.poseHoldMs,
+    maxStepMs: scanTiming.maxStepMs,
   })
 
   const scanProgress = computeScanProgress(
     poseStepIndex,
     holdProgress,
     SCAN_POSE_STEP_ORDER.length,
+    apiProgress,
   )
 
   const isScanning = state === 'scanning' || state === 'redirecting'
@@ -454,12 +508,11 @@ function AnalyzeContent() {
       <div className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8 pt-6 flex flex-col items-center"
         style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 55%, transparent 100%)' }}
       >
-        {finalizing ? (
-          <p className="text-sm font-medium text-[#8B9DC3]" style={{ fontFamily: 'Inter, sans-serif' }}>
-            Envoi en cours…
+        <ScanProgressBar active={isScanning} progress={scanProgress} />
+        {finalizing && (
+          <p className="text-xs text-center mt-2 text-[#8B9DC3]" style={{ fontFamily: 'Inter, sans-serif' }}>
+            {locale === 'fr' ? 'Analyse en cours…' : 'Analysis in progress…'}
           </p>
-        ) : (
-          <ScanProgressBar active={isScanning} progress={scanProgress} />
         )}
       </div>
     </div>

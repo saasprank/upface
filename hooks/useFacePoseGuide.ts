@@ -17,7 +17,7 @@ const MEDIAPIPE_VERSION = '0.10.35'
 const WASM_CDN_BASE = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MEDIAPIPE_VERSION}/wasm`
 const MODEL_PATH = '/models/face_landmarker.task'
 
-const STABLE_HOLD_MS = 1500
+const DEFAULT_HOLD_MS = 1500
 
 interface UseFacePoseGuideOptions {
   active: boolean
@@ -26,6 +26,8 @@ interface UseFacePoseGuideOptions {
   frozen: boolean
   onValidated: () => void
   onLandmarks?: (landmarks: NormalizedLandmark[]) => void
+  holdMs?: number
+  maxStepMs?: number
 }
 
 interface UseFacePoseGuideResult {
@@ -42,6 +44,8 @@ export function useFacePoseGuide({
   frozen,
   onValidated,
   onLandmarks,
+  holdMs = DEFAULT_HOLD_MS,
+  maxStepMs,
 }: UseFacePoseGuideOptions): UseFacePoseGuideResult {
   const [faceDetected, setFaceDetected] = useState(false)
   const [poseMatch, setPoseMatch] = useState(false)
@@ -59,11 +63,28 @@ export function useFacePoseGuide({
   const frozenRef = useRef(frozen)
   const onValidatedRef = useRef(onValidated)
   const onLandmarksRef = useRef(onLandmarks)
+  const holdMsRef = useRef(holdMs)
 
   stepIdRef.current = stepId
   frozenRef.current = frozen
   onValidatedRef.current = onValidated
   onLandmarksRef.current = onLandmarks
+  holdMsRef.current = holdMs
+
+  useEffect(() => {
+    if (!active || !maxStepMs) return
+
+    const sid = stepId
+    const timer = window.setTimeout(() => {
+      if (emittedForStepRef.current === sid) return
+      emittedForStepRef.current = sid
+      stableStartedAtRef.current = null
+      setHoldProgress(0)
+      onValidatedRef.current()
+    }, maxStepMs)
+
+    return () => window.clearTimeout(timer)
+  }, [active, stepId, maxStepMs])
 
   useEffect(() => {
     smoothRef.current = null
@@ -211,9 +232,9 @@ export function useFacePoseGuide({
       } else {
         if (stableStartedAtRef.current == null) stableStartedAtRef.current = now
         const elapsed = now - stableStartedAtRef.current
-        const p = Math.min(1, elapsed / STABLE_HOLD_MS)
+        const p = Math.min(1, elapsed / holdMsRef.current)
         setHoldProgress(p)
-        if (elapsed >= STABLE_HOLD_MS) {
+        if (elapsed >= holdMsRef.current) {
           emittedForStepRef.current = sidEmit
           stableStartedAtRef.current = null
           setHoldProgress(0)
