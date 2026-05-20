@@ -5,12 +5,31 @@
  * then exposes a singleton FaceLandmarker and a scoring function.
  */
 
-// ─── Node.js polyfills (must run before any mediapipe import) ─────────────────
-
-if (typeof globalThis.self === 'undefined') {
-  // @ts-expect-error – Node.js polyfill for WebWorker global
-  globalThis.self = globalThis
+// Polyfills Node.js pour MediaPipe Tasks Vision
+if (typeof globalThis.document === 'undefined') {
+  (globalThis as any).document = {
+    createElement: () => ({
+      style: {},
+      setAttribute: () => {},
+      getAttribute: () => null,
+    }),
+    createElementNS: () => ({
+      style: {},
+      setAttribute: () => {},
+    }),
+  }
 }
+if (typeof globalThis.window === 'undefined') {
+  (globalThis as any).window = globalThis
+}
+if (typeof globalThis.navigator === 'undefined') {
+  (globalThis as any).navigator = { userAgent: 'node' }
+}
+if (typeof globalThis.self === 'undefined') {
+  (globalThis as any).self = globalThis
+}
+
+// ─── Node.js polyfills (must run before any mediapipe import) ─────────────────
 
 if (typeof globalThis.ImageData === 'undefined') {
   class _ImageData {

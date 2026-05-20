@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { analyzeImage } from '@/lib/analyze'
+import { analyzeFaceWithMediaPipe } from '@/lib/mediapipe-server'
 
 export const runtime = 'nodejs'
 
@@ -90,14 +91,29 @@ export async function POST(request: NextRequest) {
     const randInt = (min: number, max: number) =>
       Math.floor(Math.random() * (max - min + 1)) + min
 
-    // On laisse GPT-4o Vision calculer tous les scores depuis la photo
-    // Les valeurs ci-dessous sont juste des ancres neutres — GPT les override librement
-    const objectiveScores = {
+    let objectiveScores = {
       symetrie:    randInt(65, 85),
       proportions: randInt(62, 82),
       structure:   randInt(60, 80),
     }
-    console.log('[analyze] Using neutral anchors for GPT-4o:', objectiveScores)
+
+    if (imageBuffer) {
+      try {
+        console.log('[analyze] Running MediaPipe...')
+        const mpResult = await analyzeFaceWithMediaPipe(imageBuffer)
+        if (!mpResult.detected) {
+          return NextResponse.json({ error: 'NO_FACE_DETECTED' }, { status: 422 })
+        }
+        objectiveScores = {
+          symetrie:    mpResult.symetrie,
+          proportions: mpResult.proportions,
+          structure:   mpResult.structure,
+        }
+        console.log('[analyze] MediaPipe OK:', objectiveScores)
+      } catch (err) {
+        console.error('[analyze] MediaPipe failed, using neutral anchors:', err)
+      }
+    }
 
     // GPT-4o Vision
     console.log('[analyze] Calling GPT-4o Vision…')
