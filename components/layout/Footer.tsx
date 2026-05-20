@@ -1,3 +1,5 @@
+'use client'
+
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -9,36 +11,45 @@ export default function Footer() {
   const prefix = locale === 'fr' ? '' : `/${locale}`
 
   return (
-    <footer className="border-t border-[rgba(59,130,246,0.10)] bg-[#080C14]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <Image src="/logo.png" alt="UPFACE" width={30} height={30} style={UPFACE_LOGO_IMG_STYLE} />
-            <span className="font-bold text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+    <footer
+      className="border-t mt-4"
+      style={{
+        background: '#080C14',
+        borderColor: 'rgba(59,130,246,0.08)',
+      }}
+    >
+      <div className="max-w-[375px] sm:max-w-6xl mx-auto px-4 py-12">
+        <div className="flex flex-col items-center text-center gap-6">
+          <div className="flex items-center gap-2.5">
+            <Image src="/logo.png" alt="UPFACE" width={32} height={32} style={UPFACE_LOGO_IMG_STYLE} />
+            <span className="font-bold text-[#EEF2FF] text-lg" style={{ fontFamily: 'Satoshi, sans-serif' }}>
               UPFACE
             </span>
           </div>
 
-          {/* Links */}
+          <p className="text-xs text-[#3D4F6E] leading-relaxed max-w-xs">
+            {locale === 'fr'
+              ? 'Analyse faciale IA · Score d\'attractivité · Routine personnalisée'
+              : 'AI facial analysis · Attractiveness score · Personalized routine'}
+          </p>
+
           <div className="flex items-center gap-6">
-            <Link href={`${prefix}/privacy`} className="text-sm text-[#3D4F6E] hover:text-[#8B9DC3] transition-colors">
+            <Link href={`${prefix}/privacy`} className="text-xs text-[#3D4F6E] hover:text-[#8B9DC3] transition-colors">
               {t('privacy')}
             </Link>
-            <Link href={`${prefix}/terms`} className="text-sm text-[#3D4F6E] hover:text-[#8B9DC3] transition-colors">
+            <Link href={`${prefix}/terms`} className="text-xs text-[#3D4F6E] hover:text-[#8B9DC3] transition-colors">
               {t('terms')}
             </Link>
-            <Link href={`mailto:hello@upface.app`} className="text-sm text-[#3D4F6E] hover:text-[#8B9DC3] transition-colors">
+            <Link href="mailto:hello@upface.app" className="text-xs text-[#3D4F6E] hover:text-[#8B9DC3] transition-colors">
               {t('contact')}
             </Link>
           </div>
         </div>
 
         <div className="mt-8 pt-6 border-t border-[rgba(255,255,255,0.04)] text-center">
-          <p className="text-xs text-[#3D4F6E]">{t('copyright')}</p>
+          <p className="text-[10px] text-[#3D4F6E] tracking-wide">{t('copyright')}</p>
         </div>
       </div>
     </footer>
   )
 }
-

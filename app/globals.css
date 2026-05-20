@@ -110,6 +110,20 @@
   .animate-smooth {
     transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
+
+  .text-cyan {
+    color: #06B6D4;
+  }
+
+  .bg-cyan {
+    background-color: #06B6D4;
+  }
+
+  .landing-section {
+    max-width: 375px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 @keyframes pulse-dot {
