@@ -11,25 +11,42 @@ import path from 'path'
 import { pathToFileURL } from 'url'
 import sharp from 'sharp'
 
+function createMockElement() {
+  return {
+    style: {},
+    setAttribute: () => {},
+    getAttribute: () => null,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    appendChild: () => createMockElement(),
+    removeChild: () => createMockElement(),
+  }
+}
+
 function applyNodePolyfillsForMediaPipe() {
   if ((globalThis as typeof globalThis & { __upfaceMpPolyfills?: boolean }).__upfaceMpPolyfills) return
 
   // Polyfills Node.js pour MediaPipe Tasks Vision
   if (typeof globalThis.document === 'undefined') {
-    (globalThis as any).document = {
-      createElement: () => ({
-        style: {},
-        setAttribute: () => {},
-        getAttribute: () => null,
-      }),
-      createElementNS: () => ({
-        style: {},
-        setAttribute: () => {},
-      }),
+    const body = createMockElement()
+    ;(globalThis as any).document = {
+      createElement: () => createMockElement(),
+      createElementNS: () => createMockElement(),
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      body,
+      documentElement: body,
     }
   }
   if (typeof globalThis.window === 'undefined') {
-    (globalThis as any).window = globalThis
+    ;(globalThis as any).window = {
+      document: (globalThis as any).document,
+      navigator: (globalThis as any).navigator ?? { userAgent: 'node' },
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      fetch: globalThis.fetch.bind(globalThis),
+      performance: globalThis.performance,
+    }
   }
   if (typeof globalThis.navigator === 'undefined') {
     (globalThis as any).navigator = { userAgent: 'node' }
