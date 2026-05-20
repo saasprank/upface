@@ -16,6 +16,7 @@ export default function Navbar() {
 
   const navLinks = [
     { href: `${prefix}/#how-it-works`, label: t('features') },
+    { href: `${prefix}/#proof`, label: t('results') },
     { href: `${prefix}/#faq`, label: t('faq') },
   ]
 

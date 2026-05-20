@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl'
 import MotionReveal from '@/components/landing/shared/MotionReveal'
 import SectionHeader from '@/components/landing/shared/SectionHeader'
+import MobileProofCarouselSection from '@/components/landing/mobile/MobileProofCarouselSection'
 import { FAQ_KEYS } from '@/lib/faq'
 
 function FaqChevron() {
@@ -28,6 +29,8 @@ export default function FaqSection() {
   const t = useTranslations('faq')
 
   return (
+    <>
+      <MobileProofCarouselSection />
     <section
       id="faq"
       className="px-4 py-16 pb-8"
@@ -77,5 +80,6 @@ export default function FaqSection() {
         </div>
       </div>
     </section>
+    </>
   )
 }
