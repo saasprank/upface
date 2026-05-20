@@ -40,7 +40,7 @@ export default function Navbar() {
         }}
       >
         <div className="w-full max-w-6xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
-          <UpfaceLogo size="sm" href={`${prefix}/`} />
+          <UpfaceLogo size="md" href={`${prefix}/`} />
 
           <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => (

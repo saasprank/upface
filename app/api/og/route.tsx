@@ -69,14 +69,18 @@ export async function GET(request: NextRequest) {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px', position: 'relative', zIndex: 10 }}>
 
           {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${request.nextUrl.origin}/upface-wordmark.png`}
-              alt="UPFACE"
-              width={220}
-              height={55}
-            />
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              fontSize: '56px',
+              fontWeight: 900,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+            }}
+          >
+            <span style={{ color: '#EEF2FF' }}>UP</span>
+            <span style={{ color: '#06B6D4' }}>FACE</span>
           </div>
 
           {/* Score */}
