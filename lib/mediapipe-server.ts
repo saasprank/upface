@@ -8,7 +8,6 @@
 import type { FaceLandmarker, NormalizedLandmark } from '@mediapipe/tasks-vision'
 import fs from 'fs'
 import path from 'path'
-import { pathToFileURL } from 'url'
 import sharp from 'sharp'
 
 function createMockElement() {
@@ -99,19 +98,10 @@ async function getLandmarker(): Promise<FaceLandmarker> {
 
     const { FaceLandmarker, FilesetResolver } = await import('@mediapipe/tasks-vision')
 
-    const wasmDir = pathToFileURL(
-      path.join(process.cwd(), 'node_modules', '@mediapipe', 'tasks-vision', 'wasm')
-    ).href
-
-    let filesetResolver: Awaited<ReturnType<typeof FilesetResolver.forVisionTasks>>
-
-    try {
-      filesetResolver = await FilesetResolver.forVisionTasks(wasmDir)
-    } catch {
-      filesetResolver = await FilesetResolver.forVisionTasks(
-        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm'
-      )
-    }
+    // En serverless (Vercel), file:// WASM local peut bloquer — CDN jsDelivr directement
+    const filesetResolver = await FilesetResolver.forVisionTasks(
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm'
+    )
 
     const modelPath = path.join(process.cwd(), 'public', 'models', 'face_landmarker.task')
     const modelBuffer = new Uint8Array(fs.readFileSync(modelPath))

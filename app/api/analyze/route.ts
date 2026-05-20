@@ -100,7 +100,12 @@ export async function POST(request: NextRequest) {
     if (imageBuffer) {
       try {
         console.log('[analyze] Running MediaPipe...')
-        const mpResult = await analyzeFaceWithMediaPipe(imageBuffer)
+        const mpResult = await Promise.race([
+          analyzeFaceWithMediaPipe(imageBuffer),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error('MediaPipe timeout after 25s')), 25_000)
+          ),
+        ])
         if (!mpResult.detected) {
           return NextResponse.json({ error: 'NO_FACE_DETECTED' }, { status: 422 })
         }
