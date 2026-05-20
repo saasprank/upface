@@ -92,7 +92,65 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'IMAGE_REQUIRED' }, { status: 400 })
     }
 
-    // ── 2. GPT-4o Vision analysis ────────────────────────────────────────────
+    let analysisId = `demo-${Date.now()}`
+
+    // ── 2. Freemium preview (no GPT-4o) ───────────────────────────────────────
+    if (!isSubscribed) {
+      const previewScores = {
+        global:      Math.floor(Math.random() * 15) + 52,
+        symetrie:    Math.floor(Math.random() * 20) + 48,
+        proportions: Math.floor(Math.random() * 18) + 45,
+        structure:   Math.floor(Math.random() * 20) + 48,
+        peau:        Math.floor(Math.random() * 15) + 45,
+        grooming:    Math.floor(Math.random() * 18) + 48,
+        aura:        Math.floor(Math.random() * 15) + 50,
+      }
+      const previewTier = previewScores.global >= 65 ? 'average' : 'below'
+      const previewPercentile = Math.floor(Math.random() * 30) + 40
+
+      try {
+        const { createClient } = await import('@/lib/supabase-server')
+        const supabase = await createClient()
+        const { data } = await supabase
+          .from('analyses')
+          .insert({
+            user_id:           userId,
+            photo_url:         trimmedUrl,
+            score_global:      previewScores.global,
+            score_symetrie:    previewScores.symetrie,
+            score_proportions: previewScores.proportions,
+            score_structure:   previewScores.structure,
+            score_peau:        previewScores.peau,
+            score_grooming:    previewScores.grooming,
+            score_aura:        previewScores.aura,
+            tier:              previewTier,
+            percentile:        previewPercentile,
+          })
+          .select('id')
+          .single()
+        if (data) analysisId = data.id as string
+      } catch { /* ignore */ }
+
+      return NextResponse.json({
+        analysisId,
+        scores: previewScores,
+        tier: previewTier,
+        percentile: previewPercentile,
+        freeAnalysis: true,
+        observations: {
+          symetrie:    'Bonne symétrie générale avec quelques asymétries notables.',
+          proportions: 'Proportions dans la moyenne, des améliorations sont possibles.',
+          structure:   'Structure faciale correcte, jawline perfectible.',
+          peau:        'Quelques imperfections visibles, texture améliorable.',
+          grooming:    'Entretien correct mais plusieurs points à optimiser.',
+          aura:        'Présence modérée, du potentiel à développer.',
+        },
+        routine: null,
+        routinePreview: null,
+      })
+    }
+
+    // ── 3. GPT-4o Vision analysis (subscribers) ───────────────────────────────
 
     // Image → Buffer (priorité : corps base64, puis URL publique)
     if (!imageBuffer && trimmedUrl) {
@@ -123,9 +181,6 @@ export async function POST(request: NextRequest) {
     // GPT-4o Vision
     console.log('[analyze] Calling GPT-4o Vision…')
     const result = await analyzeImage(trimmedUrl, objectiveScores, imageBuffer)
-
-    // Persist to Supabase
-    let analysisId = `demo-${Date.now()}`
 
     try {
       const { createClient } = await import('@/lib/supabase-server')
@@ -161,7 +216,7 @@ export async function POST(request: NextRequest) {
       percentile:   result.percentile,
       observations: result.observations,
       routine:      result.routine,
-      freeAnalysis: !isSubscribed,
+      freeAnalysis: false,
       routinePreview: {
         skincare: result.routine.skincare.slice(0, 2),
         grooming: result.routine.grooming.slice(0, 2),
