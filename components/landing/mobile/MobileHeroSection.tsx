@@ -3,7 +3,7 @@
 import { useTranslations, useLocale } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import HeroScanAnimation from '@/components/landing/HeroScanAnimation'
+import BiometricFaceScanner from '@/components/landing/shared/BiometricFaceScanner'
 
 export default function MobileHeroSection() {
   const t = useTranslations('landing.hero')
@@ -46,7 +46,7 @@ export default function MobileHeroSection() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
         >
-          <HeroScanAnimation />
+          <BiometricFaceScanner />
         </motion.div>
 
         {/* CTAs */}
