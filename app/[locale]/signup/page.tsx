@@ -4,12 +4,11 @@ import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
-import Image from 'next/image'
 import Button from '@/components/ui/Button'
 import ScoreRing from '@/components/ui/ScoreRing'
+import UpfaceLogo from '@/components/ui/UpfaceLogo'
 import { createClient } from '@/lib/supabase'
 import { authCallbackUrl, setAuthNextCookieClient } from '@/lib/auth-redirect'
-import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 
 function SignupForm() {
   const t = useTranslations('signup')
@@ -192,10 +191,7 @@ function SignupForm() {
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
           {/* Logo */}
-          <Link href={`${prefix}/`} className="flex items-center gap-2 mb-10 group">
-            <Image src="/logo.png" alt="UPFACE" width={32} height={32} style={UPFACE_LOGO_IMG_STYLE} />
-            <span className="font-bold text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>UPFACE</span>
-          </Link>
+          <UpfaceLogo size="md" href={`${prefix}/`} className="mb-10" />
 
           <h1
             className="text-2xl font-black text-[#EEF2FF] mb-2"

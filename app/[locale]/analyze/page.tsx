@@ -14,7 +14,7 @@ import { useFacePoseGuide } from '@/hooks/useFacePoseGuide'
 import { useFaceMesh } from '@/hooks/useFaceMesh'
 import { createClient } from '@/lib/supabase'
 import { requiresAccountForAnalyze, analyzeReturnPath } from '@/lib/auth-ui'
-import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
+import UpfaceLogo from '@/components/ui/UpfaceLogo'
 import { syncSubscriberRoutineFromAnalyze } from '@/lib/routine-client'
 import { computeClientScores } from '@/lib/client-face-scores'
 import type { NormalizedLandmark } from '@mediapipe/tasks-vision'
@@ -321,12 +321,7 @@ function AnalyzeContent() {
           className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 sm:px-6"
           style={{ height: 56, background: 'rgba(8,12,20,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
         >
-          <Link href={`${prefix}/`} className="flex items-center gap-2">
-            <Image src="/logo.png" alt="UPFACE" width={28} height={28} style={UPFACE_LOGO_IMG_STYLE} />
-            <span className="font-bold text-sm text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>
-              UPFACE
-            </span>
-          </Link>
+          <UpfaceLogo size="sm" href={`${prefix}/`} />
         </header>
 
         <main className="flex-1 flex flex-col items-center justify-center px-4 pt-14 pb-10" style={{ minHeight: '100dvh' }}>

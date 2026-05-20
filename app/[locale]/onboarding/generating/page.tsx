@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
+import UpfaceLogo from '@/components/ui/UpfaceLogo'
 
 const STEPS = [
   { label: 'Analyse de tes priorités...', duration: 1400 },
@@ -84,15 +85,7 @@ export default function GeneratingPage() {
       style={{ background: '#080C14' }}
     >
       {/* Logo */}
-      <div className="mb-12 flex items-center gap-2">
-        <div
-          className="w-8 h-8 rounded-full border-2 flex items-center justify-center"
-          style={{ borderColor: '#3B82F6' }}
-        >
-          <div className="w-2 h-2 rounded-full" style={{ background: '#06B6D4' }} />
-        </div>
-        <span className="font-bold text-white tracking-wide text-lg">UPFACE</span>
-      </div>
+      <UpfaceLogo size="md" className="mb-12" />
 
       {/* Ring animé */}
       <div className="relative w-40 h-40 mb-10">

@@ -2,8 +2,7 @@
 
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
-import Image from 'next/image'
-import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
+import UpfaceLogo from '@/components/ui/UpfaceLogo'
 
 export default function Footer() {
   const t = useTranslations('footer')
@@ -19,12 +18,7 @@ export default function Footer() {
     >
       <div className="max-w-[375px] sm:max-w-6xl mx-auto px-4 py-12">
         <div className="flex flex-col items-center text-center gap-6">
-          <div className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="UPFACE" width={32} height={32} style={UPFACE_LOGO_IMG_STYLE} />
-            <span className="font-bold text-[#EEF2FF] text-lg" style={{ fontFamily: 'Satoshi, sans-serif' }}>
-              UPFACE
-            </span>
-          </div>
+          <UpfaceLogo size="md" href={`${prefix}/`} />
 
           <p className="text-xs text-[#3D4F6E] leading-relaxed max-w-xs">
             {locale === 'fr'

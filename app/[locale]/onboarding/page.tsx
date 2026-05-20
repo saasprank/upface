@@ -4,8 +4,7 @@ import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useLocale } from 'next-intl'
 import Link from 'next/link'
-import Image from 'next/image'
-import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
+import UpfaceLogo from '@/components/ui/UpfaceLogo'
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -159,10 +158,7 @@ function OnboardingContent() {
         className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4"
         style={{ height: 56, background: 'rgba(8,12,20,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
       >
-        <Link href={`${prefix}/`} className="flex items-center gap-2">
-          <Image src="/logo.png" alt="UPFACE" width={26} height={26} style={UPFACE_LOGO_IMG_STYLE} />
-          <span className="font-bold text-sm text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>UPFACE</span>
-        </Link>
+        <UpfaceLogo size="sm" href={`${prefix}/`} />
 
         {/* Progress bar */}
         <div className="flex-1 mx-4 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(59,130,246,0.12)' }}>

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useTranslations, useLocale } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { isAuthUiHidden } from '@/lib/auth-ui'
+import UpfaceLogo from '@/components/ui/UpfaceLogo'
 
 export default function Navbar() {
   const t = useTranslations('nav')
@@ -39,13 +40,7 @@ export default function Navbar() {
         }}
       >
         <div className="w-full max-w-6xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
-          <Link
-            href={`${prefix}/`}
-            className="font-bold text-base sm:text-lg tracking-tight text-[#EEF2FF] hover:opacity-90 transition-opacity"
-            style={{ fontFamily: 'Satoshi, sans-serif' }}
-          >
-            UPFACE
-          </Link>
+          <UpfaceLogo size="sm" href={`${prefix}/`} />
 
           <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => (

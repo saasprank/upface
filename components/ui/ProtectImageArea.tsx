@@ -15,16 +15,11 @@ function blockImageSave(e: MouseEvent) {
 export default function ProtectImageArea({ children, className = '', style }: ProtectImageAreaProps) {
   return (
     <div
-      className={`relative no-image-save select-none ${className}`}
+      className={`relative no-image-save select-none touch-pan-y ${className}`}
       style={style}
       onContextMenu={blockImageSave}
     >
       {children}
-      <div
-        className="absolute inset-0 z-[30] no-image-save touch-none"
-        aria-hidden
-        onContextMenu={blockImageSave}
-      />
     </div>
   )
 }

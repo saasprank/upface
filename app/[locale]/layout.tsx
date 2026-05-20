@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   },
   description: 'Notre IA analyse 47 points de votre visage en 8 secondes. Score précis, routine personnalisée.',
   icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
+    icon: '/upface-wordmark.png',
+    apple: '/upface-wordmark.png',
   },
   openGraph: {
     siteName: 'UPFACE',

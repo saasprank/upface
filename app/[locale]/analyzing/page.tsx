@@ -5,9 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import Image from 'next/image'
 import ScanAnimation from '@/components/ui/ScanAnimation'
+import UpfaceLogo from '@/components/ui/UpfaceLogo'
 import { createClient } from '@/lib/supabase'
 import { isAuthUiHidden } from '@/lib/auth-ui'
-import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 import { syncSubscriberRoutineFromAnalyze } from '@/lib/routine-client'
 
 const MESSAGES_KEYS = [
@@ -138,9 +138,8 @@ export default function AnalyzingPage() {
       }}
     >
       {/* Top branding */}
-      <div className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-2">
-        <Image src="/logo.png" alt="UPFACE" width={28} height={28} style={UPFACE_LOGO_IMG_STYLE} />
-        <span className="font-bold text-sm text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>UPFACE</span>
+      <div className="absolute top-6 left-1/2 -translate-x-1/2">
+        <UpfaceLogo size="sm" />
       </div>
 
       {/* Photo with ring and scan */}
@@ -166,8 +165,8 @@ export default function AnalyzingPage() {
             {photoUrl ? (
               <Image src={photoUrl} alt="Analyzing" fill className="object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Image src="/logo.png" alt="UPFACE" width={96} height={96} style={UPFACE_LOGO_IMG_STYLE} />
+              <div className="w-full h-full flex items-center justify-center px-2">
+                <UpfaceLogo size="xs" />
               </div>
             )}
           </div>

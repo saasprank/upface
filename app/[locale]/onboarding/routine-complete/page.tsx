@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
+import UpfaceLogo from '@/components/ui/UpfaceLogo'
 import { readRoutinePayloadFromLocalStorage } from '@/lib/routine-client'
 
 interface RoutineCategory {
@@ -144,15 +145,7 @@ function RoutineCompleteContent() {
         className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between"
         style={{ background: '#080C14', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
       >
-        <div className="flex items-center gap-2">
-          <div
-            className="w-7 h-7 rounded-full border-2 flex items-center justify-center"
-            style={{ borderColor: '#3B82F6' }}
-          >
-            <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#06B6D4' }} />
-          </div>
-          <span className="font-bold text-white text-sm tracking-wide">UPFACE</span>
-        </div>
+        <UpfaceLogo size="sm" />
         <div
           className="px-3 py-1 rounded-full text-xs font-medium"
           style={{ background: 'rgba(16,185,129,0.12)', color: '#10B981', border: '1px solid rgba(16,185,129,0.2)' }}

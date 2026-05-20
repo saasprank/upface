@@ -1,12 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { createClient } from '@/lib/supabase'
 import { isAuthUiHidden } from '@/lib/auth-ui'
-import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
+import UpfaceLogo from '@/components/ui/UpfaceLogo'
 
 interface User {
   email?: string
@@ -88,12 +87,7 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
     >
       {/* Logo */}
       <div className="p-5 border-b border-[rgba(59,130,246,0.10)]">
-        <Link href={`${prefix}/`} className="flex items-center gap-2 group">
-          <Image src="/logo.png" alt="UPFACE" width={30} height={30} style={UPFACE_LOGO_IMG_STYLE} />
-          <span className="font-bold text-[#EEF2FF] text-base" style={{ fontFamily: 'Satoshi, sans-serif' }}>
-            UPFACE
-          </span>
-        </Link>
+        <UpfaceLogo size="sm" href={`${prefix}/`} />
       </div>
 
       {/* Navigation */}
