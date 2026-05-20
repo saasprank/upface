@@ -80,7 +80,16 @@ export async function GET(request: NextRequest) {
             }}
           >
             <span style={{ color: '#EEF2FF' }}>UP</span>
-            <span style={{ color: '#3B82F6' }}>FACE</span>
+            <span
+              style={{
+                background: 'linear-gradient(90deg, #60A5FA 0%, #3B82F6 48%, #06B6D4 100%)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              FACE
+            </span>
           </div>
 
           {/* Score */}

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import {
-  UPFACE_LOGO_FACE_COLOR,
+  UPFACE_LOGO_FACE_GRADIENT,
   UPFACE_LOGO_FONT,
   UPFACE_LOGO_SIZES,
   UPFACE_LOGO_UP_COLOR,
@@ -35,7 +35,18 @@ export default function UpfaceLogo({ size = 'md', href, className = '' }: Upface
       aria-label="UPFACE"
     >
       <span style={{ ...spanStyle, color: UPFACE_LOGO_UP_COLOR }}>UP</span>
-      <span style={{ ...spanStyle, color: UPFACE_LOGO_FACE_COLOR }}>FACE</span>
+      <span
+        style={{
+          ...spanStyle,
+          background: UPFACE_LOGO_FACE_GRADIENT,
+          WebkitBackgroundClip: 'text',
+          backgroundClip: 'text',
+          color: 'transparent',
+          WebkitTextFillColor: 'transparent',
+        }}
+      >
+        FACE
+      </span>
     </span>
   )
 
