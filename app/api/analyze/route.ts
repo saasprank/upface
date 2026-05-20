@@ -1,13 +1,19 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { analyzeImage } from '@/lib/analyze'
-import { analyzeFaceWithMediaPipe, cleanupMediaPipePolyfills } from '@/lib/mediapipe-server'
 
 export const runtime = 'nodejs'
+
+interface ClientScores {
+  symetrie: number
+  proportions: number
+  structure: number
+}
 
 interface AnalyzeRequestBody {
   imageUrl?: string
   /** JPEG/PNG en data URL ou base64 pur — utilisé si l'upload Storage échoue (ex. visiteur non auth) */
   imageBase64?: string
+  clientScores?: ClientScores | null
   demo?: boolean
 }
 
@@ -21,6 +27,16 @@ function decodeBase64ImagePayload(raw: string): Buffer | null {
   } catch {
     return null
   }
+}
+
+function isValidClientScores(v: unknown): v is ClientScores {
+  if (!v || typeof v !== 'object') return false
+  const s = v as Record<string, unknown>
+  return (
+    typeof s.symetrie === 'number' &&
+    typeof s.proportions === 'number' &&
+    typeof s.structure === 'number'
+  )
 }
 
 async function checkUserSubscription(userId: string | null): Promise<boolean> {
@@ -48,6 +64,7 @@ export async function POST(request: NextRequest) {
     const demo = Boolean(body.demo)
     const trimmedUrl = typeof body.imageUrl === 'string' ? body.imageUrl.trim() : ''
     const imageBase64Raw = typeof body.imageBase64 === 'string' ? body.imageBase64 : ''
+    const clientScores = isValidClientScores(body.clientScores) ? body.clientScores : null
 
     // ── 1. Identify user & check subscription ────────────────────────────────
     let userId: string | null = null
@@ -91,35 +108,16 @@ export async function POST(request: NextRequest) {
     const randInt = (min: number, max: number) =>
       Math.floor(Math.random() * (max - min + 1)) + min
 
-    let objectiveScores = {
+    const objectiveScores = clientScores ?? {
       symetrie:    randInt(65, 85),
       proportions: randInt(62, 82),
       structure:   randInt(60, 80),
     }
 
-    if (imageBuffer) {
-      try {
-        console.log('[analyze] Running MediaPipe...')
-        const mpResult = await Promise.race([
-          analyzeFaceWithMediaPipe(imageBuffer),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error('MediaPipe timeout after 25s')), 25_000)
-          ),
-        ])
-        if (!mpResult.detected) {
-          return NextResponse.json({ error: 'NO_FACE_DETECTED' }, { status: 422 })
-        }
-        objectiveScores = {
-          symetrie:    mpResult.symetrie,
-          proportions: mpResult.proportions,
-          structure:   mpResult.structure,
-        }
-        console.log('[analyze] MediaPipe OK:', objectiveScores)
-      } catch (err) {
-        console.error('[analyze] MediaPipe failed, using neutral anchors:', err)
-      } finally {
-        cleanupMediaPipePolyfills()
-      }
+    if (clientScores) {
+      console.log('[analyze] Using client MediaPipe scores:', objectiveScores)
+    } else {
+      console.log('[analyze] Using neutral anchors (no client scores)')
     }
 
     // GPT-4o Vision

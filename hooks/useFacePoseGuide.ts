@@ -24,6 +24,7 @@ interface UseFacePoseGuideOptions {
   stepId: PoseStepId
   frozen: boolean
   onValidated: () => void
+  onLandmarks?: (landmarks: NormalizedLandmark[]) => void
 }
 
 interface UseFacePoseGuideResult {
@@ -38,6 +39,7 @@ export function useFacePoseGuide({
   stepId,
   frozen,
   onValidated,
+  onLandmarks,
 }: UseFacePoseGuideOptions): UseFacePoseGuideResult {
   const [faceDetected, setFaceDetected] = useState(false)
   const [poseMatch, setPoseMatch] = useState(false)
@@ -53,10 +55,12 @@ export function useFacePoseGuide({
   const stepIdRef = useRef(stepId)
   const frozenRef = useRef(frozen)
   const onValidatedRef = useRef(onValidated)
+  const onLandmarksRef = useRef(onLandmarks)
 
   stepIdRef.current = stepId
   frozenRef.current = frozen
   onValidatedRef.current = onValidated
+  onLandmarksRef.current = onLandmarks
 
   useEffect(() => {
     smoothRef.current = null
@@ -157,6 +161,8 @@ export function useFacePoseGuide({
       }
 
       setFaceDetected(true)
+
+      if (lmLm) onLandmarksRef.current?.(lmLm)
 
       const raw = computeRawPoseSignals(lmLm as NormalizedLandmark[])
       if (!raw) {

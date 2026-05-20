@@ -16,6 +16,8 @@ import { isSupabaseConfigured } from '@/lib/supabase-config'
 import { isAuthUiHidden } from '@/lib/auth-ui'
 import { UPFACE_LOGO_IMG_STYLE } from '@/lib/upface-logo-style'
 import { syncSubscriberRoutineFromAnalyze } from '@/lib/routine-client'
+import { computeClientScores } from '@/lib/client-face-scores'
+import type { NormalizedLandmark } from '@mediapipe/tasks-vision'
 
 async function fileToDataUrl(file: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -74,6 +76,11 @@ function AnalyzeContent() {
   const cadranRef = useRef<FaceCadranHandle>(null)
   const meshCanvasRef = useRef<HTMLCanvasElement>(null)
   const finalizeOnceRef = useRef(false)
+  const clientScoresRef = useRef<{
+    symetrie: number
+    proportions: number
+    structure: number
+  } | null>(null)
 
   const [state, setState] = useState<AnalyzeState>('idle')
   const [cameraActive, setCameraActive] = useState(false)
@@ -81,6 +88,11 @@ function AnalyzeContent() {
   const [finalizing, setFinalizing] = useState(false)
   const [poseStepIndex, setPoseStepIndex] = useState(0)
   const [instructionVisible, setInstructionVisible] = useState(true)
+  const [clientScores, setClientScores] = useState<{
+    symetrie: number
+    proportions: number
+    structure: number
+  } | null>(null)
 
   const getScanVideo = useCallback(() => cadranRef.current?.getVideo() ?? null, [])
 
@@ -110,6 +122,8 @@ function AnalyzeContent() {
     setError(null)
     setPoseStepIndex(0)
     setFinalizing(false)
+    setClientScores(null)
+    clientScoresRef.current = null
     finalizeOnceRef.current = false
   }
 
@@ -150,7 +164,11 @@ function AnalyzeContent() {
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageUrl, ...(imageBase64 ? { imageBase64 } : {}) }),
+        body: JSON.stringify({
+          imageUrl,
+          ...(imageBase64 ? { imageBase64 } : {}),
+          ...(clientScoresRef.current ? { clientScores: clientScoresRef.current } : {}),
+        }),
       })
 
       const data = await parseAnalyzeResponse(res)
@@ -251,12 +269,19 @@ function AnalyzeContent() {
 
   const poseStepId = SCAN_POSE_STEP_ORDER[Math.min(poseStepIndex, SCAN_POSE_STEP_ORDER.length - 1)]
 
+  const handleLandmarks = useCallback((lm: NormalizedLandmark[]) => {
+    const scores = computeClientScores(lm)
+    clientScoresRef.current = scores
+    setClientScores(scores)
+  }, [])
+
   const { faceDetected, poseMatch, holdProgress } = useFacePoseGuide({
     active: state === 'scanning' && !finalizing,
     getVideo: getScanVideo,
     stepId: poseStepId,
     frozen: finalizing,
     onValidated: handlePoseValidated,
+    onLandmarks: handleLandmarks,
   })
 
   useFaceMesh(
