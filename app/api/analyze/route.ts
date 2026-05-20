@@ -9,6 +9,7 @@ import {
 import { resolveObjectiveScoresFromImage } from '@/lib/resolve-objective-scores'
 
 export const runtime = 'nodejs'
+export const maxDuration = 60
 
 interface ClientScores {
   symetrie: number
@@ -97,13 +98,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'IMAGE_REQUIRED' }, { status: 400 })
     }
 
-    const { scores: objectiveScores, faceDetected } = await resolveObjectiveScoresFromImage(
-      imageBuffer,
-      trimmedUrl,
-      clientScores,
-    )
+    let objectiveScores: ClientScores
+    let faceDetected: boolean
 
-    if (!demo && !faceDetected) {
+    // Freemium : scores client déjà calculés pendant le scan → pas de MediaPipe serveur (évite timeout)
+    if (clientScores && !isSubscribed) {
+      objectiveScores = clientScores
+      faceDetected = true
+    } else {
+      const resolved = await resolveObjectiveScoresFromImage(
+        imageBuffer,
+        trimmedUrl,
+        clientScores,
+      )
+      objectiveScores = resolved.scores
+      faceDetected = resolved.faceDetected
+    }
+
+    if (!demo && !faceDetected && !clientScores) {
       return NextResponse.json({ error: 'NO_FACE_DETECTED' }, { status: 422 })
     }
 
@@ -123,7 +135,7 @@ export async function POST(request: NextRequest) {
           .from('analyses')
           .insert({
             user_id:           userId,
-            photo_url:         trimmedUrl,
+            photo_url:         trimmedUrl || 'inline-capture',
             score_global:      fullScores.global,
             score_symetrie:    fullScores.symetrie,
             score_proportions: fullScores.proportions,

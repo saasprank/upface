@@ -1,6 +1,15 @@
 import { analyzeFaceWithMediaPipe } from '@/lib/mediapipe-server'
 import type { ObjectiveScores } from '@/lib/analyze'
 
+const MEDIAPIPE_TIMEOUT_MS = 8_000
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | null> {
+  return Promise.race([
+    promise.then(v => v).catch(() => null),
+    new Promise<null>(resolve => setTimeout(() => resolve(null), ms)),
+  ])
+}
+
 export async function resolveObjectiveScoresFromImage(
   imageBuffer: Buffer | null,
   imageUrl: string,
@@ -20,20 +29,16 @@ export async function resolveObjectiveScoresFromImage(
   }
 
   if (buffer?.length) {
-    try {
-      const mp = await analyzeFaceWithMediaPipe(buffer)
-      if (mp.detected) {
-        return {
-          scores: {
-            symetrie: mp.symetrie,
-            proportions: mp.proportions,
-            structure: mp.structure,
-          },
-          faceDetected: true,
-        }
+    const mp = await withTimeout(analyzeFaceWithMediaPipe(buffer), MEDIAPIPE_TIMEOUT_MS)
+    if (mp?.detected) {
+      return {
+        scores: {
+          symetrie: mp.symetrie,
+          proportions: mp.proportions,
+          structure: mp.structure,
+        },
+        faceDetected: true,
       }
-    } catch (err) {
-      console.error('[resolveObjectiveScores] MediaPipe failed:', err)
     }
   }
 

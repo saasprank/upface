@@ -165,6 +165,10 @@ function AnalyzeContent() {
     if (finalizeOnceRef.current) return
     finalizeOnceRef.current = true
     setFinalizing(true)
+    setError(null)
+
+    const controller = new AbortController()
+    const requestTimeout = window.setTimeout(() => controller.abort(), 55_000)
 
     try {
       const capturedFile = await cadranRef.current?.captureFrame()
@@ -198,6 +202,7 @@ function AnalyzeContent() {
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           imageUrl,
           ...(imageBase64 ? { imageBase64 } : {}),
@@ -226,12 +231,6 @@ function AnalyzeContent() {
         localStorage.setItem('upface_observations', JSON.stringify(data.observations))
       }
 
-      await syncSubscriberRoutineFromAnalyze({
-        freeAnalysis: data.freeAnalysis,
-        scores: data.scores,
-        observations: data.observations,
-      })
-
       const analysisId: string = data.analysisId ?? `demo-${Date.now()}`
 
       if (data.scores) {
@@ -244,15 +243,27 @@ function AnalyzeContent() {
         })
       }
 
-      setState('redirecting')
-
       const resultsPath = `${prefix}/results/${analysisId}`
-      router.push(resultsPath)
+      setState('redirecting')
+      router.replace(resultsPath)
+
+      void syncSubscriberRoutineFromAnalyze({
+        freeAnalysis: data.freeAnalysis,
+        scores: data.scores,
+        observations: data.observations,
+      })
     } catch (err) {
       finalizeOnceRef.current = false
       const msg = err instanceof Error ? err.message : ''
+      const aborted = err instanceof Error && err.name === 'AbortError'
       setFinalizing(false)
-      if (msg === 'no_face') {
+      if (aborted) {
+        setError(
+          locale === 'fr'
+            ? 'L\'analyse a pris trop de temps. Réessaie avec une bonne connexion.'
+            : 'Analysis timed out. Try again with a stable connection.'
+        )
+      } else if (msg === 'no_face') {
         setError(
           locale === 'fr'
             ? 'Aucun visage détecté. Assure-toi que ton visage est bien éclairé et de face.'
@@ -275,6 +286,8 @@ function AnalyzeContent() {
       }
       setPoseStepIndex(0)
       setState('scanning')
+    } finally {
+      window.clearTimeout(requestTimeout)
     }
   }, [locale, prefix, router])
 
@@ -282,7 +295,7 @@ function AnalyzeContent() {
     setPoseStepIndex(prev => {
       const lastIx = SCAN_POSE_STEP_ORDER.length - 1
       if (prev >= lastIx) {
-        queueMicrotask(() => void handleInstructionsDone())
+        void handleInstructionsDone()
         return prev
       }
       return prev + 1
@@ -418,6 +431,23 @@ function AnalyzeContent() {
           style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', color: '#FCA5A5', backdropFilter: 'blur(8px)' }}
         >
           {error}
+        </div>
+      )}
+
+      {(finalizing || state === 'redirecting') && (
+        <div
+          className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 px-6"
+          style={{ background: 'rgba(8,12,20,0.72)', backdropFilter: 'blur(6px)' }}
+        >
+          <div
+            className="w-10 h-10 rounded-full border-2 border-[rgba(6,182,212,0.35)] border-t-[#06B6D4] animate-spin"
+            aria-hidden
+          />
+          <p className="text-sm font-semibold text-[#EEF2FF] text-center" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+            {state === 'redirecting'
+              ? (locale === 'fr' ? 'Ouverture des résultats…' : 'Opening results…')
+              : (locale === 'fr' ? 'Analyse de ton visage…' : 'Analyzing your face…')}
+          </p>
         </div>
       )}
 

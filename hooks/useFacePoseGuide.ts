@@ -75,6 +75,15 @@ export function useFacePoseGuide({
     setPoseHintKey(null)
   }, [stepId])
 
+  const prevFrozenRef = useRef(false)
+  useEffect(() => {
+    if (prevFrozenRef.current && !frozen) {
+      emittedForStepRef.current = null
+      stableStartedAtRef.current = null
+    }
+    prevFrozenRef.current = frozen
+  }, [frozen])
+
   useEffect(() => {
     if (!active) {
       if (rafRef.current != null) {
