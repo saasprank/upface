@@ -2,9 +2,7 @@
 
 import MobileHeroSection from '@/components/landing/mobile/MobileHeroSection'
 import MobileStatsSection from '@/components/landing/mobile/MobileStatsSection'
-import MobileUploadSection from '@/components/landing/mobile/MobileUploadSection'
-import MobileAnalysisSection from '@/components/landing/mobile/MobileAnalysisSection'
-import MobileScoreSection from '@/components/landing/mobile/MobileScoreSection'
+import MobileOnboardingStepsSection from '@/components/landing/mobile/MobileOnboardingStepsSection'
 import MobileRoutineSection from '@/components/landing/mobile/MobileRoutineSection'
 import MobilePricingSection from '@/components/landing/mobile/MobilePricingSection'
 import MobileDashboardSection from '@/components/landing/mobile/MobileDashboardSection'
@@ -16,9 +14,7 @@ export default function MobileLandingPage() {
     <div className="landing-page-bg min-h-screen">
       <MobileHeroSection />
       <MobileStatsSection />
-      <MobileUploadSection />
-      <MobileAnalysisSection />
-      <MobileScoreSection />
+      <MobileOnboardingStepsSection />
       <MobileRoutineSection />
       <MobilePricingSection />
       <MobileDashboardSection />
