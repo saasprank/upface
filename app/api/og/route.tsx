@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
             }}
           >
             <span style={{ color: '#EEF2FF' }}>UP</span>
-            <span style={{ color: '#06B6D4' }}>FACE</span>
+            <span style={{ color: '#3B82F6' }}>FACE</span>
           </div>
 
           {/* Score */}
