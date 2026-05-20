@@ -5,6 +5,7 @@ import MobileStatsSection from '@/components/landing/mobile/MobileStatsSection'
 import MobileOnboardingStepsSection from '@/components/landing/mobile/MobileOnboardingStepsSection'
 import MobileRoutineSection from '@/components/landing/mobile/MobileRoutineSection'
 import MobileDashboardSection from '@/components/landing/mobile/MobileDashboardSection'
+import MobileProofCarouselSection from '@/components/landing/mobile/MobileProofCarouselSection'
 import FaqSection from '@/components/sections/FaqSection'
 import Footer from '@/components/layout/Footer'
 
@@ -16,6 +17,7 @@ export default function MobileLandingPage() {
       <MobileOnboardingStepsSection />
       <MobileRoutineSection />
       <MobileDashboardSection />
+      <MobileProofCarouselSection />
       <FaqSection />
       <Footer />
     </div>

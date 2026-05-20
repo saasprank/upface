@@ -133,6 +133,15 @@
     background-color: #06B6D4;
   }
 
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   .landing-section {
     max-width: 375px;
     margin-left: auto;
