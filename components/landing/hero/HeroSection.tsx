@@ -23,7 +23,7 @@ export default function HeroSection() {
         aria-hidden
       />
 
-      <div className="relative z-10 flex flex-1 flex-col w-full max-w-[480px] mx-auto px-4 pt-[5.5rem] pb-0">
+      <div className="relative z-10 flex flex-1 flex-col w-full max-w-[480px] mx-auto px-4 pt-16 pb-0">
         <HeroBadgeTitle />
         <HeroVisual />
         <HeroStatsBar />

@@ -31,8 +31,8 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#080C14] border-b border-[#1E2A3E]">
-        <div className="w-full max-w-6xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
+      <header className="fixed inset-x-0 top-0 z-50 h-16 bg-[#080C14] border-b border-[#1E2A3E]">
+        <div className="w-full max-w-6xl mx-auto px-4 h-full flex items-center justify-between">
           <UpfaceLogo size="nav" href={`${prefix}/`} variant="dark" />
 
           <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">

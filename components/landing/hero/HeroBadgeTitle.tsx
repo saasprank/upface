@@ -14,7 +14,7 @@ export default function HeroBadgeTitle() {
         </span>
       </div>
 
-      <h1 className="font-[Outfit,sans-serif] font-black uppercase leading-[0.92] tracking-[-0.02em] text-[clamp(2.5rem,11vw,4.5rem)]">
+      <h1 className="font-[Outfit,sans-serif] font-black uppercase leading-[0.92] tracking-[-0.02em] text-[clamp(48px,6vw,80px)] whitespace-nowrap">
         <span className="block text-white">{t('title_line1')}</span>
         <span className="block bg-gradient-to-r from-[#3B82F6] to-[#06B6D4] bg-clip-text text-transparent">
           {t('title_line2')}

@@ -38,17 +38,20 @@ export default function HeroVisual() {
   const t = useTranslations('landing.hero')
 
   return (
-    <ProtectImageArea className="relative mx-auto w-full max-w-[360px] h-[430px] sm:h-[450px]">
+    <ProtectImageArea className="relative mx-auto w-full max-w-[400px] min-h-[500px] h-[500px] sm:h-[520px]">
       <div
-        className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.2)_0%,rgba(59,130,246,0.06)_45%,transparent_72%)] pointer-events-none"
+        className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(59,130,246,0.15) 0%, transparent 70%)',
+        }}
         aria-hidden
       />
 
-      {[240, 290, 340].map((size, i) => (
+      {[260, 320].map((size, i) => (
         <div
           key={size}
           className="absolute left-1/2 top-[36%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#3B82F6]/15 pointer-events-none"
-          style={{ width: size, height: size * 0.88, opacity: 0.12 + i * 0.06 }}
+          style={{ width: size, height: size * 0.88, opacity: 0.14 + i * 0.08 }}
           aria-hidden
         />
       ))}
@@ -67,9 +70,9 @@ export default function HeroVisual() {
         ))}
       </svg>
 
-      <div className="absolute inset-x-0 top-[6%] bottom-[16%] flex items-center justify-center">
+      <div className="absolute inset-x-0 top-[4%] bottom-[14%] flex items-center justify-center">
         <div
-          className="relative w-[228px] sm:w-[248px] h-[300px] sm:h-[320px] overflow-hidden rounded-[999px]"
+          className="relative w-[268px] sm:w-[288px] h-[360px] sm:h-[380px] overflow-hidden rounded-[999px]"
           style={{
             maskImage: 'radial-gradient(ellipse 48% 52% at 50% 42%, black 58%, transparent 100%)',
             WebkitMaskImage: 'radial-gradient(ellipse 48% 52% at 50% 42%, black 58%, transparent 100%)',
@@ -112,16 +115,17 @@ export default function HeroVisual() {
         </div>
       </div>
 
-      <div className="absolute bottom-[12%] left-1/2 -translate-x-1/2 w-full pointer-events-none" aria-hidden>
-        {[230, 175, 120].map((w, i) => (
+      <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 pointer-events-none" aria-hidden>
+        {[220, 160].map((size, i) => (
           <div
-            key={w}
-            className="absolute left-1/2 -translate-x-1/2 rounded-[999px] border border-[#3B82F6]/40 blur-[0.5px]"
+            key={size}
+            className="absolute left-1/2 -translate-x-1/2 rounded-full border border-[rgba(59,130,246,0.3)] blur-[1px]"
             style={{
-              bottom: `${i * 7}px`,
-              width: w,
-              height: w * 0.13,
-              opacity: 0.28 - i * 0.07,
+              bottom: `${i * 10}px`,
+              width: size,
+              height: size,
+              boxShadow: '0 0 24px rgba(59,130,246,0.25)',
+              opacity: 0.55 - i * 0.12,
             }}
           />
         ))}

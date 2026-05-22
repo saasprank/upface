@@ -3,23 +3,29 @@
 import { useTranslations, useLocale } from 'next-intl'
 import { useRouter } from 'next/navigation'
 
-const AVATAR_COLORS = ['#3B82F6', '#06B6D4', '#6366F1', '#8B5CF6', '#2563EB', '#0891B2', '#7C3AED']
+const LEFT_AVATARS = ['Alex', 'Marie', 'Lucas', 'Emma']
+const RIGHT_AVATARS = ['Noah', 'Lina', 'Tom']
 
-function AvatarStack({ count, side }: { count: number; side: 'left' | 'right' }) {
+function AvatarStack({ names, side }: { names: string[]; side: 'left' | 'right' }) {
   return (
     <div className={`flex items-center ${side === 'right' ? 'flex-row-reverse' : ''}`}>
-      {Array.from({ length: count }, (_, i) => (
+      {names.map((name, i) => (
         <div
-          key={i}
-          className="w-7 h-7 shrink-0 rounded-full border-2 border-[#080C14]"
+          key={name}
+          className="relative w-8 h-8 shrink-0 overflow-hidden rounded-full border-2 border-[#080C14] bg-[#1E2A3E]"
           style={{
-            background: `linear-gradient(135deg, ${AVATAR_COLORS[i % AVATAR_COLORS.length]}, ${AVATAR_COLORS[(i + 2) % AVATAR_COLORS.length]})`,
-            marginLeft: side === 'left' && i > 0 ? -10 : 0,
-            marginRight: side === 'right' && i > 0 ? -10 : 0,
+            marginLeft: side === 'left' && i > 0 ? -8 : 0,
+            marginRight: side === 'right' && i > 0 ? -8 : 0,
             zIndex: i,
           }}
-          aria-hidden
-        />
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1E2A3E&color=8B9DC3&size=64&bold=true`}
+            alt=""
+            className="h-full w-full object-cover"
+          />
+        </div>
       ))}
     </div>
   )
@@ -46,7 +52,7 @@ export default function HeroCtaBlock() {
       </p>
 
       <div className="mt-5 w-full rounded-xl border border-[#1E2A3E] bg-[#0D1321]/90 py-3 px-2 flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
-        <AvatarStack count={4} side="left" />
+        <AvatarStack names={LEFT_AVATARS} side="left" />
         <div className="text-center px-1 min-w-[140px]">
           <p className="text-[11px] sm:text-xs text-[#8B9DC3] leading-snug">{t('social_proof_text')}</p>
           <p className="mt-1 text-[11px] sm:text-xs leading-none">
@@ -54,7 +60,7 @@ export default function HeroCtaBlock() {
             <span className="text-[#8B9DC3]">{t('social_proof_rating')}</span>
           </p>
         </div>
-        <AvatarStack count={3} side="right" />
+        <AvatarStack names={RIGHT_AVATARS} side="right" />
       </div>
     </div>
   )
