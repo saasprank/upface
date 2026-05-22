@@ -294,12 +294,16 @@
   },
   "landing": {
     "hero": {
-      "title_line1": "Analyze your",
-      "title_line2": "potential",
-      "subtitle": "Our AI analyzes 47 points on your face in 8 seconds. Precise score, personalized routine.",
-      "cta_primary": "Analyze for free",
-      "cta_secondary": "See an example",
-      "tagline": "Free AI analysis · 100% anonymous"
+      "badge": "AI facial analysis",
+      "title_line1": "Your facial score.",
+      "title_line2": "Your plan to improve.",
+      "subtitle": "Scan your face in 8 seconds. Upface analyzes 47 criteria, scores you out of 100, and builds your custom routine.",
+      "value_1": "47 criteria",
+      "value_2": "8 seconds",
+      "value_3": "AI routine",
+      "cta_primary": "Get my free score",
+      "cta_secondary": "See how it works",
+      "tagline": "Free · No card · 100% private"
     },
     "stats": {
       "points_value": "47",
