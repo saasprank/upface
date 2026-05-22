@@ -62,8 +62,8 @@ export default function UploadZone({ onFile, preview, loading }: UploadZoneProps
           ${dragging
             ? 'border-blue-500 bg-blue-500/10 scale-[1.01]'
             : preview
-              ? 'border-blue-500/30 bg-[#0D1321]'
-              : 'border-blue-500/20 bg-[#0D1321] hover:border-blue-500/50 hover:bg-[#0f1a2e]'
+              ? 'border-blue-500/30 bg-surface'
+              : 'border-blue-500/20 bg-surface hover:border-blue-500/50 hover:bg-surface-2'
           }
         `}
         style={{ minHeight: 280 }}
@@ -79,7 +79,7 @@ export default function UploadZone({ onFile, preview, loading }: UploadZoneProps
               </div>
             )}
             {!loading && (
-              <div className="absolute bottom-3 right-3 bg-[#080C14]/80 backdrop-blur-sm border border-white/10 rounded-lg px-3 py-1.5 text-xs text-[#8B9DC3]">
+              <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border border-[rgba(15,23,42,0.08)] rounded-lg px-3 py-1.5 text-xs text-muted">
                 Cliquer pour changer
               </div>
             )}
@@ -93,13 +93,13 @@ export default function UploadZone({ onFile, preview, loading }: UploadZoneProps
             </div>
 
             <div>
-              <p className="text-[#EEF2FF] font-medium text-sm">
+              <p className="text-theme font-medium text-sm">
                 {dragging ? 'Relâchez ici' : 'Glisse-dépose ta photo ici'}
               </p>
-              <p className="text-[#3D4F6E] text-xs mt-1">ou clique pour parcourir</p>
+              <p className="text-faint text-xs mt-1">ou clique pour parcourir</p>
             </div>
 
-            <p className="text-[#3D4F6E] text-xs">
+            <p className="text-faint text-xs">
               JPG, PNG, HEIC, WEBP · Max 10MB
             </p>
 

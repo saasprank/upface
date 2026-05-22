@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -121,7 +121,7 @@ export default function FocusPage({ params }: FocusPageProps) {
         <main className="pt-20 min-h-screen flex items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="w-8 h-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-            <p className="text-sm text-[#8B9DC3]">Chargement...</p>
+            <p className="text-sm text-muted">Chargement...</p>
           </div>
         </main>
       </>
@@ -148,7 +148,7 @@ export default function FocusPage({ params }: FocusPageProps) {
           {/* Back link */}
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-1.5 text-xs text-[#3D4F6E] hover:text-[#8B9DC3] transition-colors mb-8"
+            className="flex items-center gap-1.5 text-xs text-faint hover:text-muted transition-colors mb-8"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -167,13 +167,13 @@ export default function FocusPage({ params }: FocusPageProps) {
             </div>
 
             <h1
-              className="text-2xl sm:text-3xl font-black text-[#EEF2FF] mb-3"
+              className="text-2xl sm:text-3xl font-black text-theme mb-3"
               style={{ fontFamily: 'Satoshi, sans-serif' }}
             >
               Sur quoi veux-tu te concentrer ?
             </h1>
-            <p className="text-sm text-[#8B9DC3] leading-relaxed">
-              Sélectionne <strong className="text-[#EEF2FF]">1 ou 2 axes</strong>. Ta routine sera adaptée pour maximiser tes progrès sur ces dimensions.
+            <p className="text-sm text-muted leading-relaxed">
+              Sélectionne <strong className="text-theme">1 ou 2 axes</strong>. Ta routine sera adaptée pour maximiser tes progrès sur ces dimensions.
             </p>
           </div>
 
@@ -206,10 +206,10 @@ export default function FocusPage({ params }: FocusPageProps) {
                 )
               })}
               {selected.length === 0 && (
-                <span className="text-xs text-[#3D4F6E]">Aucun axe sélectionné</span>
+                <span className="text-xs text-faint">Aucun axe sélectionné</span>
               )}
             </div>
-            <span className="text-xs text-[#3D4F6E]">{selected.length}/2</span>
+            <span className="text-xs text-faint">{selected.length}/2</span>
           </div>
 
           {/* CTA */}
@@ -220,8 +220,8 @@ export default function FocusPage({ params }: FocusPageProps) {
             style={{
               background: selected.length > 0
                 ? 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)'
-                : 'rgba(255,255,255,0.05)',
-              color: selected.length > 0 ? '#fff' : '#3D4F6E',
+                : 'rgba(15,23,42,0.06)',
+              color: selected.length > 0 ? '#fff' : '#94A3B8',
               cursor: selected.length === 0 ? 'not-allowed' : 'pointer',
             }}
           >
@@ -240,7 +240,7 @@ export default function FocusPage({ params }: FocusPageProps) {
             )}
           </button>
 
-          <p className="text-center text-xs text-[#3D4F6E] mt-4">
+          <p className="text-center text-xs text-faint mt-4">
             Tu pourras modifier ton focus à tout moment depuis ton tableau de bord.
           </p>
         </div>

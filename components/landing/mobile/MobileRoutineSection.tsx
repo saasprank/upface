@@ -20,24 +20,18 @@ export default function MobileRoutineSection() {
         <MotionStagger className="grid grid-cols-2 gap-3">
           {ROUTINE_KEYS.map((key, i) => (
             <MotionStaggerItem key={key}>
-              <div
-                className="rounded-2xl p-4 h-full"
-                style={{
-                  background: 'rgba(8,12,20,0.8)',
-                  border: '1px solid rgba(59,130,246,0.12)',
-                }}
-              >
+              <div className="rounded-2xl p-4 h-full glass-card">
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center text-base mb-3"
                   style={{
-                    background: `${ROUTINE_COLORS[i]}15`,
-                    border: `1px solid ${ROUTINE_COLORS[i]}30`,
+                    background: `${ROUTINE_COLORS[i]}12`,
+                    border: `1px solid ${ROUTINE_COLORS[i]}25`,
                   }}
                 >
                   {t(`icon_${key}`)}
                 </div>
-                <p className="text-sm font-semibold text-[#EEF2FF] mb-0.5">{t(`card_${key}_title`)}</p>
-                <p className="text-[10px] leading-relaxed text-[#8B9DC3]">{t(`card_${key}_desc`)}</p>
+                <p className="text-sm font-semibold text-theme mb-0.5">{t(`card_${key}_title`)}</p>
+                <p className="text-[10px] leading-relaxed text-muted">{t(`card_${key}_desc`)}</p>
               </div>
             </MotionStaggerItem>
           ))}

@@ -102,14 +102,14 @@ export default function FreeResultsView({
   const strong = TRAIT_META.filter(t => scores[t.key as keyof Scores] >= 60)
 
   return (
-    <div className="min-h-screen" style={{ background: '#080C14' }}>
+    <div className="min-h-screen bg-bg">
       <div className="max-w-lg mx-auto px-4 pt-6 pb-24">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-xs text-[#5C6B85] uppercase tracking-widest font-medium mb-0.5">Résultat de ton scan</p>
-            <h1 className="text-xl font-black text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+            <p className="text-xs text-muted uppercase tracking-widest font-medium mb-0.5">Résultat de ton scan</p>
+            <h1 className="text-xl font-black text-theme" style={{ fontFamily: 'Satoshi, sans-serif' }}>
               Ton potentiel facial
             </h1>
           </div>
@@ -142,15 +142,15 @@ export default function FreeResultsView({
           </div>
           <div>
             <p className="text-xs font-bold text-[#06B6D4] uppercase tracking-wider mb-0.5">Ton visage de rêve</p>
-            <p className="text-sm text-[#8B9DC3]">
-              En suivant ta routine personnalisée, tu peux atteindre <span className="font-bold text-[#EEF2FF]">{scoreAfter}/100</span> en {scores.global < 55 ? '16' : '8'} semaines.
+            <p className="text-sm text-muted">
+              En suivant ta routine personnalisée, tu peux atteindre <span className="font-bold text-theme">{scoreAfter}/100</span> en {scores.global < 55 ? '16' : '8'} semaines.
             </p>
           </div>
         </div>
 
         {/* What we'll fix */}
         <section className="mb-6">
-          <h2 className="text-base font-black text-[#EEF2FF] mb-3" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+          <h2 className="text-base font-black text-theme mb-3" style={{ fontFamily: 'Satoshi, sans-serif' }}>
             Ce qu&apos;on va corriger
           </h2>
           <div className="flex flex-wrap gap-2">
@@ -173,7 +173,7 @@ export default function FreeResultsView({
 
         {/* Detailed observations */}
         <section className="mb-6 space-y-3">
-          <h2 className="text-base font-black text-[#EEF2FF] mb-3" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+          <h2 className="text-base font-black text-theme mb-3" style={{ fontFamily: 'Satoshi, sans-serif' }}>
             Analyse détaillée
           </h2>
           {TRAIT_META.map(t => {
@@ -184,12 +184,12 @@ export default function FreeResultsView({
               <div
                 key={t.key}
                 className="rounded-2xl p-4"
-                style={{ background: '#0D1321', border: `1px solid ${c}22` }}
+                style={{ background: '#FFFFFF', border: `1px solid ${c}22` }}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2" style={{ color: c }}>
                     {t.icon}
-                    <span className="text-sm font-bold text-[#EEF2FF]">{t.label}</span>
+                    <span className="text-sm font-bold text-theme">{t.label}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold" style={{ color: c }}>{scoreLabel(s)}</span>
@@ -202,14 +202,14 @@ export default function FreeResultsView({
                   </div>
                 </div>
                 {/* Score bar */}
-                <div className="h-1 rounded-full mb-3" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                <div className="h-1 rounded-full mb-3" style={{ background: 'rgba(15,23,42,0.06)' }}>
                   <div
                     className="h-full rounded-full transition-all"
                     style={{ width: `${s}%`, background: `linear-gradient(90deg, ${c}, ${c}99)` }}
                   />
                 </div>
                 {obs && (
-                  <p className="text-xs leading-relaxed text-[#8B9DC3]">{obs}</p>
+                  <p className="text-xs leading-relaxed text-muted">{obs}</p>
                 )}
               </div>
             )
@@ -219,11 +219,11 @@ export default function FreeResultsView({
         {/* Social proof */}
         <div
           className="flex items-center gap-2 px-4 py-3 rounded-2xl mb-6"
-          style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.1)' }}
+          style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.12)' }}
         >
           <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
-          <p className="text-xs text-[#8B9DC3]">
-            <span className="font-semibold text-[#EEF2FF]">127 utilisateurs</span> ont commencé leur routine UPFACE aujourd&apos;hui
+          <p className="text-xs text-muted">
+            <span className="font-semibold text-theme">127 utilisateurs</span> ont commencé leur routine UPFACE aujourd&apos;hui
           </p>
         </div>
 
@@ -237,10 +237,10 @@ export default function FreeResultsView({
             <div
               key={s.label}
               className="flex flex-col items-center gap-1 py-3 rounded-2xl"
-              style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.1)' }}
+              style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.12)' }}
             >
-              <span className="text-lg font-black text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>{s.value}</span>
-              <span className="text-[10px] text-[#5C6B85] uppercase tracking-wider">{s.label}</span>
+              <span className="text-lg font-black text-theme" style={{ fontFamily: 'Satoshi, sans-serif' }}>{s.value}</span>
+              <span className="text-[10px] text-muted uppercase tracking-wider">{s.label}</span>
             </div>
           ))}
         </div>
@@ -250,7 +250,7 @@ export default function FreeResultsView({
       {/* Sticky CTA */}
       <div
         className="fixed bottom-0 left-0 right-0 p-4"
-        style={{ background: 'linear-gradient(to top, #080C14 70%, transparent)', zIndex: 40 }}
+        style={{ background: 'linear-gradient(to top, #F8FAFF 70%, transparent)', zIndex: 40 }}
       >
         <div className="max-w-lg mx-auto">
           <Link

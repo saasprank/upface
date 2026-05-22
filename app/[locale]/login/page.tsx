@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -57,18 +57,18 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-bg flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <UpfaceLogo size="md" href={`${prefix}/`} className="mb-10" />
 
         <h1
-          className="text-2xl font-black text-[#EEF2FF] mb-1"
+          className="text-2xl font-black text-theme mb-1"
           style={{ fontFamily: 'Satoshi, sans-serif' }}
         >
           {t('title')}
         </h1>
-        <p className="text-sm text-[#8B9DC3] mb-8">{t('subtitle')}</p>
+        <p className="text-sm text-muted mb-8">{t('subtitle')}</p>
 
         {/* Google OAuth */}
         <Button
@@ -88,39 +88,39 @@ export default function LoginPage() {
 
         {/* Divider */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="flex-1 h-px bg-[rgba(255,255,255,0.06)]" />
-          <span className="text-xs text-[#3D4F6E]">{t('or')}</span>
-          <div className="flex-1 h-px bg-[rgba(255,255,255,0.06)]" />
+          <div className="flex-1 h-px bg-[rgba(15,23,42,0.06)]" />
+          <span className="text-xs text-faint">{t('or')}</span>
+          <div className="flex-1 h-px bg-[rgba(15,23,42,0.06)]" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs text-[#8B9DC3] mb-1.5">{t('email')}</label>
+            <label className="block text-xs text-muted mb-1.5">{t('email')}</label>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              className="w-full bg-[#0D1321] border border-[rgba(59,130,246,0.15)] rounded-xl px-4 py-3 text-sm text-[#EEF2FF] placeholder-[#3D4F6E] focus:outline-none focus:border-blue-500/50 transition-colors"
+              className="w-full bg-surface border border-[rgba(59,130,246,0.15)] rounded-xl px-4 py-3 text-sm text-theme placeholder-faint focus:outline-none focus:border-blue-500/50 transition-colors"
               placeholder="vous@exemple.com"
             />
           </div>
 
           <div>
-            <label className="block text-xs text-[#8B9DC3] mb-1.5">{t('password')}</label>
+            <label className="block text-xs text-muted mb-1.5">{t('password')}</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                className="w-full bg-[#0D1321] border border-[rgba(59,130,246,0.15)] rounded-xl px-4 py-3 pr-12 text-sm text-[#EEF2FF] placeholder-[#3D4F6E] focus:outline-none focus:border-blue-500/50 transition-colors"
+                className="w-full bg-surface border border-[rgba(59,130,246,0.15)] rounded-xl px-4 py-3 pr-12 text-sm text-theme placeholder-faint focus:outline-none focus:border-blue-500/50 transition-colors"
                 placeholder="Votre mot de passe"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#3D4F6E] hover:text-[#8B9DC3]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-faint hover:text-muted"
               >
                 {showPassword ? 'Masquer' : 'Afficher'}
               </button>
@@ -134,7 +134,7 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <p className="mt-6 text-center text-xs text-[#3D4F6E]">
+        <p className="mt-6 text-center text-xs text-faint">
           {t('no_account')}{' '}
           <Link href={`${prefix}/signup?next=${encodeURIComponent(nextUrl)}`} className="text-blue-400 hover:underline">
             {t('signup_link')}

@@ -31,55 +31,51 @@ export default function FaqSection() {
   return (
     <>
       <MobileProofCarouselSection />
-    <section
-      id="faq"
-      className="px-4 py-16 pb-8"
-      itemScope
-      itemType="https://schema.org/FAQPage"
-    >
-      <div className="max-w-[375px] mx-auto">
-        <MotionReveal>
-          <SectionHeader title={t('title')} subtitle={t('subtitle')} />
-        </MotionReveal>
+      <section
+        id="faq"
+        className="px-4 py-16 pb-8"
+        itemScope
+        itemType="https://schema.org/FAQPage"
+      >
+        <div className="max-w-[375px] mx-auto">
+          <MotionReveal>
+            <SectionHeader title={t('title')} subtitle={t('subtitle')} />
+          </MotionReveal>
 
-        <div className="space-y-3">
-          {FAQ_KEYS.map((key, i) => (
-            <MotionReveal key={key} delay={i * 0.04}>
-              <details
-                className="rounded-2xl overflow-hidden group [&_summary::-webkit-details-marker]:hidden"
-                style={{
-                  background: '#0D1321',
-                  border: '1px solid rgba(59,130,246,0.1)',
-                }}
-                itemScope
-                itemProp="mainEntity"
-                itemType="https://schema.org/Question"
-              >
-                <summary className="flex items-center justify-between gap-4 p-4 cursor-pointer list-none">
-                  <span
-                    className="text-sm font-semibold text-[#EEF2FF] leading-snug text-left"
-                    itemProp="name"
-                  >
-                    {t(`${key}_question`)}
-                  </span>
-                  <FaqChevron />
-                </summary>
-                <div
-                  className="px-4 pb-4"
+          <div className="space-y-3">
+            {FAQ_KEYS.map((key, i) => (
+              <MotionReveal key={key} delay={i * 0.04}>
+                <details
+                  className="rounded-2xl overflow-hidden group glass-card [&_summary::-webkit-details-marker]:hidden"
                   itemScope
-                  itemProp="acceptedAnswer"
-                  itemType="https://schema.org/Answer"
+                  itemProp="mainEntity"
+                  itemType="https://schema.org/Question"
                 >
-                  <p className="text-sm leading-relaxed text-[#8B9DC3] whitespace-pre-line" itemProp="text">
-                    {t(`${key}_answer`)}
-                  </p>
-                </div>
-              </details>
-            </MotionReveal>
-          ))}
+                  <summary className="flex items-center justify-between gap-4 p-4 cursor-pointer list-none">
+                    <span
+                      className="text-sm font-semibold text-theme leading-snug text-left"
+                      itemProp="name"
+                    >
+                      {t(`${key}_question`)}
+                    </span>
+                    <FaqChevron />
+                  </summary>
+                  <div
+                    className="px-4 pb-4"
+                    itemScope
+                    itemProp="acceptedAnswer"
+                    itemType="https://schema.org/Answer"
+                  >
+                    <p className="text-sm leading-relaxed text-muted whitespace-pre-line" itemProp="text">
+                      {t(`${key}_answer`)}
+                    </p>
+                  </div>
+                </details>
+              </MotionReveal>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
     </>
   )
 }

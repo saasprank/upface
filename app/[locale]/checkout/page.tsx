@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
@@ -15,7 +15,7 @@ const CheckIcon = () => (
   </svg>
 )
 const CrossIcon = () => (
-  <svg className="w-4 h-4 text-[#3D4F6E] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <svg className="w-4 h-4 text-faint shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
   </svg>
 )
@@ -23,12 +23,12 @@ const CrossIcon = () => (
 function Toast({ message, onClose }: { message: string; onClose: () => void }) {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-fade-in-up">
-      <div className="bg-[#0D1321] border border-blue-500/30 rounded-xl px-5 py-3.5 flex items-center gap-3 shadow-xl shadow-blue-500/10 max-w-sm">
+      <div className="bg-surface border border-blue-500/30 rounded-xl px-5 py-3.5 flex items-center gap-3 shadow-xl shadow-blue-500/10 max-w-sm">
         <svg className="w-4 h-4 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <p className="text-sm text-[#EEF2FF] flex-1">{message}</p>
-        <button onClick={onClose} className="text-[#3D4F6E] hover:text-[#8B9DC3]">
+        <p className="text-sm text-theme flex-1">{message}</p>
+        <button onClick={onClose} className="text-faint hover:text-muted">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -107,12 +107,12 @@ export default function CheckoutPage() {
           {/* Header */}
           <div className="text-center mb-12">
             <h1
-              className="text-3xl sm:text-4xl font-black text-[#EEF2FF] mb-3"
+              className="text-3xl sm:text-4xl font-black text-theme mb-3"
               style={{ fontFamily: 'Satoshi, sans-serif' }}
             >
               {t('title')}
             </h1>
-            <p className="text-[#8B9DC3] text-sm">{t('subtitle')}</p>
+            <p className="text-muted text-sm">{t('subtitle')}</p>
           </div>
 
           {/* Pricing cards */}
@@ -127,8 +127,8 @@ export default function CheckoutPage() {
                 }`}
                 style={{
                   background: plan.featured
-                    ? 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, #0D1321 100%)'
-                    : '#0D1321',
+                    ? 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, #FFFFFF 100%)'
+                    : '#FFFFFF',
                 }}
               >
                 {plan.featured && plan.badge && (
@@ -137,17 +137,17 @@ export default function CheckoutPage() {
                   </div>
                 )}
                 <div>
-                  <p className="text-sm font-medium text-[#8B9DC3] mb-1">{plan.name}</p>
+                  <p className="text-sm font-medium text-muted mb-1">{plan.name}</p>
                   <div className="flex items-baseline gap-1">
                     <span
-                      className="text-3xl font-black text-[#EEF2FF]"
+                      className="text-3xl font-black text-theme"
                       style={{ fontFamily: 'Satoshi, sans-serif' }}
                     >
                       {plan.price}
                     </span>
-                    {plan.period && <span className="text-sm text-[#3D4F6E]">{plan.period}</span>}
+                    {plan.period && <span className="text-sm text-faint">{plan.period}</span>}
                   </div>
-                  <p className="text-xs text-[#3D4F6E] mt-1">{plan.desc}</p>
+                  <p className="text-xs text-faint mt-1">{plan.desc}</p>
                 </div>
                 <Button
                   variant={plan.variant}
@@ -164,7 +164,7 @@ export default function CheckoutPage() {
           {/* Comparison table */}
           <div className="mb-14">
             <h2
-              className="text-xl font-bold text-[#EEF2FF] mb-6"
+              className="text-xl font-bold text-theme mb-6"
               style={{ fontFamily: 'Satoshi, sans-serif' }}
             >
               Comparaison des fonctionnalités
@@ -174,9 +174,9 @@ export default function CheckoutPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-[rgba(59,130,246,0.10)]">
-                      <th className="text-left px-6 py-4 text-[#8B9DC3] font-medium">Fonctionnalité</th>
-                      <th className="text-center px-4 py-4 text-[#8B9DC3] font-medium">Gratuit</th>
-                      <th className="text-center px-4 py-4 text-[#8B9DC3] font-medium">Report</th>
+                      <th className="text-left px-6 py-4 text-muted font-medium">Fonctionnalité</th>
+                      <th className="text-center px-4 py-4 text-muted font-medium">Gratuit</th>
+                      <th className="text-center px-4 py-4 text-muted font-medium">Report</th>
                       <th className="text-center px-4 py-4 text-blue-400 font-medium">Pro</th>
                     </tr>
                   </thead>
@@ -184,9 +184,9 @@ export default function CheckoutPage() {
                     {comparisonRows.map((row, i) => (
                       <tr
                         key={row.feature}
-                        className={`border-b border-[rgba(255,255,255,0.04)] ${i % 2 === 0 ? '' : 'bg-white/[0.02]'}`}
+                        className={`border-b border-[rgba(15,23,42,0.06)] ${i % 2 === 0 ? '' : 'bg-white/[0.02]'}`}
                       >
-                        <td className="px-6 py-3.5 text-[#8B9DC3]">{row.feature}</td>
+                        <td className="px-6 py-3.5 text-muted">{row.feature}</td>
                         <td className="px-4 py-3.5 text-center">
                           {row.free ? <CheckIcon /> : <CrossIcon />}
                           <span className="sr-only">{row.free ? 'Inclus' : 'Non inclus'}</span>
@@ -210,7 +210,7 @@ export default function CheckoutPage() {
           {/* FAQ */}
           <div className="mb-10">
             <h2
-              className="text-xl font-bold text-[#EEF2FF] mb-6"
+              className="text-xl font-bold text-theme mb-6"
               style={{ fontFamily: 'Satoshi, sans-serif' }}
             >
               {t('faq_title')}
@@ -222,9 +222,9 @@ export default function CheckoutPage() {
                     className="w-full text-left px-5 py-4 flex items-center justify-between gap-4"
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   >
-                    <span className="text-sm font-medium text-[#EEF2FF]">{faq.q}</span>
+                    <span className="text-sm font-medium text-theme">{faq.q}</span>
                     <svg
-                      className={`w-4 h-4 text-[#3D4F6E] shrink-0 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`}
+                      className={`w-4 h-4 text-faint shrink-0 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`}
                       fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -232,7 +232,7 @@ export default function CheckoutPage() {
                   </button>
                   {openFaq === i && (
                     <div className="px-5 pb-4">
-                      <p className="text-sm text-[#8B9DC3] leading-relaxed">{faq.a}</p>
+                      <p className="text-sm text-muted leading-relaxed">{faq.a}</p>
                     </div>
                   )}
                 </Card>
@@ -244,7 +244,7 @@ export default function CheckoutPage() {
           <div className="text-center">
             <button
               onClick={() => router.back()}
-              className="text-sm text-[#3D4F6E] hover:text-[#8B9DC3] transition-colors flex items-center gap-1.5 mx-auto"
+              className="text-sm text-faint hover:text-muted transition-colors flex items-center gap-1.5 mx-auto"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

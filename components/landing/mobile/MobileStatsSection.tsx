@@ -14,27 +14,21 @@ export default function MobileStatsSection() {
       <MotionStagger className="grid grid-cols-2 gap-3 max-w-[375px] mx-auto">
         {keys.map((key, i) => (
           <MotionStaggerItem key={key}>
-            <div
-              className="rounded-2xl p-4 text-center relative overflow-hidden"
-              style={{
-                background: '#0D1321',
-                border: '1px solid rgba(59,130,246,0.12)',
-              }}
-            >
+            <div className="rounded-2xl p-4 text-center relative overflow-hidden glass-card">
               <div
-                className="absolute top-0 right-0 w-16 h-16 pointer-events-none opacity-30"
+                className="absolute top-0 right-0 w-16 h-16 pointer-events-none opacity-40"
                 style={{
-                  background: 'radial-gradient(circle at 100% 0%, rgba(59,130,246,0.3), transparent 70%)',
+                  background: 'radial-gradient(circle at 100% 0%, rgba(59,130,246,0.15), transparent 70%)',
                 }}
               />
               <span className="text-lg text-cyan mb-2 block">{STAT_ICONS[i]}</span>
               <p
-                className="text-xl font-black text-[#EEF2FF] mb-0.5"
+                className="text-xl font-black text-theme mb-0.5"
                 style={{ fontFamily: 'Satoshi, sans-serif' }}
               >
                 {t(`${key}_value`)}
               </p>
-              <p className="text-[10px] text-[#3D4F6E] uppercase tracking-wider">{t(`${key}_label`)}</p>
+              <p className="text-[10px] text-faint uppercase tracking-wider">{t(`${key}_label`)}</p>
             </div>
           </MotionStaggerItem>
         ))}

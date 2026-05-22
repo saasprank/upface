@@ -69,7 +69,7 @@ export default function BilanSection({ scores, observations, analysisId, prefix 
 
   return (
     <div className="mt-8 space-y-6">
-      <h2 className="text-xl font-black text-[#EEF2FF]" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+      <h2 className="text-xl font-black text-theme" style={{ fontFamily: 'Satoshi, sans-serif' }}>
         Bilan
       </h2>
 
@@ -92,11 +92,11 @@ export default function BilanSection({ scores, observations, analysisId, prefix 
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-medium text-[#EEF2FF]">{item.label}</span>
+                    <span className="text-sm font-medium text-theme">{item.label}</span>
                     <span className="text-sm font-bold shrink-0" style={{ color: '#10B981' }}>{item.score}</span>
                   </div>
                   {item.observation && (
-                    <p className="text-xs text-[#8B9DC3] mt-0.5 leading-relaxed">{item.observation}</p>
+                    <p className="text-xs text-muted mt-0.5 leading-relaxed">{item.observation}</p>
                   )}
                 </div>
               </div>
@@ -122,11 +122,11 @@ export default function BilanSection({ scores, observations, analysisId, prefix 
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-medium text-[#EEF2FF]">{item.label}</span>
+                    <span className="text-sm font-medium text-theme">{item.label}</span>
                     <span className="text-sm font-bold shrink-0" style={{ color: '#EF4444' }}>{item.score}</span>
                   </div>
                   {item.observation && (
-                    <p className="text-xs text-[#8B9DC3] mt-0.5 leading-relaxed">{item.observation}</p>
+                    <p className="text-xs text-muted mt-0.5 leading-relaxed">{item.observation}</p>
                   )}
                 </div>
               </div>

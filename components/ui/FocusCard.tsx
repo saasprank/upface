@@ -104,7 +104,7 @@ export default function FocusCard({ config, score, selected, onToggle }: FocusCa
       style={{
         background: selected
           ? `linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(6,182,212,0.04) 100%)`
-          : '#0D1321',
+          : '#FFFFFF',
         border: selected
           ? '1.5px solid #3B82F6'
           : '1.5px solid rgba(59,130,246,0.12)',
@@ -148,7 +148,7 @@ export default function FocusCard({ config, score, selected, onToggle }: FocusCa
           style={{
             background: selected ? `${config.color}20` : 'rgba(59,130,246,0.08)',
             border: `1px solid ${selected ? config.color + '40' : 'rgba(59,130,246,0.15)'}`,
-            color: selected ? config.color : '#8B9DC3',
+            color: selected ? config.color : '#64748B',
           }}
         >
           {config.icon}
@@ -159,12 +159,12 @@ export default function FocusCard({ config, score, selected, onToggle }: FocusCa
           <div className="flex items-center gap-2 mb-0.5">
             <span
               className="text-sm font-semibold"
-              style={{ color: selected ? '#EEF2FF' : '#8B9DC3' }}
+              style={{ color: selected ? '#0F172A' : '#64748B' }}
             >
               {config.label}
             </span>
           </div>
-          <p className="text-xs leading-relaxed" style={{ color: '#3D4F6E' }}>
+          <p className="text-xs leading-relaxed" style={{ color: '#94A3B8' }}>
             {config.description}
           </p>
         </div>
@@ -182,7 +182,7 @@ export default function FocusCard({ config, score, selected, onToggle }: FocusCa
       </div>
 
       {/* Score bar */}
-      <div className="mt-3 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+      <div className="mt-3 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(15,23,42,0.06)' }}>
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{

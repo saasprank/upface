@@ -6,7 +6,8 @@ import ProtectImageArea from '@/components/ui/ProtectImageArea'
 /** Même cadran ovale que la landing MVP — une seule source de vérité. */
 export const FACE_OVAL_FRAME_CLASS = 'w-full max-w-[260px] sm:max-w-[300px] aspect-[3/4]'
 
-const OVAL_STROKE_IDLE = 'rgba(238,242,255,0.75)'
+const OVAL_STROKE_IDLE_DARK = 'rgba(238,242,255,0.75)'
+const OVAL_STROKE_IDLE_LIGHT = 'rgba(59,130,246,0.35)'
 /** Cyan SaaS — même teinte que la ligne de scan et le dégradé produit. */
 const SCAN_BRAND_ACCENT = '#06B6D4'
 
@@ -28,10 +29,10 @@ function mixHex(from: string, to: string, t: number): string {
   return `rgb(${r}, ${g}, ${b})`
 }
 
-function getOvalValidationStyle(poseMatch: boolean, holdProgress: number) {
+function getOvalValidationStyle(poseMatch: boolean, holdProgress: number, idleStroke: string) {
   const strokeColor = poseMatch
-    ? mixHex('#EEF2FF', SCAN_BRAND_ACCENT, 0.25 + holdProgress * 0.75)
-    : OVAL_STROKE_IDLE
+    ? mixHex(idleStroke.startsWith('rgba') ? '#64748B' : idleStroke, SCAN_BRAND_ACCENT, 0.25 + holdProgress * 0.75)
+    : idleStroke
 
   const glowAlpha = poseMatch ? 0.15 + holdProgress * 0.55 : 0
   const glowSpread = poseMatch ? 6 + holdProgress * 22 : 0
@@ -48,7 +49,7 @@ function getOvalValidationStyle(poseMatch: boolean, holdProgress: number) {
 
 function OvalSvg({
   className = '',
-  stroke = OVAL_STROKE_IDLE,
+  stroke = OVAL_STROKE_IDLE_DARK,
   strokeWidth = 2,
   glow = 'none',
 }: {
@@ -80,6 +81,7 @@ interface FaceOvalGuideProps {
   alignLabel: string
   className?: string
   exampleImageSrc?: string
+  variant?: 'light' | 'dark'
 }
 
 export interface FaceOvalScanOverlayProps extends FaceOvalGuideProps {
@@ -92,7 +94,10 @@ export default function FaceOvalGuide({
   alignLabel,
   className = '',
   exampleImageSrc,
+  variant = 'dark',
 }: FaceOvalGuideProps) {
+  const isLight = variant === 'light'
+  const idleStroke = isLight ? OVAL_STROKE_IDLE_LIGHT : OVAL_STROKE_IDLE_DARK
   const content = (
     <>
       {exampleImageSrc && (
@@ -115,9 +120,9 @@ export default function FaceOvalGuide({
           />
         </div>
       )}
-      <OvalSvg className="relative z-[1]" />
+      <OvalSvg className="relative z-[1]" stroke={idleStroke} />
       <p
-        className="absolute left-0 right-0 top-[52%] z-[2] text-[9px] sm:text-[10px] tracking-[0.18em] text-[#8B9DC3] uppercase text-center"
+        className={`absolute left-0 right-0 top-[52%] z-[2] text-[9px] sm:text-[10px] tracking-[0.18em] uppercase text-center ${isLight ? 'text-muted' : 'text-[#8B9DC3]'}`}
         style={{ fontFamily: 'Inter, sans-serif' }}
       >
         {alignLabel}
@@ -142,7 +147,7 @@ export function FaceOvalScanOverlay({
   poseMatch = false,
   holdProgress = 0,
 }: FaceOvalScanOverlayProps) {
-  const validation = getOvalValidationStyle(poseMatch, holdProgress)
+  const validation = getOvalValidationStyle(poseMatch, holdProgress, OVAL_STROKE_IDLE_DARK)
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[5]">

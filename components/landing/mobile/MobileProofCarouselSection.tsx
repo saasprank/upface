@@ -67,20 +67,16 @@ export default function MobileProofCarouselSection() {
         </div>
 
         <div
-          className="mt-6 rounded-2xl overflow-hidden divide-y divide-[rgba(59,130,246,0.08)]"
-          style={{
-            background: '#0D1321',
-            border: '1px solid rgba(59,130,246,0.12)',
-          }}
+          className="mt-6 rounded-2xl overflow-hidden divide-y divide-[rgba(59,130,246,0.08)] glass-card"
         >
           {PROOF_AGGREGATE_KEYS.map((key) => (
             <div
               key={key}
               className="flex items-center justify-between gap-4 px-4 py-3.5"
             >
-              <span className="text-xs text-[#8B9DC3]">{t(`aggregate_${key}_label`)}</span>
-              <span
-                className="text-xs font-bold text-[#EEF2FF] text-right"
+                <span className="text-xs text-muted">{t(`aggregate_${key}_label`)}</span>
+                <span
+                  className="text-xs font-bold text-theme text-right"
                 style={{ fontFamily: 'Satoshi, sans-serif' }}
               >
                 {t(`aggregate_${key}_value`)}

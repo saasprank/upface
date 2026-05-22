@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -132,9 +132,9 @@ export default function AnalyzingPage() {
 
   return (
     <div
-      className="min-h-screen bg-[#080C14] flex flex-col items-center justify-center gap-10 px-4"
+      className="min-h-screen bg-bg flex flex-col items-center justify-center gap-10 px-4"
       style={{
-        background: 'radial-gradient(ellipse 600px 400px at 50% 50%, rgba(59,130,246,0.06) 0%, #080C14 70%)',
+        background: 'radial-gradient(ellipse 600px 400px at 50% 50%, rgba(59,130,246,0.06) 0%, #F8FAFF 70%)',
       }}
     >
       {/* Top branding */}
@@ -161,7 +161,7 @@ export default function AnalyzingPage() {
           />
 
           {/* Photo */}
-          <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-blue-500/40 relative bg-[#0D1321]">
+          <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-blue-500/40 relative bg-surface">
             {photoUrl ? (
               <Image src={photoUrl} alt="Analyzing" fill className="object-cover" />
             ) : (
@@ -180,13 +180,13 @@ export default function AnalyzingPage() {
 
       {/* Title */}
       <div className="text-center">
-        <h1 className="text-xl font-bold text-[#EEF2FF] mb-2" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+        <h1 className="text-xl font-bold text-theme mb-2" style={{ fontFamily: 'Satoshi, sans-serif' }}>
           {t('title')}
         </h1>
 
         {/* Cycling message */}
         <div className="h-6 flex items-center justify-center">
-          <p className="text-sm text-[#8B9DC3] animate-fade-in">
+          <p className="text-sm text-muted animate-fade-in">
             {t(MESSAGES_KEYS[messageIndex])}
           </p>
         </div>
@@ -194,11 +194,11 @@ export default function AnalyzingPage() {
 
       {/* Progress bar */}
       <div className="w-full max-w-xs">
-        <div className="flex justify-between text-xs text-[#3D4F6E] mb-2">
+        <div className="flex justify-between text-xs text-faint mb-2">
           <span>Analyse IA</span>
           <span>{Math.round(progress)}%</span>
         </div>
-        <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+        <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
           <div
             className="h-full rounded-full"
             style={{
@@ -220,8 +220,8 @@ export default function AnalyzingPage() {
               i < messageIndex
                 ? 'text-emerald-400'
                 : i === messageIndex
-                  ? 'text-[#EEF2FF]'
-                  : 'text-[#3D4F6E]'
+                  ? 'text-theme'
+                  : 'text-faint'
             }`}
           >
             {i < messageIndex ? (

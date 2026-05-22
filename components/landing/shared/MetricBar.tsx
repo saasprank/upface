@@ -12,12 +12,12 @@ export default function MetricBar({ label, value, delay = 0 }: MetricBarProps) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-[#8B9DC3]">{label}</span>
-        <span className="font-semibold text-[#EEF2FF]" style={{ fontFamily: 'var(--font-mono)' }}>
+        <span className="text-muted">{label}</span>
+        <span className="font-semibold text-theme" style={{ fontFamily: 'var(--font-mono)' }}>
           {value}%
         </span>
       </div>
-      <div className="h-1.5 rounded-full bg-[#111827] overflow-hidden border border-[rgba(59,130,246,0.08)]">
+      <div className="h-1.5 rounded-full bg-surface-2 overflow-hidden border border-[rgba(59,130,246,0.1)]">
         <motion.div
           className="h-full rounded-full"
           style={{ background: 'linear-gradient(90deg, #3B82F6, #06B6D4)' }}

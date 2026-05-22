@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation'
+﻿import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import Navbar from '@/components/layout/Navbar'
@@ -239,13 +239,13 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
 
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs text-[#3D4F6E] mb-8">
-            <Link href={`${prefix}/dashboard`} className="hover:text-[#8B9DC3] transition-colors">Dashboard</Link>
+          <div className="flex items-center gap-2 text-xs text-faint mb-8">
+            <Link href={`${prefix}/dashboard`} className="hover:text-muted transition-colors">Dashboard</Link>
             <span>/</span>
-            <span className="text-[#8B9DC3]">Analyse du {date}</span>
+            <span className="text-muted">Analyse du {date}</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-black text-[#EEF2FF] mb-8" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+          <h1 className="text-2xl sm:text-3xl font-black text-theme mb-8" style={{ fontFamily: 'Satoshi, sans-serif' }}>
             {t('title')}
           </h1>
 
@@ -260,8 +260,8 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                 </svg>
                 <div>
-                  <p className="text-sm font-semibold text-[#EEF2FF]">Aperçu de votre analyse</p>
-                  <p className="text-xs text-[#8B9DC3] mt-0.5">Ces scores sont indicatifs. Abonnez-vous pour votre analyse complète et personnalisée.</p>
+                  <p className="text-sm font-semibold text-theme">Aperçu de votre analyse</p>
+                  <p className="text-xs text-muted mt-0.5">Ces scores sont indicatifs. Abonnez-vous pour votre analyse complète et personnalisée.</p>
                 </div>
               </div>
               <Link
@@ -283,10 +283,10 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
             {/* Left: Score ring + bars */}
             <div
               className="rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-6"
-              style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.1)' }}
+              style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.1)' }}
             >
               <div className="flex flex-col items-center gap-3 w-full">
-                <p className="text-xs text-[#8B9DC3] font-medium uppercase tracking-wider">{t('score_label')}</p>
+                <p className="text-xs text-muted font-medium uppercase tracking-wider">{t('score_label')}</p>
                 <ScoreRing score={scoreGlobal} size={180} />
                 <div
                   className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold"
@@ -295,8 +295,8 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
                   <div className="w-1.5 h-1.5 rounded-full" style={{ background: tier.color }} />
                   {tier.label}
                 </div>
-                <p className="text-xs text-[#3D4F6E]">
-                  Top <span className="font-semibold text-[#8B9DC3]">{100 - (analysis.percentile ?? 66)}%</span> des utilisateurs
+                <p className="text-xs text-faint">
+                  Top <span className="font-semibold text-muted">{100 - (analysis.percentile ?? 66)}%</span> des utilisateurs
                 </p>
               </div>
 
@@ -307,10 +307,10 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
                   return (
                     <div key={trait.key}>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-[#8B9DC3]">{trait.label}</span>
+                        <span className="text-xs text-muted">{trait.label}</span>
                         <span className="text-xs font-semibold" style={{ color: barColor }}>{trait.score}</span>
                       </div>
-                      <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                      <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(15,23,42,0.06)' }}>
                         <div className="h-full rounded-full" style={{ width: `${trait.score}%`, background: `linear-gradient(90deg, ${barColor}, ${barColor}99)` }} />
                       </div>
                     </div>
@@ -336,7 +336,7 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
           </div>
 
           {/* Share */}
-          <div className="rounded-2xl p-6 mb-8" style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.1)' }}>
+          <div className="rounded-2xl p-6 mb-8" style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.1)' }}>
             <ShareButton analysisId={id} score={scoreGlobal} />
           </div>
 
@@ -350,24 +350,24 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
             />
           ) : (
             /* Paywall for routine & bilan */
-            <div className="rounded-2xl overflow-hidden relative" style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.1)' }}>
+            <div className="rounded-2xl overflow-hidden relative" style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.1)' }}>
               <div className="p-6 blur-sm pointer-events-none select-none">
-                <h2 className="text-xl font-black text-[#EEF2FF] mb-4" style={{ fontFamily: 'Satoshi, sans-serif' }}>Bilan & Routine personnalisée</h2>
+                <h2 className="text-xl font-black text-theme mb-4" style={{ fontFamily: 'Satoshi, sans-serif' }}>Bilan & Routine personnalisée</h2>
                 <div className="grid grid-cols-2 gap-4">
                   {['Points forts', 'À améliorer'].map(l => (
-                    <div key={l} className="rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                      <div className="h-3 w-20 rounded mb-3" style={{ background: 'rgba(255,255,255,0.08)' }} />
-                      {[1, 2, 3].map(i => <div key={i} className="h-2 rounded mb-2" style={{ background: 'rgba(255,255,255,0.05)', width: `${60 + i * 10}%` }} />)}
+                    <div key={l} className="rounded-xl p-4" style={{ background: 'rgba(15,23,42,0.04)' }}>
+                      <div className="h-3 w-20 rounded mb-3" style={{ background: 'rgba(15,23,42,0.08)' }} />
+                      {[1, 2, 3].map(i => <div key={i} className="h-2 rounded mb-2" style={{ background: 'rgba(15,23,42,0.06)', width: `${60 + i * 10}%` }} />)}
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6" style={{ background: 'rgba(8,12,20,0.85)' }}>
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6" style={{ background: 'rgba(248,250,255,0.85)' }}>
                 <svg className="w-8 h-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                 </svg>
-                <p className="text-base font-semibold text-[#EEF2FF] text-center">Débloquez votre bilan complet et votre routine personnalisée</p>
-                <p className="text-sm text-[#8B9DC3] text-center max-w-sm">Obtenez votre plan d&apos;amélioration sur 90 jours, filtré sur vos axes prioritaires.</p>
+                <p className="text-base font-semibold text-theme text-center">Débloquez votre bilan complet et votre routine personnalisée</p>
+                <p className="text-sm text-muted text-center max-w-sm">Obtenez votre plan d&apos;amélioration sur 90 jours, filtré sur vos axes prioritaires.</p>
                 <div className="flex flex-wrap justify-center gap-3 mt-2">
                   <Link
                     href={`${prefix}/checkout?plan=pro`}

@@ -13,9 +13,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const base = 'inline-flex items-center justify-center font-medium transition-all duration-300 rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none'
 
     const variants = {
-      primary: 'bg-blue-500 hover:bg-blue-400 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 active:scale-[0.98]',
-      ghost: 'bg-transparent hover:bg-white/5 text-[#8B9DC3] hover:text-[#EEF2FF] border border-transparent hover:border-white/10',
-      outline: 'bg-transparent border border-blue-500/30 hover:border-blue-500/70 text-blue-400 hover:text-blue-300 hover:bg-blue-500/5',
+      primary: 'btn-primary-premium text-white active:scale-[0.98]',
+      ghost: 'bg-transparent hover:bg-[rgba(59,130,246,0.06)] text-muted hover:text-theme border border-transparent hover:border-[rgba(59,130,246,0.12)]',
+      outline: 'bg-transparent border border-[rgba(59,130,246,0.2)] hover:border-[rgba(59,130,246,0.4)] text-[#2563EB] hover:bg-[rgba(59,130,246,0.04)]',
     }
 
     const sizes = {

@@ -66,10 +66,10 @@ export default function DashboardBottomNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
       style={{
-        background: 'rgba(13,19,33,0.97)',
+        background: 'rgba(248,250,255,0.92)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderTop: '1px solid rgba(59,130,246,0.10)',
+        borderTop: '1px solid rgba(59,130,246,0.12)',
       }}
     >
       <div className="flex items-center justify-around px-2 py-2">
@@ -84,7 +84,7 @@ export default function DashboardBottomNav() {
               key={item.id}
               onClick={() => router.push(fullPath)}
               className="flex flex-col items-center gap-1 px-3 py-1 transition-all"
-              style={{ color: active ? '#60A5FA' : '#3D4F6E' }}
+              style={{ color: active ? '#3B82F6' : '#94A3B8' }}
             >
               {item.icon(active)}
               <span className="text-[10px] font-medium">{item.label}</span>

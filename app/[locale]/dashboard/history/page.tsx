@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase-server'
 import Card from '@/components/ui/Card'
@@ -40,7 +40,7 @@ export default async function HistoryPage() {
     <div className="px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <h1
-          className="text-2xl font-black text-[#EEF2FF]"
+          className="text-2xl font-black text-theme"
           style={{ fontFamily: 'Satoshi, sans-serif' }}
         >
           {t('history_title')}
@@ -54,8 +54,8 @@ export default async function HistoryPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 className="text-lg font-semibold text-[#EEF2FF] mb-2">{t('history_empty')}</h2>
-          <p className="text-sm text-[#3D4F6E] mb-6">Faites votre première analyse pour commencer votre progression.</p>
+          <h2 className="text-lg font-semibold text-theme mb-2">{t('history_empty')}</h2>
+          <p className="text-sm text-faint mb-6">Faites votre première analyse pour commencer votre progression.</p>
           <Link href={`${prefix}/analyze`}>
             <Button>{t('history_empty_cta')}</Button>
           </Link>
@@ -75,8 +75,8 @@ export default async function HistoryPage() {
                     <div className="flex items-center gap-2 mb-1">
                       <Badge variant={tier.variant}>{tier.label}</Badge>
                     </div>
-                    <p className="text-sm font-medium text-[#EEF2FF]">{analysis.score_global}/100</p>
-                    <p className="text-xs text-[#3D4F6E]">{date}</p>
+                    <p className="text-sm font-medium text-theme">{analysis.score_global}/100</p>
+                    <p className="text-xs text-faint">{date}</p>
                   </div>
                   <Link
                     href={`${prefix}/results/${analysis.id}`}

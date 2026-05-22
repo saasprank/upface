@@ -10,7 +10,7 @@ export default function Badge({ variant = 'primary', children, className = '', .
     success: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     warning: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
     danger: 'bg-red-500/10 text-red-400 border-red-500/20',
-    muted: 'bg-white/5 text-[#8B9DC3] border-white/10',
+    muted: 'bg-slate-100 text-muted border-[rgba(15,23,42,0.08)]',
   }
 
   return (

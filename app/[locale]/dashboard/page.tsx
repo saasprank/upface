@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
@@ -171,7 +171,7 @@ export default function DashboardHome() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-xs font-medium mb-0.5" style={{ color: '#8B9DC3' }}>
+          <p className="text-xs font-medium mb-0.5" style={{ color: '#64748B' }}>
             {userName ? `Bonjour ${userName} 👋` : 'Bonjour 👋'}
           </p>
           <h1 className="text-xl font-bold text-white">Ton dashboard</h1>
@@ -188,21 +188,21 @@ export default function DashboardHome() {
       {/* Score card */}
       <div
         className="rounded-2xl p-5 mb-4"
-        style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+        style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
       >
         <div className="flex items-center justify-between mb-4">
           <div>
-            <p className="text-xs mb-1" style={{ color: '#8B9DC3' }}>TON SCORE ACTUEL</p>
+            <p className="text-xs mb-1" style={{ color: '#64748B' }}>TON SCORE ACTUEL</p>
             <div className="flex items-end gap-2">
               <span className="text-5xl font-black text-white">{score}</span>
-              <span className="text-lg mb-1" style={{ color: '#8B9DC3' }}>/100</span>
+              <span className="text-lg mb-1" style={{ color: '#64748B' }}>/100</span>
             </div>
             <p className="text-xs font-medium mt-1" style={{ color: '#10B981' }}>
               ▲ Potentiel +{progression} pts
             </p>
           </div>
           <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-            <circle cx="40" cy="40" r="34" fill="none" stroke="#1A2236" strokeWidth="6" />
+            <circle cx="40" cy="40" r="34" fill="none" stroke="#E2E8F0" strokeWidth="6" />
             <circle
               cx="40" cy="40" r="34" fill="none"
               stroke="url(#scoreGrad)" strokeWidth="6" strokeLinecap="round"
@@ -219,10 +219,10 @@ export default function DashboardHome() {
         </div>
         <div>
           <div className="flex justify-between text-xs mb-1">
-            <span style={{ color: '#8B9DC3' }}>Progression vers {potentiel}/100</span>
+            <span style={{ color: '#64748B' }}>Progression vers {potentiel}/100</span>
             <span style={{ color: '#3B82F6' }}>{Math.round((score / potentiel) * 100)}%</span>
           </div>
-          <div className="h-1.5 rounded-full" style={{ background: '#1A2236' }}>
+          <div className="h-1.5 rounded-full" style={{ background: '#E2E8F0' }}>
             <div
               className="h-full rounded-full"
               style={{ width: `${(score / potentiel) * 100}%`, background: 'linear-gradient(90deg, #3B82F6, #06B6D4)' }}
@@ -241,11 +241,11 @@ export default function DashboardHome() {
           <div
             key={s.label}
             className="rounded-xl p-3 text-center"
-            style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.1)' }}
+            style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.1)' }}
           >
             <div className="text-lg mb-0.5">{s.icon}</div>
             <div className="text-base font-bold text-white">{s.value}</div>
-            <div className="text-xs" style={{ color: '#3D4F6E' }}>{s.label}</div>
+            <div className="text-xs" style={{ color: '#94A3B8' }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -254,10 +254,10 @@ export default function DashboardHome() {
       {history.length > 1 ? (
         <div
           className="rounded-2xl p-4 mb-4"
-          style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+          style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
         >
           <div className="flex justify-between items-center mb-3">
-            <p className="text-xs font-medium" style={{ color: '#8B9DC3' }}>PROGRESSION</p>
+            <p className="text-xs font-medium" style={{ color: '#64748B' }}>PROGRESSION</p>
             <p className="text-xs font-bold" style={{ color: '#10B981' }}>
               {history[history.length - 1].score - history[0].score >= 0
                 ? `+${history[history.length - 1].score - history[0].score} pts`
@@ -289,27 +289,27 @@ export default function DashboardHome() {
                 <>
                   <path d={area} fill="url(#ag)" />
                   <path d={line} fill="none" stroke="url(#lg)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  {pts.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r="4" fill="#06B6D4" stroke="#080C14" strokeWidth="2" />)}
+                  {pts.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r="4" fill="#06B6D4" stroke="#F8FAFF" strokeWidth="2" />)}
                 </>
               )
             })()}
           </svg>
           <div className="flex justify-between mt-1">
             {history.map((h, i) => (
-              <span key={i} style={{ color: '#3D4F6E', fontSize: '10px' }}>{h.date}</span>
+              <span key={i} style={{ color: '#94A3B8', fontSize: '10px' }}>{h.date}</span>
             ))}
           </div>
         </div>
       ) : (
         <div
           className="rounded-2xl p-4 mb-4"
-          style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+          style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
         >
-          <p className="text-xs font-medium mb-3" style={{ color: '#8B9DC3' }}>TON POTENTIEL</p>
+          <p className="text-xs font-medium mb-3" style={{ color: '#64748B' }}>TON POTENTIEL</p>
           <div className="flex items-center justify-between mb-3">
             <div className="text-center">
               <p className="text-2xl font-black text-white">{score}</p>
-              <p className="text-xs" style={{ color: '#8B9DC3' }}>Maintenant</p>
+              <p className="text-xs" style={{ color: '#64748B' }}>Maintenant</p>
             </div>
             <div className="flex-1 mx-4">
               <div className="flex items-center gap-1 justify-center mb-1">
@@ -317,7 +317,7 @@ export default function DashboardHome() {
                   <div
                     key={i}
                     className="h-1.5 flex-1 rounded-full"
-                    style={{ background: i < Math.round((score / potentiel) * 5) ? '#3B82F6' : '#1A2236' }}
+                    style={{ background: i < Math.round((score / potentiel) * 5) ? '#3B82F6' : '#E2E8F0' }}
                   />
                 ))}
               </div>
@@ -325,10 +325,10 @@ export default function DashboardHome() {
             </div>
             <div className="text-center">
               <p className="text-2xl font-black" style={{ color: '#06B6D4' }}>{potentiel}</p>
-              <p className="text-xs" style={{ color: '#8B9DC3' }}>Potentiel</p>
+              <p className="text-xs" style={{ color: '#64748B' }}>Potentiel</p>
             </div>
           </div>
-          <p className="text-xs text-center" style={{ color: '#3D4F6E' }}>
+          <p className="text-xs text-center" style={{ color: '#94A3B8' }}>
             📈 Fais une 2e analyse pour voir ta progression
           </p>
         </div>
@@ -337,13 +337,13 @@ export default function DashboardHome() {
       {/* Action du jour — routine IA réservée aux abonnés */}
       <div
         className="rounded-2xl p-4 mb-4"
-        style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+        style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
       >
         <p className="text-xs font-medium mb-3" style={{ color: '#06B6D4' }}>ACTION DU JOUR</p>
         {plan === 'pro' && routine?.categories?.[0] ? (
           <div>
             <p className="text-white font-semibold text-sm mb-1">{routine.categories[0].title}</p>
-            <p className="text-xs mb-3" style={{ color: '#8B9DC3' }}>{routine.categories[0].tasks[0]}</p>
+            <p className="text-xs mb-3" style={{ color: '#64748B' }}>{routine.categories[0].tasks[0]}</p>
             <button
               onClick={() => router.push(`/${locale}/dashboard/routine`)}
               className="w-full py-2.5 rounded-xl text-sm font-medium text-white"
@@ -354,7 +354,7 @@ export default function DashboardHome() {
           </div>
         ) : plan === 'pro' ? (
           <div>
-            <p className="text-sm mb-3" style={{ color: '#8B9DC3' }}>
+            <p className="text-sm mb-3" style={{ color: '#64748B' }}>
               Ta routine personnalisée sera mise à jour après chaque analyse Pro. Lance une analyse ou ouvre l&apos;onglet Routine.
             </p>
             <button
@@ -367,7 +367,7 @@ export default function DashboardHome() {
           </div>
         ) : (
           <div>
-            <p className="text-sm mb-3" style={{ color: '#8B9DC3' }}>
+            <p className="text-sm mb-3" style={{ color: '#64748B' }}>
               La routine IA personnalisée est réservée aux membres Pro — elle s&apos;adapte à ton score et à tes objectifs après paiement.
             </p>
             <button
@@ -384,9 +384,9 @@ export default function DashboardHome() {
       {/* Conseil du jour */}
       <div
         className="rounded-2xl p-4 mb-4"
-        style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+        style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
       >
-        <p className="text-xs font-medium mb-2" style={{ color: '#8B9DC3' }}>CONSEIL DU JOUR</p>
+        <p className="text-xs font-medium mb-2" style={{ color: '#64748B' }}>CONSEIL DU JOUR</p>
         <div className="flex items-start gap-3">
           <span className="text-2xl">{dailyTip.icon}</span>
           <p className="text-sm text-white leading-relaxed">{dailyTip.tip}</p>
@@ -396,19 +396,19 @@ export default function DashboardHome() {
       {/* Scores rapides */}
       <div
         className="rounded-2xl p-4"
-        style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+        style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
       >
-        <p className="text-xs font-medium mb-3" style={{ color: '#8B9DC3' }}>TES SCORES</p>
+        <p className="text-xs font-medium mb-3" style={{ color: '#64748B' }}>TES SCORES</p>
         <div className="space-y-2.5">
           {SCORE_BARS.map((item) => (
             <div key={item.key}>
               <div className="flex justify-between text-xs mb-1">
-                <span style={{ color: '#8B9DC3' }}>{item.label}</span>
+                <span style={{ color: '#64748B' }}>{item.label}</span>
                 <span className="text-white font-medium">
                   {scores ? scores[item.key] : '--'}/100
                 </span>
               </div>
-              <div className="h-1 rounded-full" style={{ background: '#1A2236' }}>
+              <div className="h-1 rounded-full" style={{ background: '#E2E8F0' }}>
                 <div
                   className="h-full rounded-full"
                   style={{ width: `${scores ? scores[item.key] : 0}%`, background: item.color }}
@@ -422,9 +422,9 @@ export default function DashboardHome() {
       {/* Récap semaine */}
       <div
         className="rounded-2xl p-4 mt-4"
-        style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+        style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
       >
-        <p className="text-xs font-medium mb-3" style={{ color: '#8B9DC3' }}>CETTE SEMAINE</p>
+        <p className="text-xs font-medium mb-3" style={{ color: '#64748B' }}>CETTE SEMAINE</p>
         <div className="space-y-3">
           {[
             { label: 'Routine complétée', value: '3/7 jours', icon: '📋', color: '#3B82F6' },
@@ -434,7 +434,7 @@ export default function DashboardHome() {
             <div key={item.label} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span>{item.icon}</span>
-                <span className="text-sm" style={{ color: '#8B9DC3' }}>{item.label}</span>
+                <span className="text-sm" style={{ color: '#64748B' }}>{item.label}</span>
               </div>
               <span className="text-sm font-bold" style={{ color: item.color }}>{item.value}</span>
             </div>
@@ -453,7 +453,7 @@ export default function DashboardHome() {
         <p className="text-sm font-medium text-white mb-1">
           &quot;La discipline est le pont entre les objectifs et les accomplissements.&quot;
         </p>
-        <p className="text-xs" style={{ color: '#3D4F6E' }}>— Jim Rohn</p>
+        <p className="text-xs" style={{ color: '#94A3B8' }}>— Jim Rohn</p>
       </div>
     </div>
   )

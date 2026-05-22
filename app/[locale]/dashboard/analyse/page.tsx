@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
@@ -86,7 +86,7 @@ function RadarChart({ scores }: { scores: Scores }) {
       {RADAR_DIMS.map((d, i) => {
         const p = getPoint(i, R + 18)
         return (
-          <text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle" fill="#8B9DC3" fontSize="9">
+          <text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle" fill="#64748B" fontSize="9">
             {d.label}
           </text>
         )
@@ -196,12 +196,12 @@ export default function AnalysePage() {
   const tier = getTier(score)
 
   return (
-    <div className="px-4 pt-6 pb-4" style={{ background: '#080C14', minHeight: '100vh' }}>
+    <div className="px-4 pt-6 pb-4" style={{ background: '#F8FAFF', minHeight: '100vh' }}>
 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-xs font-medium mb-0.5" style={{ color: '#8B9DC3' }}>RÉSULTAT DE TON SCAN</p>
+          <p className="text-xs font-medium mb-0.5" style={{ color: '#64748B' }}>RÉSULTAT DE TON SCAN</p>
           <h1 className="text-xl font-bold text-white">Ton analyse faciale</h1>
         </div>
         <span
@@ -215,27 +215,27 @@ export default function AnalysePage() {
       {/* Score principal */}
       <div
         className="rounded-2xl p-5 mb-4 flex items-center justify-between"
-        style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+        style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
       >
         <div>
           <div className="flex items-end gap-2 mb-2">
             <span className="text-6xl font-black text-white">{score}</span>
-            <span className="text-xl mb-2" style={{ color: '#8B9DC3' }}>/100</span>
+            <span className="text-xl mb-2" style={{ color: '#64748B' }}>/100</span>
           </div>
           <div className="flex gap-3">
             <div className="text-center">
               <p className="text-lg font-bold" style={{ color: '#06B6D4' }}>{potentiel}</p>
-              <p className="text-xs" style={{ color: '#3D4F6E' }}>Potentiel</p>
+              <p className="text-xs" style={{ color: '#94A3B8' }}>Potentiel</p>
             </div>
             <div className="w-px" style={{ background: 'rgba(59,130,246,0.2)' }} />
             <div className="text-center">
               <p className="text-lg font-bold text-white">Top {percentile}%</p>
-              <p className="text-xs" style={{ color: '#3D4F6E' }}>Percentile</p>
+              <p className="text-xs" style={{ color: '#94A3B8' }}>Percentile</p>
             </div>
           </div>
         </div>
         <svg className="w-24 h-24 -rotate-90" viewBox="0 0 96 96">
-          <circle cx="48" cy="48" r="40" fill="none" stroke="#1A2236" strokeWidth="7" />
+          <circle cx="48" cy="48" r="40" fill="none" stroke="#E2E8F0" strokeWidth="7" />
           <circle
             cx="48" cy="48" r="40" fill="none"
             stroke="url(#aGrad)" strokeWidth="7" strokeLinecap="round"
@@ -255,9 +255,9 @@ export default function AnalysePage() {
       {scores && (
         <div
           className="rounded-2xl p-4 mb-4"
-          style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+          style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
         >
-          <p className="text-xs font-medium mb-1" style={{ color: '#8B9DC3' }}>RADAR DE PERFORMANCE</p>
+          <p className="text-xs font-medium mb-1" style={{ color: '#64748B' }}>RADAR DE PERFORMANCE</p>
           <RadarChart scores={scores} />
         </div>
       )}
@@ -265,9 +265,9 @@ export default function AnalysePage() {
       {/* 6 critères détaillés */}
       <div
         className="rounded-2xl p-4 mb-4"
-        style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+        style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
       >
-        <p className="text-xs font-medium mb-3" style={{ color: '#8B9DC3' }}>ANALYSE DÉTAILLÉE</p>
+        <p className="text-xs font-medium mb-3" style={{ color: '#64748B' }}>ANALYSE DÉTAILLÉE</p>
         <div className="space-y-4">
           {CRITERIA.map((c) => {
             const val = scores ? (scores[c.key] as number) : 0
@@ -285,11 +285,11 @@ export default function AnalysePage() {
                     <span className="text-sm font-bold text-white">{val || '--'}/100</span>
                   </div>
                 </div>
-                <div className="h-1.5 rounded-full mb-1" style={{ background: '#1A2236' }}>
+                <div className="h-1.5 rounded-full mb-1" style={{ background: '#E2E8F0' }}>
                   <div className="h-full rounded-full transition-all" style={{ width: `${val}%`, background: c.color }} />
                 </div>
                 {descriptions[c.key] && (
-                  <p className="text-xs leading-relaxed" style={{ color: '#8B9DC3' }}>{descriptions[c.key]}</p>
+                  <p className="text-xs leading-relaxed" style={{ color: '#64748B' }}>{descriptions[c.key]}</p>
                 )}
               </div>
             )
@@ -301,9 +301,9 @@ export default function AnalysePage() {
       {analyses.length > 1 && (
         <div
           className="rounded-2xl p-4 mb-4"
-          style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+          style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
         >
-          <p className="text-xs font-medium mb-3" style={{ color: '#8B9DC3' }}>HISTORIQUE</p>
+          <p className="text-xs font-medium mb-3" style={{ color: '#64748B' }}>HISTORIQUE</p>
           <div className="space-y-0">
             {analyses.map((a, i) => (
               <div
@@ -313,7 +313,7 @@ export default function AnalysePage() {
               >
                 <div>
                   <p className="text-sm font-medium text-white">{a.score_global}/100</p>
-                  <p className="text-xs" style={{ color: '#3D4F6E' }}>
+                  <p className="text-xs" style={{ color: '#94A3B8' }}>
                     {new Date(a.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                   </p>
                 </div>

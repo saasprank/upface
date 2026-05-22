@@ -46,7 +46,7 @@ function UploadStepPanel() {
   const t = useTranslations('landing.upload')
 
   return (
-    <FaceOvalGuide alignLabel={t('align_face')} className="max-w-[220px]" />
+    <FaceOvalGuide alignLabel={t('align_face')} className="max-w-[220px]" variant="light" />
   )
 }
 
@@ -56,13 +56,7 @@ function AnalysisStepPanel({ progress }: { progress: number }) {
   const offset = circumference - (progress / 100) * circumference
 
   return (
-    <div
-      className="rounded-2xl p-6 text-center"
-      style={{
-        background: '#080C14',
-        border: '1px solid rgba(59,130,246,0.12)',
-      }}
-    >
+    <div className="rounded-2xl p-6 text-center glass-card">
       <div className="relative inline-flex items-center justify-center mb-6">
         <svg width={140} height={140} className="rotate-[-90deg]">
           <circle cx={70} cy={70} r={54} fill="none" stroke="rgba(59,130,246,0.08)" strokeWidth={6} />
@@ -88,7 +82,7 @@ function AnalysisStepPanel({ progress }: { progress: number }) {
         <div className="absolute inset-0 flex flex-col items-center justify-center px-3">
           <motion.span
             key={progress}
-            className="text-2xl font-black text-[#EEF2FF] leading-none"
+            className="text-2xl font-black text-theme leading-none"
             style={{ fontFamily: 'Satoshi, sans-serif' }}
             initial={{ opacity: 0.6, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -130,13 +124,13 @@ function AnalysisStepPanel({ progress }: { progress: number }) {
                       ? 'rgba(16,185,129,0.15)'
                       : state === 'active'
                         ? 'rgba(59,130,246,0.15)'
-                        : 'rgba(255,255,255,0.04)',
+                        : 'rgba(15,23,42,0.04)',
                   border: `1px solid ${
                     state === 'done'
                       ? 'rgba(16,185,129,0.4)'
                       : state === 'active'
                         ? 'rgba(59,130,246,0.4)'
-                        : 'rgba(255,255,255,0.08)'
+                        : 'rgba(15,23,42,0.08)'
                   }`,
                 }}
               >
@@ -164,10 +158,10 @@ function AnalysisStepPanel({ progress }: { progress: number }) {
               <span
                 className={`text-xs ${
                   state === 'active'
-                    ? 'text-[#EEF2FF] font-semibold'
+                    ? 'text-theme font-semibold'
                     : state === 'done'
-                      ? 'text-[#8B9DC3]'
-                      : 'text-[#3D4F6E]'
+                      ? 'text-muted'
+                      : 'text-faint'
                 }`}
               >
                 {t(`step_${step}`)}
@@ -177,7 +171,7 @@ function AnalysisStepPanel({ progress }: { progress: number }) {
         })}
       </div>
 
-      <p className="mt-5 text-[10px] text-[#3D4F6E] leading-relaxed px-2">{t('note')}</p>
+      <p className="mt-5 text-[10px] text-faint leading-relaxed px-2">{t('note')}</p>
     </div>
   )
 }
@@ -187,13 +181,7 @@ function ScoreStepPanel() {
 
   return (
     <div>
-      <div
-        className="rounded-2xl p-6 mb-4"
-        style={{
-          background: '#0D1321',
-          border: '1px solid rgba(59,130,246,0.12)',
-        }}
-      >
+      <div className="rounded-2xl p-6 mb-4 glass-card">
         <div className="flex justify-center mb-5">
           <ScoreRing score={78} size={160} animate />
         </div>
@@ -206,7 +194,7 @@ function ScoreStepPanel() {
           }}
         >
           <span className="text-sm font-semibold text-emerald-400">{t('badge')}</span>
-          <span className="text-xs text-[#3D4F6E] ml-2">{t('percentile')}</span>
+          <span className="text-xs text-faint ml-2">{t('percentile')}</span>
         </div>
 
         <div className="space-y-4">
@@ -335,7 +323,7 @@ export default function MobileOnboardingStepsSection() {
               className="h-1.5 rounded-full"
               animate={{
                 width: i === phaseIndex ? 24 : 8,
-                background: i === phaseIndex ? '#06B6D4' : i < phaseIndex ? 'rgba(16,185,129,0.6)' : 'rgba(255,255,255,0.12)',
+                background: i === phaseIndex ? '#06B6D4' : i < phaseIndex ? 'rgba(16,185,129,0.6)' : 'rgba(15,23,42,0.1)',
               }}
               transition={{ duration: 0.35 }}
             />

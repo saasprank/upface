@@ -31,15 +31,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header
-        className="fixed top-0 left-0 right-0 z-50"
-        style={{
-          background: 'rgba(8,12,20,0.75)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          borderBottom: '1px solid rgba(59,130,246,0.08)',
-        }}
-      >
+      <header className="fixed top-0 left-0 right-0 z-50 glass-nav">
         <div className="w-full max-w-6xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
           <UpfaceLogo size="nav" href={`${prefix}/`} />
 
@@ -48,7 +40,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-[#8B9DC3] hover:text-[#EEF2FF] transition-colors"
+                className="text-sm text-muted hover:text-theme transition-colors"
               >
                 {link.label}
               </Link>
@@ -59,18 +51,14 @@ export default function Navbar() {
             {!hideAuthUi && (
               <Link
                 href={`${prefix}/login`}
-                className="text-sm text-[#8B9DC3] hover:text-[#EEF2FF] px-3 py-1.5 transition-colors"
+                className="text-sm text-muted hover:text-theme px-3 py-1.5 transition-colors"
               >
                 {t('login')}
               </Link>
             )}
             <Link
               href={`${prefix}/analyze`}
-              className="text-sm font-semibold px-4 py-2 rounded-xl text-[#EEF2FF] transition-all hover:opacity-90"
-              style={{
-                background: 'linear-gradient(135deg, #3B82F6, #06B6D4)',
-                boxShadow: '0 0 20px rgba(59,130,246,0.2)',
-              }}
+              className="text-sm font-semibold px-4 py-2 rounded-xl text-white btn-primary-premium"
             >
               {t('cta')}
             </Link>
@@ -78,7 +66,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="md:hidden ml-auto p-2 text-[#8B9DC3] hover:text-[#EEF2FF] transition-colors"
+            className="md:hidden ml-auto p-2 text-muted hover:text-theme transition-colors"
             onClick={() => setMenuOpen(true)}
             aria-label="Menu"
             aria-expanded={menuOpen}
@@ -90,32 +78,28 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Backdrop */}
       <div
         className={`fixed inset-0 z-[60] md:hidden transition-opacity duration-300 ${
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
-        style={{ background: 'rgba(4,8,16,0.72)', backdropFilter: 'blur(4px)' }}
+        style={{ background: 'rgba(15,23,42,0.25)', backdropFilter: 'blur(4px)' }}
         onClick={closeMenu}
         aria-hidden={!menuOpen}
       />
 
-      {/* Right sidebar */}
       <aside
         className={`fixed top-0 right-0 z-[70] h-[100dvh] w-[min(300px,88vw)] md:hidden flex flex-col transition-transform duration-300 ease-out ${
           menuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         style={{
-          background: '#0D1321',
+          background: 'rgba(255,255,255,0.95)',
           borderLeft: '1px solid rgba(59,130,246,0.12)',
-          boxShadow: '-8px 0 40px rgba(0,0,0,0.45)',
+          boxShadow: '-8px 0 40px rgba(59,130,246,0.1)',
+          backdropFilter: 'blur(24px)',
         }}
         aria-hidden={!menuOpen}
       >
-        <div
-          className="flex items-center justify-between px-5 h-14 shrink-0"
-          style={{ borderBottom: '1px solid rgba(59,130,246,0.08)' }}
-        >
+        <div className="flex items-center justify-between px-5 h-14 shrink-0 border-b border-[rgba(59,130,246,0.08)]">
           <span
             className="text-[10px] tracking-[0.22em] uppercase text-cyan"
             style={{ fontFamily: 'var(--font-mono)' }}
@@ -125,8 +109,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={closeMenu}
-            className="p-2 rounded-xl text-[#8B9DC3] hover:text-[#EEF2FF] transition-colors"
-            style={{ background: 'rgba(255,255,255,0.04)' }}
+            className="p-2 rounded-xl text-muted hover:text-theme transition-colors bg-surface-2"
             aria-label="Fermer"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -140,8 +123,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-[#EEF2FF] px-4 py-3.5 rounded-xl transition-colors hover:bg-[rgba(59,130,246,0.08)]"
-              style={{ border: '1px solid transparent' }}
+              className="text-sm font-medium text-theme px-4 py-3.5 rounded-xl transition-colors hover:bg-[rgba(59,130,246,0.06)]"
               onClick={closeMenu}
             >
               {link.label}
@@ -150,7 +132,7 @@ export default function Navbar() {
           {!hideAuthUi && (
             <Link
               href={`${prefix}/login`}
-              className="text-sm text-[#8B9DC3] px-4 py-3.5 rounded-xl transition-colors hover:text-[#EEF2FF] hover:bg-[rgba(255,255,255,0.04)]"
+              className="text-sm text-muted px-4 py-3.5 rounded-xl transition-colors hover:text-theme hover:bg-[rgba(15,23,42,0.04)]"
               onClick={closeMenu}
             >
               {t('login')}
@@ -158,20 +140,10 @@ export default function Navbar() {
           )}
         </nav>
 
-        <div
-          className="p-4 shrink-0"
-          style={{
-            borderTop: '1px solid rgba(59,130,246,0.08)',
-            background: 'rgba(8,12,20,0.6)',
-          }}
-        >
+        <div className="p-4 shrink-0 border-t border-[rgba(59,130,246,0.08)] bg-[rgba(248,250,255,0.8)]">
           <Link
             href={`${prefix}/analyze`}
-            className="flex items-center justify-center w-full h-12 rounded-xl text-sm font-semibold text-[#EEF2FF] transition-all active:scale-[0.98]"
-            style={{
-              background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)',
-              boxShadow: '0 0 24px rgba(59,130,246,0.25)',
-            }}
+            className="flex items-center justify-center w-full h-12 rounded-xl text-sm font-semibold text-white btn-primary-premium"
             onClick={closeMenu}
           >
             {t('cta')}

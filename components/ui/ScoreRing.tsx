@@ -112,7 +112,7 @@ export default function ScoreRing({
           {displayed}
         </span>
         <span
-          className="text-[#8B9DC3]"
+          className="text-muted"
           style={{ fontSize: size * 0.07 }}
         >
           {label ?? '/100'}

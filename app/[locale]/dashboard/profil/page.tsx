@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
@@ -88,7 +88,7 @@ export default function ProfilPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen" style={{ background: '#080C14' }}>
+      <div className="flex items-center justify-center min-h-screen" style={{ background: '#F8FAFF' }}>
         <div className="w-8 h-8 rounded-full border-2 border-blue-400 border-t-transparent animate-spin" />
       </div>
     )
@@ -97,16 +97,16 @@ export default function ProfilPage() {
   const displayName = user?.email?.split('@')[0] ?? 'Utilisateur'
 
   return (
-    <div className="px-4 pt-6 pb-4 min-h-screen" style={{ background: '#080C14' }}>
+    <div className="px-4 pt-6 pb-4 min-h-screen" style={{ background: '#F8FAFF' }}>
 
       {/* Header */}
-      <p className="text-xs font-medium mb-1" style={{ color: '#8B9DC3' }}>MON COMPTE</p>
+      <p className="text-xs font-medium mb-1" style={{ color: '#64748B' }}>MON COMPTE</p>
       <h1 className="text-xl font-bold text-white mb-6">Profil</h1>
 
       {/* Avatar + nom */}
       <div
         className="rounded-2xl p-4 mb-4 flex items-center gap-4"
-        style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+        style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
       >
         <div
           className="w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold text-white flex-shrink-0"
@@ -116,7 +116,7 @@ export default function ProfilPage() {
         </div>
         <div>
           <p className="text-white font-semibold">{displayName}</p>
-          <p className="text-xs mt-0.5" style={{ color: '#3D4F6E' }}>
+          <p className="text-xs mt-0.5" style={{ color: '#94A3B8' }}>
             {user?.created_at
               ? `Membre depuis ${new Date(user.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}`
               : 'Membre Upface'}
@@ -134,10 +134,10 @@ export default function ProfilPage() {
           <div
             key={s.label}
             className="rounded-xl p-3 text-center"
-            style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.1)' }}
+            style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.1)' }}
           >
             <p className="text-lg font-bold text-white">{s.value}</p>
-            <p className="text-xs" style={{ color: '#3D4F6E' }}>{s.label}</p>
+            <p className="text-xs" style={{ color: '#94A3B8' }}>{s.label}</p>
           </div>
         ))}
       </div>
@@ -145,9 +145,9 @@ export default function ProfilPage() {
       {/* Abonnement */}
       <div
         className="rounded-2xl p-4 mb-4"
-        style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+        style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
       >
-        <p className="text-xs font-medium mb-3" style={{ color: '#8B9DC3' }}>ABONNEMENT</p>
+        <p className="text-xs font-medium mb-3" style={{ color: '#64748B' }}>ABONNEMENT</p>
         {sub ? (
           <div>
             <div className="flex items-center justify-between mb-3">
@@ -163,7 +163,7 @@ export default function ProfilPage() {
               </span>
             </div>
             {sub.current_period_end && (
-              <p className="text-xs" style={{ color: '#3D4F6E' }}>
+              <p className="text-xs" style={{ color: '#94A3B8' }}>
                 Prochain renouvellement :{' '}
                 {new Date(sub.current_period_end).toLocaleDateString('fr-FR')}
               </p>
@@ -173,7 +173,7 @@ export default function ProfilPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white font-semibold text-sm">Plan Free</p>
-              <p className="text-xs mt-0.5" style={{ color: '#8B9DC3' }}>Accès limité</p>
+              <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>Accès limité</p>
             </div>
             <button
               onClick={() => router.push(`/${locale}/onboarding/routine-preview`)}
@@ -195,7 +195,7 @@ export default function ProfilPage() {
         Se déconnecter
       </button>
 
-      <p className="text-center text-xs" style={{ color: '#3D4F6E' }}>
+      <p className="text-center text-xs" style={{ color: '#94A3B8' }}>
         Upface v1.0 · Fait avec soin
       </p>
     </div>

@@ -12,59 +12,47 @@ export default function MobileHeroSection() {
   const prefix = locale === 'fr' ? '' : `/${locale}`
 
   return (
-    <section className="relative min-h-[100dvh] flex flex-col overflow-hidden px-4 pt-20 pb-8">
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 90% 55% at 50% 35%, rgba(59,130,246,0.08) 0%, transparent 65%)',
-        }}
-      />
+    <section className="relative min-h-[100dvh] flex flex-col overflow-hidden px-4 pt-24 pb-10">
+      <div className="absolute inset-0 pointer-events-none hero-spotlight" />
 
       <div className="relative z-10 flex flex-col flex-1 max-w-[375px] mx-auto w-full">
-        {/* Title */}
         <motion.div
-          className="text-center mb-6"
+          className="text-center mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
         >
           <h1
-            className="text-[2rem] leading-[1.05] font-black tracking-[0.06em] uppercase text-gradient"
+            className="text-[2.15rem] leading-[1.02] font-black tracking-[0.04em] uppercase text-gradient"
             style={{ fontFamily: 'Satoshi, sans-serif' }}
           >
             {t('title_line1')}
             <br />
             {t('title_line2')}
           </h1>
-          <p className="mt-4 text-sm text-[#8B9DC3] leading-relaxed px-2">{t('subtitle')}</p>
+          <p className="mt-5 text-[15px] text-muted leading-relaxed px-1 max-w-[320px] mx-auto">{t('subtitle')}</p>
         </motion.div>
 
-        {/* Face scanner */}
         <motion.div
-          className="flex-1 flex items-center justify-center -my-2"
-          initial={{ opacity: 0, scale: 0.96 }}
+          className="flex-1 flex items-center justify-center py-2"
+          initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
         >
           <BiometricFaceScanner />
         </motion.div>
 
-        {/* CTAs */}
         <motion.div
-          className="mt-auto space-y-3 pt-4"
+          className="mt-auto space-y-3 pt-6"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
           <button
             type="button"
             onClick={() => router.push(`${prefix}/analyze`)}
-            className="w-full h-14 rounded-2xl font-bold text-[#EEF2FF] flex items-center justify-center gap-2 transition-transform active:scale-[0.98]"
-            style={{
-              fontFamily: 'Satoshi, sans-serif',
-              background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)',
-              boxShadow: '0 0 40px rgba(59,130,246,0.3), 0 8px 32px rgba(0,0,0,0.3)',
-            }}
+            className="w-full h-14 rounded-2xl font-bold text-white flex items-center justify-center gap-2 btn-primary-premium"
+            style={{ fontFamily: 'Satoshi, sans-serif' }}
           >
             {t('cta_primary')}
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -74,8 +62,8 @@ export default function MobileHeroSection() {
 
           <button
             type="button"
-            onClick={() => document.getElementById('score-preview')?.scrollIntoView({ behavior: 'smooth' })}
-            className="w-full h-12 rounded-2xl font-medium text-[#8B9DC3] flex items-center justify-center gap-2 border border-[rgba(59,130,246,0.2)] bg-[rgba(13,19,33,0.6)] backdrop-blur-sm"
+            onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+            className="w-full h-12 rounded-2xl font-medium flex items-center justify-center gap-2 btn-glass"
           >
             <svg className="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
@@ -84,7 +72,7 @@ export default function MobileHeroSection() {
           </button>
 
           <p
-            className="text-center text-[9px] tracking-[0.2em] uppercase text-[#3D4F6E] pt-1"
+            className="text-center text-[9px] tracking-[0.2em] uppercase text-faint pt-2"
             style={{ fontFamily: 'var(--font-mono)' }}
           >
             {t('tagline')}

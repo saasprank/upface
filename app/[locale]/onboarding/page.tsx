@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -151,12 +151,12 @@ function OnboardingContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#080C14' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: '#F8FAFF' }}>
 
       {/* Header */}
       <header
         className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 56, background: 'rgba(8,12,20,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
+        style={{ height: 56, background: 'rgba(248,250,255,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
       >
         <UpfaceLogo size="sm" href={`${prefix}/`} />
 
@@ -171,7 +171,7 @@ function OnboardingContent() {
           />
         </div>
 
-        <span className="text-xs font-medium shrink-0" style={{ color: '#3D4F6E' }}>{step}/3</span>
+        <span className="text-xs font-medium shrink-0" style={{ color: '#94A3B8' }}>{step}/3</span>
       </header>
 
       <main className="flex-1 pt-14 pb-32 px-4">
@@ -182,10 +182,10 @@ function OnboardingContent() {
             <>
               <div className="mb-8">
                 <p className="text-xs font-bold uppercase tracking-widest text-[#3B82F6] mb-2">Étape 1 sur 3</p>
-                <h1 className="text-2xl font-black text-[#EEF2FF] leading-tight mb-2" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+                <h1 className="text-2xl font-black text-theme leading-tight mb-2" style={{ fontFamily: 'Satoshi, sans-serif' }}>
                   Qu&apos;est-ce que tu veux améliorer en priorité ?
                 </h1>
-                <p className="text-sm text-[#8B9DC3]">Sélectionne tout ce qui s&apos;applique.</p>
+                <p className="text-sm text-muted">Sélectionne tout ce qui s&apos;applique.</p>
               </div>
 
               <div className="space-y-3">
@@ -199,18 +199,18 @@ function OnboardingContent() {
                       className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all"
                       style={{
                         background: selected ? 'rgba(59,130,246,0.12)' : 'rgba(13,19,33,0.8)',
-                        border: selected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.06)',
+                        border: selected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(15,23,42,0.06)',
                       }}
                     >
                       <div
                         className="shrink-0 flex items-center justify-center rounded-xl w-10 h-10"
-                        style={{ background: selected ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.04)', color: selected ? '#3B82F6' : '#8B9DC3' }}
+                        style={{ background: selected ? 'rgba(59,130,246,0.2)' : 'rgba(15,23,42,0.06)', color: selected ? '#3B82F6' : '#64748B' }}
                       >
                         {opt.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-sm" style={{ color: selected ? '#EEF2FF' : '#C4D0E8' }}>{opt.label}</p>
-                        <p className="text-xs mt-0.5" style={{ color: '#5C6B85' }}>{opt.desc}</p>
+                        <p className="font-bold text-sm" style={{ color: selected ? '#0F172A' : '#64748B' }}>{opt.label}</p>
+                        <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{opt.desc}</p>
                       </div>
                       <div
                         className="shrink-0 w-5 h-5 rounded flex items-center justify-center"
@@ -237,10 +237,10 @@ function OnboardingContent() {
             <>
               <div className="mb-8">
                 <p className="text-xs font-bold uppercase tracking-widest text-[#3B82F6] mb-2">Étape 2 sur 3</p>
-                <h1 className="text-2xl font-black text-[#EEF2FF] leading-tight mb-2" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+                <h1 className="text-2xl font-black text-theme leading-tight mb-2" style={{ fontFamily: 'Satoshi, sans-serif' }}>
                   Comment ton visage de rêve te ferait-il te sentir ?
                 </h1>
-                <p className="text-sm text-[#8B9DC3]">Visualise ton ascension.</p>
+                <p className="text-sm text-muted">Visualise ton ascension.</p>
               </div>
 
               <div className="space-y-3">
@@ -254,13 +254,13 @@ function OnboardingContent() {
                       className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all"
                       style={{
                         background: selected ? 'rgba(59,130,246,0.12)' : 'rgba(13,19,33,0.8)',
-                        border: selected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.06)',
+                        border: selected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(15,23,42,0.06)',
                       }}
                     >
                       <span className="text-xl shrink-0">{opt.icon}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-sm" style={{ color: selected ? '#EEF2FF' : '#C4D0E8' }}>{opt.label}</p>
-                        <p className="text-xs mt-0.5" style={{ color: '#5C6B85' }}>{opt.desc}</p>
+                        <p className="font-bold text-sm" style={{ color: selected ? '#0F172A' : '#64748B' }}>{opt.label}</p>
+                        <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{opt.desc}</p>
                       </div>
                       <div
                         className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
@@ -283,10 +283,10 @@ function OnboardingContent() {
             <>
               <div className="mb-8">
                 <p className="text-xs font-bold uppercase tracking-widest text-[#3B82F6] mb-2">Étape 3 sur 3</p>
-                <h1 className="text-2xl font-black text-[#EEF2FF] leading-tight mb-2" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+                <h1 className="text-2xl font-black text-theme leading-tight mb-2" style={{ fontFamily: 'Satoshi, sans-serif' }}>
                   Combien de temps peux-tu y consacrer chaque jour ?
                 </h1>
-                <p className="text-sm text-[#8B9DC3]">Ta routine sera calibrée en conséquence.</p>
+                <p className="text-sm text-muted">Ta routine sera calibrée en conséquence.</p>
               </div>
 
               <div className="space-y-3">
@@ -300,18 +300,18 @@ function OnboardingContent() {
                       className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all"
                       style={{
                         background: selected ? `${opt.color}14` : 'rgba(13,19,33,0.8)',
-                        border: selected ? `1.5px solid ${opt.color}55` : '1.5px solid rgba(255,255,255,0.06)',
+                        border: selected ? `1.5px solid ${opt.color}55` : '1.5px solid rgba(15,23,42,0.06)',
                       }}
                     >
                       <div
                         className="shrink-0 flex items-center justify-center rounded-xl w-10 h-10"
-                        style={{ background: selected ? `${opt.color}22` : 'rgba(255,255,255,0.04)', color: selected ? opt.color : '#8B9DC3' }}
+                        style={{ background: selected ? `${opt.color}22` : 'rgba(15,23,42,0.06)', color: selected ? opt.color : '#64748B' }}
                       >
                         {opt.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-base" style={{ color: selected ? '#EEF2FF' : '#C4D0E8' }}>{opt.label}</p>
-                        <p className="text-xs mt-0.5" style={{ color: '#5C6B85' }}>{opt.desc}</p>
+                        <p className="font-bold text-base" style={{ color: selected ? '#0F172A' : '#64748B' }}>{opt.label}</p>
+                        <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{opt.desc}</p>
                       </div>
                       <div
                         className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
@@ -334,7 +334,7 @@ function OnboardingContent() {
       {/* Sticky CTA */}
       <div
         className="fixed bottom-0 left-0 right-0 p-4"
-        style={{ background: 'linear-gradient(to top, #080C14 70%, transparent)', zIndex: 40 }}
+        style={{ background: 'linear-gradient(to top, #F8FAFF 70%, transparent)', zIndex: 40 }}
       >
         <div className="max-w-md mx-auto flex gap-3">
           {step > 1 && (
@@ -380,7 +380,7 @@ function OnboardingContent() {
                 (step === 2 && !canContinue2) ||
                 (step === 3 && !canContinue3)
               )
-                ? '#3D4F6E'
+                ? '#94A3B8'
                 : '#fff',
               fontFamily: 'Satoshi, sans-serif',
               cursor: (
@@ -415,7 +415,7 @@ function OnboardingContent() {
 export default function OnboardingPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#080C14] flex items-center justify-center">
+      <div className="min-h-screen bg-bg flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
       </div>
     }>

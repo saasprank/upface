@@ -7,13 +7,13 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
 export default function Card({ variant = 'default', hover = false, children, className = '', ...props }: CardProps) {
   const variants = {
-    default: 'bg-[#0D1321] border border-[rgba(59,130,246,0.12)]',
-    surface2: 'bg-[#111827] border border-[rgba(255,255,255,0.06)]',
-    surface3: 'bg-[#1A2236] border border-[rgba(59,130,246,0.08)]',
+    default: 'bg-surface border border-[rgba(59,130,246,0.12)] shadow-soft',
+    surface2: 'bg-surface-2 border border-[rgba(15,23,42,0.06)]',
+    surface3: 'bg-surface-2 border border-[rgba(59,130,246,0.08)]',
   }
 
   const hoverClass = hover
-    ? 'hover:border-blue-500/30 hover:bg-[#0f1a2e] transition-all duration-300 cursor-pointer'
+    ? 'hover:border-blue-500/30 hover:bg-surface-2 transition-all duration-300 cursor-pointer'
     : ''
 
   return (

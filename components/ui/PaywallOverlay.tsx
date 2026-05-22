@@ -22,7 +22,7 @@ export default function PaywallOverlay({
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(to bottom, transparent 0%, rgba(8,12,20,0.85) 30%, rgba(8,12,20,0.98) 100%)',
+          background: 'linear-gradient(to bottom, transparent 0%, rgba(248,250,255,0.85) 30%, rgba(248,250,255,0.98) 100%)',
         }}
       />
 
@@ -33,7 +33,7 @@ export default function PaywallOverlay({
           </svg>
         </div>
 
-        <p className="text-sm text-[#EEF2FF] font-medium leading-relaxed">{message}</p>
+        <p className="text-sm text-theme font-medium leading-relaxed">{message}</p>
 
         {showPlans && (
           <div className="flex flex-col gap-2 w-full">
@@ -56,7 +56,7 @@ export default function PaywallOverlay({
           </div>
         )}
 
-        <p className="text-xs text-[#3D4F6E] flex items-center gap-1">
+        <p className="text-xs text-faint flex items-center gap-1">
           <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
           </svg>

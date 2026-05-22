@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
@@ -87,13 +87,13 @@ export default function GeneratingPage() {
   return (
     <div
       className="min-h-[100dvh] flex flex-col items-center justify-center px-6 py-10"
-      style={{ background: '#080C14' }}
+      style={{ background: '#F8FAFF' }}
     >
       <UpfaceLogo size="md" className="mb-12" />
 
       <div className="relative w-40 h-40 mb-10">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 160 160">
-          <circle cx="80" cy="80" r="70" fill="none" stroke="#1A2236" strokeWidth="8" />
+          <circle cx="80" cy="80" r="70" fill="none" stroke="#E2E8F0" strokeWidth="8" />
           <circle
             cx="80"
             cy="80"
@@ -115,7 +115,7 @@ export default function GeneratingPage() {
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-3xl font-bold text-white">{Math.round(progress)}%</span>
-          <span className="text-xs mt-1" style={{ color: '#8B9DC3' }}>
+          <span className="text-xs mt-1" style={{ color: '#64748B' }}>
             {done ? 'Terminé' : 'en cours'}
           </span>
         </div>
@@ -160,7 +160,7 @@ export default function GeneratingPage() {
       </div>
 
       <div className="w-full max-w-sm">
-        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(15,23,42,0.08)' }}>
           <div
             className="h-full rounded-full transition-[width] duration-150 ease-linear"
             style={{
@@ -172,7 +172,7 @@ export default function GeneratingPage() {
         </div>
       </div>
 
-      <p className="mt-8 text-xs text-center px-4" style={{ color: '#3D4F6E' }}>
+      <p className="mt-8 text-xs text-center px-4" style={{ color: '#94A3B8' }}>
         Routine générée en fonction de ton score et tes objectifs
       </p>
     </div>

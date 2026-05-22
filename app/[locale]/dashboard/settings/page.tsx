@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
@@ -35,7 +35,7 @@ export default function SettingsPage() {
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-2xl">
       <h1
-        className="text-2xl font-black text-[#EEF2FF] mb-8"
+        className="text-2xl font-black text-theme mb-8"
         style={{ fontFamily: 'Satoshi, sans-serif' }}
       >
         {t('settings_title')}
@@ -44,21 +44,21 @@ export default function SettingsPage() {
       <div className="space-y-6">
         {/* Account */}
         <Card className="p-6">
-          <h2 className="text-sm font-semibold text-[#EEF2FF] mb-4">Compte</h2>
+          <h2 className="text-sm font-semibold text-theme mb-4">Compte</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs text-[#8B9DC3] mb-1.5">{t('settings_email')}</label>
+              <label className="block text-xs text-muted mb-1.5">{t('settings_email')}</label>
               <input
                 type="email"
                 disabled
                 placeholder="votre@email.com"
-                className="w-full bg-[#111827] border border-[rgba(255,255,255,0.06)] rounded-xl px-4 py-3 text-sm text-[#3D4F6E] cursor-not-allowed"
+                className="w-full bg-surface-2 border border-[rgba(15,23,42,0.06)] rounded-xl px-4 py-3 text-sm text-faint cursor-not-allowed"
               />
-              <p className="text-xs text-[#3D4F6E] mt-1">Modifiable via votre fournisseur d'identité.</p>
+              <p className="text-xs text-faint mt-1">Modifiable via votre fournisseur d'identité.</p>
             </div>
 
             <div>
-              <label className="block text-xs text-[#8B9DC3] mb-1.5">{t('settings_password')}</label>
+              <label className="block text-xs text-muted mb-1.5">{t('settings_password')}</label>
               <Button variant="outline" size="sm">
                 Changer le mot de passe
               </Button>
@@ -68,16 +68,16 @@ export default function SettingsPage() {
 
         {/* Notifications */}
         <Card className="p-6">
-          <h2 className="text-sm font-semibold text-[#EEF2FF] mb-4">Notifications</h2>
+          <h2 className="text-sm font-semibold text-theme mb-4">Notifications</h2>
           <label className="flex items-center justify-between cursor-pointer">
             <div>
-              <p className="text-sm text-[#EEF2FF]">{t('settings_notifications')}</p>
-              <p className="text-xs text-[#3D4F6E] mt-0.5">Rappels de routine et nouveautés UPFACE</p>
+              <p className="text-sm text-theme">{t('settings_notifications')}</p>
+              <p className="text-xs text-faint mt-0.5">Rappels de routine et nouveautés UPFACE</p>
             </div>
             <div
               onClick={() => setEmailNotif(!emailNotif)}
               className={`relative w-11 h-6 rounded-full transition-all cursor-pointer ${
-                emailNotif ? 'bg-blue-500' : 'bg-white/10'
+                emailNotif ? 'bg-blue-500' : 'bg-slate-200'
               }`}
             >
               <div
@@ -91,14 +91,14 @@ export default function SettingsPage() {
 
         {/* Plan */}
         <Card className="p-6">
-          <h2 className="text-sm font-semibold text-[#EEF2FF] mb-4">{t('settings_plan')}</h2>
+          <h2 className="text-sm font-semibold text-theme mb-4">{t('settings_plan')}</h2>
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-sm font-medium text-[#EEF2FF]">Plan Gratuit</span>
+                <span className="text-sm font-medium text-theme">Plan Gratuit</span>
                 <Badge variant="muted">Actuel</Badge>
               </div>
-              <p className="text-xs text-[#3D4F6E]">Score de base, 3 TraitCards</p>
+              <p className="text-xs text-faint">Score de base, 3 TraitCards</p>
             </div>
             <Button size="sm" onClick={() => router.push(`${prefix}/checkout`)}>
               Passer Pro
@@ -124,7 +124,7 @@ export default function SettingsPage() {
         {/* Danger zone */}
         <Card variant="surface2" className="p-6 border border-red-500/15">
           <h2 className="text-sm font-semibold text-red-400 mb-4">{t('settings_danger')}</h2>
-          <p className="text-xs text-[#8B9DC3] mb-4">
+          <p className="text-xs text-muted mb-4">
             La suppression de votre compte est irréversible. Toutes vos analyses et données seront définitivement supprimées.
           </p>
           {deleteConfirm && (

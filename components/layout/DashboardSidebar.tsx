@@ -82,8 +82,8 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
 
   return (
     <aside
-      className="fixed left-0 top-0 h-full w-60 border-r flex flex-col z-40 hidden lg:flex"
-      style={{ background: '#0D1321', borderColor: 'rgba(59,130,246,0.10)' }}
+      className="fixed left-0 top-0 h-full w-60 border-r flex flex-col z-40 hidden lg:flex glass-nav"
+      style={{ borderColor: 'rgba(59,130,246,0.12)' }}
     >
       {/* Logo */}
       <div className="p-5 border-b border-[rgba(59,130,246,0.10)]">
@@ -101,8 +101,8 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
               className={`
                 flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
                 ${active
-                  ? 'bg-blue-500/15 text-blue-400 border border-blue-500/20'
-                  : 'text-[#8B9DC3] hover:text-[#EEF2FF] hover:bg-white/5'
+                  ? 'bg-blue-500/10 text-blue-600 border border-blue-500/20'
+                  : 'text-muted hover:text-theme hover:bg-slate-100/80'
                 }
               `}
             >
@@ -116,20 +116,20 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
       {/* User section */}
       <div className="p-4 border-t border-[rgba(59,130,246,0.10)]">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-8 h-8 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-xs font-bold text-blue-400">
+          <div className="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-600">
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-[#EEF2FF] truncate">
+            <p className="text-xs font-medium text-theme truncate">
               {user?.user_metadata?.full_name ?? 'Utilisateur'}
             </p>
-            <p className="text-xs text-[#3D4F6E] truncate">{user?.email}</p>
+            <p className="text-xs text-faint truncate">{user?.email}</p>
           </div>
         </div>
         {!hideAuthUi && (
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-[#8B9DC3] hover:text-red-400 hover:bg-red-500/5 transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-muted hover:text-red-500 hover:bg-red-500/5 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

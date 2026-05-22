@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -95,28 +95,28 @@ function SignupForm() {
   // ── Email de confirmation envoyé ──────────────────────────────────────────
   if (emailSent) {
     return (
-      <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-bg flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
             <svg className="w-8 h-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
             </svg>
           </div>
-          <h1 className="text-2xl font-black text-[#EEF2FF] mb-3" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+          <h1 className="text-2xl font-black text-theme mb-3" style={{ fontFamily: 'Satoshi, sans-serif' }}>
             Vérifiez votre email
           </h1>
-          <p className="text-sm text-[#8B9DC3] mb-2 leading-relaxed">
-            Un lien de confirmation a été envoyé à <strong className="text-[#EEF2FF]">{email}</strong>.
+          <p className="text-sm text-muted mb-2 leading-relaxed">
+            Un lien de confirmation a été envoyé à <strong className="text-theme">{email}</strong>.
           </p>
-          <p className="text-sm text-[#8B9DC3] mb-8 leading-relaxed">
+          <p className="text-sm text-muted mb-8 leading-relaxed">
             Cliquez sur le lien pour activer votre compte et être connecté automatiquement.
           </p>
           <div className="rounded-xl p-4 text-left mb-6" style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.15)' }}>
-            <p className="text-xs text-[#8B9DC3] leading-relaxed">
+            <p className="text-xs text-muted leading-relaxed">
               <span className="text-blue-400 font-medium">Astuce :</span> Vérifiez vos spams si vous ne trouvez pas l&apos;email. Le lien expire dans 24h.
             </p>
           </div>
-          <p className="text-xs text-[#3D4F6E]">
+          <p className="text-xs text-faint">
             Déjà un lien ?{' '}
             <Link href={`${prefix}/login`} className="text-blue-400 hover:underline">
               Se connecter
@@ -128,9 +128,9 @@ function SignupForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#080C14] flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-bg flex flex-col lg:flex-row">
       {/* Left teaser (desktop only) */}
-      <div className="hidden lg:flex flex-1 items-center justify-center relative overflow-hidden bg-[#0D1321] border-r border-[rgba(59,130,246,0.10)]">
+      <div className="hidden lg:flex flex-1 items-center justify-center relative overflow-hidden bg-surface border-r border-[rgba(59,130,246,0.10)]">
         <div
           className="absolute inset-0"
           style={{
@@ -145,23 +145,23 @@ function SignupForm() {
               <ScoreRing score={74} size={160} animate={false} />
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="bg-[#0D1321]/90 backdrop-blur-sm border border-blue-500/20 rounded-xl px-5 py-3 text-center">
+              <div className="bg-surface/90 backdrop-blur-sm border border-blue-500/20 rounded-xl px-5 py-3 text-center">
                 <svg className="w-6 h-6 text-blue-400 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
-                <p className="text-xs text-[#8B9DC3]">Résultat verrouillé</p>
+                <p className="text-xs text-muted">Résultat verrouillé</p>
               </div>
             </div>
           </div>
 
           <div>
             <h2
-              className="text-2xl font-black text-[#EEF2FF] mb-2"
+              className="text-2xl font-black text-theme mb-2"
               style={{ fontFamily: 'Satoshi, sans-serif' }}
             >
               {isAnalyzeGate ? t('teaser_title_before_scan') : isResultsGate ? t('teaser_title_scan') : t('teaser_title')}
             </h2>
-            <p className="text-sm text-[#8B9DC3]">
+            <p className="text-sm text-muted">
               {isAnalyzeGate ? t('teaser_subtitle_before_scan') : isResultsGate ? t('teaser_subtitle_scan') : t('teaser_subtitle')}
             </p>
           </div>
@@ -170,8 +170,8 @@ function SignupForm() {
           <div className="w-full max-w-xs space-y-2.5">
             {['Symétrie', 'Proportions', 'Structure', 'Peau', 'Grooming'].map((label, i) => (
               <div key={label} className="flex items-center gap-3 blur-sm">
-                <span className="text-xs text-[#3D4F6E] w-20 shrink-0">{label}</span>
-                <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
+                <span className="text-xs text-faint w-20 shrink-0">{label}</span>
+                <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -180,7 +180,7 @@ function SignupForm() {
                     }}
                   />
                 </div>
-                <span className="text-xs text-[#3D4F6E] w-6">??</span>
+                <span className="text-xs text-faint w-6">??</span>
               </div>
             ))}
           </div>
@@ -194,12 +194,12 @@ function SignupForm() {
           <UpfaceLogo size="md" href={`${prefix}/`} className="mb-10" />
 
           <h1
-            className="text-2xl font-black text-[#EEF2FF] mb-2"
+            className="text-2xl font-black text-theme mb-2"
             style={{ fontFamily: 'Satoshi, sans-serif' }}
           >
             {isAnalyzeGate ? t('title_before_scan') : isResultsGate ? t('title_after_scan') : t('title')}
           </h1>
-          <p className="text-sm text-[#8B9DC3] mb-8">
+          <p className="text-sm text-muted mb-8">
             {isAnalyzeGate ? t('subtitle_before_scan') : isResultsGate ? t('subtitle_after_scan') : t('subtitle_form')}
           </p>
 
@@ -221,27 +221,27 @@ function SignupForm() {
 
           {/* Divider */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-[rgba(255,255,255,0.06)]" />
-            <span className="text-xs text-[#3D4F6E]">{t('or')}</span>
-            <div className="flex-1 h-px bg-[rgba(255,255,255,0.06)]" />
+            <div className="flex-1 h-px bg-[rgba(15,23,42,0.06)]" />
+            <span className="text-xs text-faint">{t('or')}</span>
+            <div className="flex-1 h-px bg-[rgba(15,23,42,0.06)]" />
           </div>
 
           {/* Email/password form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs text-[#8B9DC3] mb-1.5">{t('email')}</label>
+              <label className="block text-xs text-muted mb-1.5">{t('email')}</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                className="w-full bg-[#0D1321] border border-[rgba(59,130,246,0.15)] rounded-xl px-4 py-3 text-sm text-[#EEF2FF] placeholder-[#3D4F6E] focus:outline-none focus:border-blue-500/50 transition-colors"
+                className="w-full bg-surface border border-[rgba(59,130,246,0.15)] rounded-xl px-4 py-3 text-sm text-theme placeholder-faint focus:outline-none focus:border-blue-500/50 transition-colors"
                 placeholder="vous@exemple.com"
               />
             </div>
 
             <div>
-              <label className="block text-xs text-[#8B9DC3] mb-1.5">{t('password')}</label>
+              <label className="block text-xs text-muted mb-1.5">{t('password')}</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -249,13 +249,13 @@ function SignupForm() {
                   onChange={e => setPassword(e.target.value)}
                   required
                   minLength={8}
-                  className="w-full bg-[#0D1321] border border-[rgba(59,130,246,0.15)] rounded-xl px-4 py-3 pr-12 text-sm text-[#EEF2FF] placeholder-[#3D4F6E] focus:outline-none focus:border-blue-500/50 transition-colors"
+                  className="w-full bg-surface border border-[rgba(59,130,246,0.15)] rounded-xl px-4 py-3 pr-12 text-sm text-theme placeholder-faint focus:outline-none focus:border-blue-500/50 transition-colors"
                   placeholder="Minimum 8 caractères"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#3D4F6E] hover:text-[#8B9DC3]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-faint hover:text-muted"
                 >
                   {showPassword ? t('hide_password') : t('show_password')}
                 </button>
@@ -267,9 +267,9 @@ function SignupForm() {
                 type="checkbox"
                 checked={gdpr}
                 onChange={e => setGdpr(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded border-blue-500/30 bg-[#0D1321] accent-blue-500 cursor-pointer"
+                className="mt-0.5 w-4 h-4 rounded border-blue-500/30 bg-surface accent-blue-500 cursor-pointer"
               />
-              <span className="text-xs text-[#8B9DC3] leading-relaxed">
+              <span className="text-xs text-muted leading-relaxed">
                 {t('gdpr')}{' '}
                 <Link href={`${prefix}/privacy`} className="text-blue-400 hover:underline">Politique de confidentialité</Link>
               </span>
@@ -284,7 +284,7 @@ function SignupForm() {
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-xs text-[#3D4F6E]">
+          <p className="mt-6 text-center text-xs text-faint">
             {t('already')}{' '}
             <Link href={`${prefix}/login?next=${encodeURIComponent(nextUrl)}`} className="text-blue-400 hover:underline">
               {t('login_link')}
@@ -299,7 +299,7 @@ function SignupForm() {
 export default function SignupPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#080C14] flex items-center justify-center">
+      <div className="min-h-screen bg-bg flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
       </div>
     }>

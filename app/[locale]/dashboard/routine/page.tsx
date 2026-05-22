@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, Suspense } from 'react'
 import { useLocale } from 'next-intl'
@@ -236,7 +236,7 @@ function RoutineContent() {
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
         <div>
           <h1
-            className="text-2xl font-black text-[#EEF2FF] mb-2"
+            className="text-2xl font-black text-theme mb-2"
             style={{ fontFamily: 'Satoshi, sans-serif' }}
           >
             {hasFilter ? 'Ta routine · Focus' : 'Ma Routine 30/90 jours'}
@@ -274,7 +274,7 @@ function RoutineContent() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 p-1 rounded-xl mb-8 w-fit" style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.1)' }}>
+      <div className="flex gap-1 p-1 rounded-xl mb-8 w-fit" style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.1)' }}>
         {TABS.map(tab => (
           <button
             key={tab.key}
@@ -282,7 +282,7 @@ function RoutineContent() {
             className="px-4 py-2 rounded-lg text-xs font-medium transition-all duration-150"
             style={{
               background: activeTab === tab.key ? '#3B82F6' : 'transparent',
-              color: activeTab === tab.key ? '#fff' : '#8B9DC3',
+              color: activeTab === tab.key ? '#fff' : '#64748B',
             }}
           >
             {tab.label}
@@ -293,13 +293,13 @@ function RoutineContent() {
       {/* Progression journalière */}
       <div
         className="rounded-2xl p-4 mb-6"
-        style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.15)' }}
+        style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
       >
         <div className="flex justify-between items-center mb-2">
           <p className="text-sm font-semibold text-white">{"Aujourd'hui"}</p>
           <p className="text-xs font-bold" style={{ color: '#06B6D4' }}>{completedCount}/{totalTasks} tâches</p>
         </div>
-        <div className="h-2 rounded-full mb-2" style={{ background: '#1A2236' }}>
+        <div className="h-2 rounded-full mb-2" style={{ background: '#E2E8F0' }}>
           <div
             className="h-full rounded-full transition-all duration-500"
             style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, #3B82F6, #06B6D4)' }}
@@ -308,9 +308,9 @@ function RoutineContent() {
         {progressPct === 100 && totalTasks > 0 ? (
           <p className="text-xs text-center" style={{ color: '#10B981' }}>🔥 Routine du jour complète ! Streak +1</p>
         ) : progressPct === 0 ? (
-          <p className="text-xs" style={{ color: '#3D4F6E' }}>Commence ta routine pour booster ton streak 🚀</p>
+          <p className="text-xs" style={{ color: '#94A3B8' }}>Commence ta routine pour booster ton streak 🚀</p>
         ) : (
-          <p className="text-xs" style={{ color: '#3D4F6E' }}>Continue ! Plus que {totalTasks - completedCount} tâche{totalTasks - completedCount > 1 ? 's' : ''}</p>
+          <p className="text-xs" style={{ color: '#94A3B8' }}>Continue ! Plus que {totalTasks - completedCount} tâche{totalTasks - completedCount > 1 ? 's' : ''}</p>
         )}
       </div>
 
@@ -338,7 +338,7 @@ function RoutineContent() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-[#EEF2FF]">{cat.label}</span>
+                        <span className="text-sm font-semibold text-theme">{cat.label}</span>
                         <span
                           className="px-2 py-0.5 rounded-full text-xs font-medium"
                           style={{ background: `${cat.color}20`, color: cat.color, border: `1px solid ${cat.color}35` }}
@@ -363,7 +363,7 @@ function RoutineContent() {
                       )
                     })}
                     {actions.length === 0 && (
-                      <p className="text-xs text-[#3D4F6E] italic">Aucune action pour cette période.</p>
+                      <p className="text-xs text-faint italic">Aucune action pour cette période.</p>
                     )}
                   </div>
                 </div>
@@ -376,7 +376,7 @@ function RoutineContent() {
       {/* All other categories */}
       {hasFilter && (
         <div className="mb-4">
-          <h2 className="text-sm font-semibold text-[#3D4F6E] uppercase tracking-wider mb-4">
+          <h2 className="text-sm font-semibold text-faint uppercase tracking-wider mb-4">
             Autres dimensions
           </h2>
         </div>
@@ -389,7 +389,7 @@ function RoutineContent() {
             <div
               key={cat.key}
               className="rounded-2xl p-5"
-              style={{ background: '#0D1321', border: '1px solid rgba(59,130,246,0.08)' }}
+              style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.08)' }}
             >
               <div className="flex items-center gap-2 mb-4">
                 <div
@@ -398,7 +398,7 @@ function RoutineContent() {
                 >
                   {cat.icon}
                 </div>
-                <span className="text-sm font-semibold text-[#8B9DC3]">{cat.label}</span>
+                <span className="text-sm font-semibold text-muted">{cat.label}</span>
               </div>
               <div className="space-y-2.5">
                 {actions.map((action, i) => {
@@ -416,7 +416,7 @@ function RoutineContent() {
                   )
                 })}
                 {actions.length === 0 && (
-                  <p className="text-xs text-[#3D4F6E] italic">Aucune action pour cette période.</p>
+                  <p className="text-xs text-faint italic">Aucune action pour cette période.</p>
                 )}
               </div>
             </div>
@@ -429,7 +429,7 @@ function RoutineContent() {
         <div
           className="mt-6 rounded-2xl p-5 text-center"
           style={{
-            background: 'linear-gradient(135deg, #0D1321, #1A2236)',
+            background: 'linear-gradient(135deg, #FFFFFF, #F1F5F9)',
             border: '1px solid rgba(59,130,246,0.2)',
           }}
         >
@@ -442,7 +442,7 @@ function RoutineContent() {
             </svg>
           </div>
           <p className="text-white font-bold mb-1">Semaines 2, 3 et 4 verrouillées</p>
-          <p className="text-xs mb-4" style={{ color: '#8B9DC3' }}>
+          <p className="text-xs mb-4" style={{ color: '#64748B' }}>
             Passe à Pro pour débloquer ton plan complet 30/90 jours
           </p>
           <button
@@ -491,13 +491,13 @@ function ActionItem({ action, accentColor, muted = false, taskId, isCompleted, o
         <div className="flex items-start justify-between gap-2">
           <p
             className="text-xs font-semibold transition-all"
-            style={{ color: isCompleted ? '#3D4F6E' : (muted ? '#8B9DC3' : '#EEF2FF'),
+            style={{ color: isCompleted ? '#94A3B8' : (muted ? '#64748B' : '#0F172A'),
               textDecoration: isCompleted ? 'line-through' : 'none' }}
           >
             {action.title}
           </p>
           <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-xs text-[#3D4F6E]">{action.duration}</span>
+            <span className="text-xs text-faint">{action.duration}</span>
             <span
               className="px-1.5 py-0.5 rounded text-xs font-medium"
               style={{ background: levelStyle.bg, color: levelStyle.color }}
@@ -506,7 +506,7 @@ function ActionItem({ action, accentColor, muted = false, taskId, isCompleted, o
             </span>
           </div>
         </div>
-        <p className="text-xs text-[#3D4F6E] mt-0.5 leading-relaxed">{action.desc}</p>
+        <p className="text-xs text-faint mt-0.5 leading-relaxed">{action.desc}</p>
       </div>
     </div>
   )

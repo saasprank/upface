@@ -53,7 +53,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="min-h-screen bg-[#080C14]">
+    <div className="min-h-screen bg-bg">
       <DashboardSidebar user={user} />
 
       <div className="lg:ml-60 min-h-screen pb-20 lg:pb-0">

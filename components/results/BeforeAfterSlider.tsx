@@ -128,7 +128,7 @@ export default function BeforeAfterSlider({ photoUrl, scoreBefore, scoreAfter }:
     <div
       ref={containerRef}
       className="relative w-full overflow-hidden select-none"
-      style={{ aspectRatio: '4/3', borderRadius: 16, background: '#0D1321', cursor: 'ew-resize' }}
+      style={{ aspectRatio: '4/3', borderRadius: 16, background: '#FFFFFF', cursor: 'ew-resize', border: '1px solid rgba(59,130,246,0.12)' }}
       onMouseDown={onMouseDown}
       onTouchStart={() => { dragging.current = true }}
     >
@@ -244,8 +244,8 @@ function PlaceholderFace({ enhanced }: { enhanced: boolean }) {
       className="w-full h-full flex items-center justify-center"
       style={{
         background: enhanced
-          ? 'linear-gradient(160deg, #0f1729 0%, #0a1628 50%, #061018 100%)'
-          : '#0D1321',
+          ? 'linear-gradient(160deg, #F1F5F9 0%, #E2E8F0 50%, #F8FAFF 100%)'
+          : '#FFFFFF',
         filter: enhanced ? 'blur(12px) brightness(1.08)' : 'none',
       }}
     >

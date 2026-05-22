@@ -44,7 +44,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   const showFaqJsonLd = isLandingPath(pathname)
 
   return (
-    <html lang={locale} className="dark">
+    <html lang={locale}>
       <head>
         <link
           rel="preconnect"
@@ -61,7 +61,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         />
         {showFaqJsonLd && <FaqJsonLd />}
       </head>
-      <body className="bg-[#080C14] text-[#EEF2FF] antialiased">
+      <body className="bg-bg text-text antialiased">
         <NextIntlClientProvider messages={messages} locale={locale}>
           {children}
         </NextIntlClientProvider>
