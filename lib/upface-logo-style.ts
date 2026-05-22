@@ -1,5 +1,7 @@
 export const UPFACE_LOGO_FONT = "'Outfit', sans-serif"
 export const UPFACE_LOGO_UP_COLOR = '#0F172A'
+export const UPFACE_LOGO_UP_COLOR_DARK = '#FFFFFF'
+export const UPFACE_LOGO_FACE_COLOR = '#3B82F6'
 export const UPFACE_LOGO_FACE_GRADIENT = 'linear-gradient(90deg, #60A5FA 0%, #3B82F6 48%, #06B6D4 100%)'
 export const UPFACE_LOGO_WEIGHT = 800
 
