@@ -6,7 +6,7 @@ export const UPFACE_LOGO_FACE_GRADIENT = 'linear-gradient(90deg, #60A5FA 0%, #3B
 export const UPFACE_LOGO_WEIGHT = 800
 
 export const UPFACE_LOGO_SIZES = {
-  nav: { fontSize: '22px', tracking: '0.12em', height: 28 },
+  nav: { fontSize: '20px', tracking: '0.12em', height: 26 },
   xs: { fontSize: '14px', tracking: '0.12em', height: 18 },
   sm: { fontSize: '18px', tracking: '0.12em', height: 22 },
   md: { fontSize: '22px', tracking: '0.12em', height: 28 },

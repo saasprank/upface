@@ -31,34 +31,34 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 h-16 bg-[#080C14] border-b border-[#1E2A3E]">
-        <div className="w-full max-w-6xl mx-auto px-4 h-full flex items-center justify-between">
+      <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-[rgba(255,255,255,0.08)] bg-[#080C14]">
+        <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-between px-4">
           <UpfaceLogo size="nav" href={`${prefix}/`} variant="dark" />
 
-          <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-white hover:text-white/80 transition-colors"
+                className="font-[Inter,sans-serif] text-[15px] font-normal text-white transition-colors hover:text-white/80"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-2 ml-auto">
+          <div className="ml-auto hidden items-center gap-2 md:flex">
             {!hideAuthUi && (
               <Link
                 href={`${prefix}/login`}
-                className="text-sm font-medium text-white/70 hover:text-white px-3 py-1.5 transition-colors"
+                className="px-3 py-1.5 font-[Inter,sans-serif] text-[15px] font-normal text-white/70 transition-colors hover:text-white"
               >
                 {t('login')}
               </Link>
             )}
             <Link
               href={`${prefix}/analyze`}
-              className="font-[Outfit,sans-serif] text-sm font-semibold px-5 py-2 rounded-full text-white bg-[#3B82F6] transition-opacity hover:opacity-90"
+              className="rounded-full bg-[#3B82F6] px-5 py-2 font-[Inter,sans-serif] text-[15px] font-medium text-white transition-opacity hover:opacity-90"
             >
               {t('cta')}
             </Link>
@@ -66,12 +66,12 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="md:hidden ml-auto p-2 text-white/80 hover:text-white transition-colors"
+            className="ml-auto p-2 text-white/80 transition-colors hover:text-white md:hidden"
             onClick={() => setMenuOpen(true)}
             aria-label="Menu"
             aria-expanded={menuOpen}
           >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
             </svg>
           </button>
@@ -79,8 +79,8 @@ export default function Navbar() {
       </header>
 
       <div
-        className={`fixed inset-0 z-[60] md:hidden transition-opacity duration-300 ${
-          menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        className={`fixed inset-0 z-[60] transition-opacity duration-300 md:hidden ${
+          menuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
         style={{ background: 'rgba(4,8,16,0.72)', backdropFilter: 'blur(4px)' }}
         onClick={closeMenu}
@@ -88,40 +88,37 @@ export default function Navbar() {
       />
 
       <aside
-        className={`fixed top-0 right-0 z-[70] h-[100dvh] w-[min(300px,88vw)] md:hidden flex flex-col transition-transform duration-300 ease-out ${
+        className={`fixed right-0 top-0 z-[70] flex h-[100dvh] w-[min(300px,88vw)] flex-col transition-transform duration-300 ease-out md:hidden ${
           menuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         style={{
           background: '#080C14',
-          borderLeft: '1px solid #1E2A3E',
+          borderLeft: '1px solid rgba(255,255,255,0.08)',
           boxShadow: '-8px 0 40px rgba(0,0,0,0.45)',
         }}
         aria-hidden={!menuOpen}
       >
-        <div
-          className="flex items-center justify-between px-5 h-14 shrink-0"
-          style={{ borderBottom: '1px solid #1E2A3E' }}
-        >
+        <div className="flex h-14 shrink-0 items-center justify-between border-b border-[rgba(255,255,255,0.08)] px-5">
           <UpfaceLogo size="sm" variant="dark" />
           <button
             type="button"
             onClick={closeMenu}
-            className="p-2 rounded-full text-white/70 hover:text-white transition-colors"
+            className="rounded-full p-2 text-white/70 transition-colors hover:text-white"
             style={{ background: 'rgba(255,255,255,0.06)' }}
             aria-label="Fermer"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        <nav className="flex-1 px-4 py-6 flex flex-col gap-1 overflow-y-auto">
+        <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-6">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-white px-4 py-3.5 rounded-xl transition-colors hover:bg-[rgba(255,255,255,0.06)]"
+              className="rounded-xl px-4 py-3.5 font-[Inter,sans-serif] text-[15px] font-normal text-white transition-colors hover:bg-[rgba(255,255,255,0.06)]"
               onClick={closeMenu}
             >
               {link.label}
@@ -130,7 +127,7 @@ export default function Navbar() {
           {!hideAuthUi && (
             <Link
               href={`${prefix}/login`}
-              className="text-sm font-medium text-white/70 px-4 py-3.5 rounded-xl transition-colors hover:text-white hover:bg-[rgba(255,255,255,0.06)]"
+              className="rounded-xl px-4 py-3.5 font-[Inter,sans-serif] text-[15px] text-white/70 transition-colors hover:bg-[rgba(255,255,255,0.06)] hover:text-white"
               onClick={closeMenu}
             >
               {t('login')}
@@ -138,17 +135,10 @@ export default function Navbar() {
           )}
         </nav>
 
-        <div
-          className="p-4 shrink-0"
-          style={{
-            borderTop: '1px solid #1E2A3E',
-            background: 'rgba(8,12,20,0.95)',
-          }}
-        >
+        <div className="shrink-0 border-t border-[rgba(255,255,255,0.08)] p-4">
           <Link
             href={`${prefix}/analyze`}
-            className="flex items-center justify-center w-full h-12 rounded-full text-sm font-medium text-white transition-opacity hover:opacity-90"
-            style={{ background: '#3B82F6' }}
+            className="flex h-12 w-full items-center justify-center rounded-full bg-[#3B82F6] font-[Inter,sans-serif] text-[15px] font-medium text-white transition-opacity hover:opacity-90"
             onClick={closeMenu}
           >
             {t('cta')}

@@ -3,22 +3,10 @@
 import { useTranslations } from 'next-intl'
 import ProtectImageArea from '@/components/ui/ProtectImageArea'
 
-const MESH_LANDMARKS: [number, number][] = [
-  [120, 72], [148, 92], [168, 118], [158, 148], [142, 168],
-  [128, 188], [138, 212], [132, 232], [152, 228], [162, 198],
-  [175, 162], [178, 128], [155, 108], [132, 118], [148, 142],
-]
-
-const MESH_CONNECTIONS: [number, number][] = [
-  [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7],
-  [0, 8], [8, 9], [9, 10], [10, 11], [11, 12], [12, 13], [13, 14],
-  [1, 13], [2, 11], [3, 9], [4, 8],
-]
-
 const LEFT_METRICS = [
-  { key: 'metric_symmetry' as const, value: 91, top: '22%', lineY: 95 },
-  { key: 'metric_proportions' as const, value: 87, top: '40%', lineY: 145 },
-  { key: 'metric_jawline' as const, value: 82, top: '58%', lineY: 195 },
+  { key: 'metric_symmetry' as const, value: 91, top: '20%' },
+  { key: 'metric_proportions' as const, value: 87, top: '45%' },
+  { key: 'metric_jawline' as const, value: 82, top: '70%' },
 ] as const
 
 function MetricIcon({ index }: { index: number }) {
@@ -28,7 +16,7 @@ function MetricIcon({ index }: { index: number }) {
     'M5 14c2 4 12 4 14 0M8 10h8',
   ]
   return (
-    <svg className="w-3.5 h-3.5 shrink-0 text-[#3B82F6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+    <svg className="h-[14px] w-[14px] shrink-0 text-[#3B82F6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
       <path strokeLinecap="round" d={paths[index]} />
     </svg>
   )
@@ -38,94 +26,75 @@ export default function HeroVisual() {
   const t = useTranslations('landing.hero')
 
   return (
-    <ProtectImageArea className="relative mx-auto w-full max-w-[400px] min-h-[500px] h-[500px] sm:h-[520px]">
+    <ProtectImageArea className="relative mx-auto mb-10 min-h-[520px] w-full max-w-[700px] pb-20">
       <div
-        className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] pointer-events-none"
+        className="pointer-events-none absolute inset-0 z-0"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(59,130,246,0.15) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse 60% 70% at 50% 40%, rgba(59,130,246,0.18) 0%, transparent 70%)',
         }}
         aria-hidden
       />
 
-      {[260, 320].map((size, i) => (
+      <div className="relative z-[1] h-[520px] w-full overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/hero-face.png"
+          alt={t('face_alt')}
+          className="mx-auto h-[520px] w-full object-cover object-[center_15%]"
+        />
+
         <div
-          key={size}
-          className="absolute left-1/2 top-[36%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#3B82F6]/15 pointer-events-none"
-          style={{ width: size, height: size * 0.88, opacity: 0.14 + i * 0.08 }}
+          className="pointer-events-none absolute inset-y-0 left-1/2 z-[3] w-[2px] -translate-x-1/2"
+          style={{
+            background: 'linear-gradient(to bottom, transparent, #06B6D4, transparent)',
+            boxShadow: '0 0 12px #06B6D4, 0 0 24px rgba(6,182,212,0.5)',
+          }}
           aria-hidden
         />
-      ))}
 
-      <svg className="absolute inset-0 w-full h-full pointer-events-none z-[1]" aria-hidden>
-        {LEFT_METRICS.map((m, i) => (
-          <line
-            key={m.key}
-            x1="108"
-            y1={m.lineY}
-            x2="155"
-            y2={120 + i * 28}
-            stroke="rgba(59,130,246,0.25)"
-            strokeWidth="1"
-          />
-        ))}
-      </svg>
-
-      <div className="absolute inset-x-0 top-[4%] bottom-[14%] flex items-center justify-center">
         <div
-          className="relative w-[268px] sm:w-[288px] h-[360px] sm:h-[380px] overflow-hidden rounded-[999px]"
+          className="pointer-events-none absolute inset-0 z-[2]"
           style={{
-            maskImage: 'radial-gradient(ellipse 48% 52% at 50% 42%, black 58%, transparent 100%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 48% 52% at 50% 42%, black 58%, transparent 100%)',
+            backgroundImage: 'radial-gradient(circle, rgba(6,182,212,0.6) 1px, transparent 1px)',
+            backgroundSize: '18px 18px',
+            clipPath: 'inset(0 0 0 50%)',
+            WebkitClipPath: 'inset(0 0 0 50%)',
           }}
-        >
-          <div
-            role="img"
-            aria-label={t('face_alt')}
-            className="absolute inset-0 bg-cover bg-top scale-[1.08] pointer-events-none"
-            style={{ backgroundImage: 'url(/hero-face.png)' }}
-          />
+          aria-hidden
+        />
 
-          <div className="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2 z-[3] bg-[#06B6D4] shadow-[0_0_12px_rgba(6,182,212,0.9),0_0_28px_rgba(6,182,212,0.45)] pointer-events-none" />
-
-          <svg viewBox="0 0 240 280" className="absolute inset-0 w-full h-full pointer-events-none z-[2]" fill="none" aria-hidden>
-            <defs>
-              <clipPath id="heroFaceRightHalf">
-                <rect x="120" y="0" width="120" height="280" />
-              </clipPath>
-            </defs>
-            <g clipPath="url(#heroFaceRightHalf)">
-              {MESH_CONNECTIONS.map(([a, b], i) => (
-                <line
-                  key={`mesh-${i}`}
-                  x1={MESH_LANDMARKS[a][0]}
-                  y1={MESH_LANDMARKS[a][1]}
-                  x2={MESH_LANDMARKS[b][0]}
-                  y2={MESH_LANDMARKS[b][1]}
-                  stroke="rgba(255,255,255,0.38)"
-                  strokeWidth="0.55"
-                />
-              ))}
-              {MESH_LANDMARKS.map(([cx, cy], i) => (
-                <circle key={`dot-${i}`} cx={cx} cy={cy} r="1.6" fill="rgba(255,255,255,0.9)" />
-              ))}
-            </g>
-          </svg>
-
-          <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#080C14]/20 via-transparent to-[#080C14]/35 pointer-events-none" />
-        </div>
+        <div
+          className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-transparent via-transparent to-[#080C14]/50"
+          aria-hidden
+        />
       </div>
 
-      <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 pointer-events-none" aria-hidden>
-        {[220, 160].map((size, i) => (
+      <div
+        className="pointer-events-none absolute left-1/2 z-[1] -translate-x-1/2"
+        style={{ bottom: '-60px' }}
+        aria-hidden
+      >
+        <div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          style={{
+            width: 340,
+            height: 120,
+            background: 'radial-gradient(ellipse, rgba(59,130,246,0.2), transparent)',
+          }}
+        />
+        {[
+          { w: 600, h: 120, opacity: 1 },
+          { w: 480, h: 90, opacity: 0.6 },
+          { w: 340, h: 60, opacity: 0.3 },
+        ].map((ring) => (
           <div
-            key={size}
-            className="absolute left-1/2 -translate-x-1/2 rounded-full border border-[rgba(59,130,246,0.3)] blur-[1px]"
+            key={ring.w}
+            className="absolute left-1/2 -translate-x-1/2 rounded-[50%] border border-[rgba(59,130,246,0.4)] blur-[2px]"
             style={{
-              bottom: `${i * 10}px`,
-              width: size,
-              height: size,
-              boxShadow: '0 0 24px rgba(59,130,246,0.25)',
-              opacity: 0.55 - i * 0.12,
+              bottom: 0,
+              width: ring.w,
+              height: ring.h,
+              opacity: ring.opacity,
             }}
           />
         ))}
@@ -134,40 +103,57 @@ export default function HeroVisual() {
       {LEFT_METRICS.map((m, i) => (
         <div
           key={m.key}
-          className="absolute left-0 w-[112px] rounded-lg border border-[#1E2A3E] bg-[#0D1321] px-2.5 py-2 pointer-events-none"
+          className="absolute left-0 z-10 rounded-xl border border-[#1E2A3E] bg-[#0D1321] px-4 py-3 backdrop-blur-sm"
           style={{ top: m.top }}
         >
-          <div className="flex items-center gap-1.5 mb-1 min-w-0">
+          <div className="mb-2 flex items-center gap-2">
             <MetricIcon index={i} />
-            <span className="font-mono text-[8px] tracking-[0.12em] uppercase text-[#8B9DC3] truncate">
+            <span className="font-[Inter,sans-serif] text-[10px] uppercase tracking-[0.12em] text-[#8B9DC3]">
               {t(m.key)}
             </span>
           </div>
-          <p className="font-mono text-sm font-bold text-white leading-none mb-1.5">{m.value}%</p>
-          <div className="h-[3px] rounded-full bg-[#1E2A3E] overflow-hidden">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-[#3B82F6] to-[#06B6D4]"
-              style={{ width: `${m.value}%` }}
-            />
+          <p className="mb-2 font-[Outfit,sans-serif] text-[22px] font-bold leading-none text-white">
+            {m.value}%
+          </p>
+          <div className="h-[3px] overflow-hidden rounded-[2px] bg-[#1E2A3E]">
+            <div className="h-full rounded-[2px] bg-[#3B82F6]" style={{ width: `${m.value}%` }} />
           </div>
         </div>
       ))}
 
-      <div className="absolute right-0 top-[24%] w-[124px] sm:w-[132px] rounded-xl border border-[#3B82F6]/35 bg-[#0D1321] p-6 text-center shadow-[0_0_30px_rgba(59,130,246,0.22)] pointer-events-none">
-        <p className="font-mono text-[9px] tracking-[0.16em] uppercase text-[#8B9DC3] mb-3">
+      <div className="absolute right-0 top-[30%] z-10 min-w-[160px] rounded-2xl border border-[#1E2A3E] bg-[#0D1321] p-5 text-center">
+        <p className="mb-4 font-[Inter,sans-serif] text-[10px] uppercase tracking-[0.12em] text-[#8B9DC3]">
           {t('score_global')}
         </p>
-        <div className="relative inline-flex items-end justify-center gap-0.5 mb-4">
-          <div
-            className="absolute -inset-3 rounded-full border-2 border-[#3B82F6]/40 shadow-[0_0_24px_rgba(59,130,246,0.3)]"
-            aria-hidden
-          />
-          <span className="font-[Outfit,sans-serif] text-[52px] sm:text-[64px] font-bold text-white leading-none">
-            78
-          </span>
-          <span className="text-[16px] sm:text-[20px] text-[#8B9DC3] font-medium pb-1">/100</span>
+
+        <div className="relative mx-auto mb-3 flex h-[110px] w-[110px] items-center justify-center">
+          <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 110 110" aria-hidden>
+            <defs>
+              <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#3B82F6" />
+                <stop offset="100%" stopColor="#06B6D4" />
+              </linearGradient>
+            </defs>
+            <circle cx="55" cy="55" r="45" fill="none" stroke="#1E2A3E" strokeWidth="6" />
+            <circle
+              cx="55"
+              cy="55"
+              r="45"
+              fill="none"
+              stroke="url(#scoreGrad)"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray="283"
+              strokeDashoffset="74"
+            />
+          </svg>
+          <div className="relative flex items-end justify-center gap-0.5">
+            <span className="font-[Outfit,sans-serif] text-[48px] font-bold leading-none text-white">78</span>
+            <span className="pb-1 font-[Inter,sans-serif] text-[14px] text-[#8B9DC3]">/100</span>
+          </div>
         </div>
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#06B6D4] font-mono text-[9px] tracking-[0.14em] uppercase font-semibold text-[#080C14]">
+
+        <span className="mt-3 inline-flex items-center rounded-full bg-[#06B6D4] px-[14px] py-1 font-[Inter,sans-serif] text-[11px] font-bold text-white">
           ✦ {t('score_badge')}
         </span>
       </div>
