@@ -31,7 +31,7 @@ function mixHex(from: string, to: string, t: number): string {
 
 function getOvalValidationStyle(poseMatch: boolean, holdProgress: number, idleStroke: string) {
   const strokeColor = poseMatch
-    ? mixHex(idleStroke.startsWith('rgba') ? '#64748B' : idleStroke, SCAN_BRAND_ACCENT, 0.25 + holdProgress * 0.75)
+    ? mixHex(idleStroke.startsWith('rgba') ? '#8B9DC3' : idleStroke, SCAN_BRAND_ACCENT, 0.25 + holdProgress * 0.75)
     : idleStroke
 
   const glowAlpha = poseMatch ? 0.15 + holdProgress * 0.55 : 0

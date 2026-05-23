@@ -21,7 +21,7 @@ const navItems = [
     key: 'nav_dashboard',
     href: '/dashboard',
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
       </svg>
     ),
@@ -30,7 +30,7 @@ const navItems = [
     key: 'nav_history',
     href: '/dashboard/history',
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
@@ -39,7 +39,7 @@ const navItems = [
     key: 'nav_routine',
     href: '/dashboard/routine',
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
     ),
@@ -48,7 +48,7 @@ const navItems = [
     key: 'nav_settings',
     href: '/dashboard/settings',
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
@@ -66,7 +66,10 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
 
   const isActive = (href: string) => {
     const fullPath = `${prefix}${href}`
-    return pathname === fullPath || (href === '/dashboard' && pathname === `${prefix}/dashboard`)
+    if (href === '/dashboard') {
+      return pathname === fullPath
+    }
+    return pathname === fullPath || pathname.startsWith(`${fullPath}/`)
   }
 
   const handleLogout = async () => {
@@ -81,57 +84,46 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
     : user?.email?.[0]?.toUpperCase() ?? '?'
 
   return (
-    <aside
-      className="fixed left-0 top-0 h-full w-60 border-r flex flex-col z-40 hidden lg:flex glass-nav"
-      style={{ borderColor: 'rgba(59,130,246,0.12)' }}
-    >
-      {/* Logo */}
-      <div className="p-5 border-b border-[rgba(59,130,246,0.10)]">
-        <UpfaceLogo size="sm" href={`${prefix}/`} />
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 p-4 flex flex-col gap-1">
+    <aside className="bg-grid-pattern fixed left-0 top-16 z-40 hidden h-[calc(100vh-4rem)] w-[220px] flex-col border-r border-[#1E2A3E] lg:flex">
+      <nav className="flex flex-1 flex-col gap-1 p-3">
         {navItems.map((item) => {
           const active = isActive(item.href)
           return (
             <Link
               key={item.key}
               href={`${prefix}${item.href}`}
-              className={`
-                flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                ${active
-                  ? 'bg-blue-500/10 text-blue-600 border border-blue-500/20'
-                  : 'text-muted hover:text-theme hover:bg-slate-100/80'
-                }
-              `}
+              className={`flex items-center gap-3 border-l-2 px-3 py-2.5 font-[Inter,sans-serif] text-[13px] font-medium transition-colors ${
+                active
+                  ? 'border-[#3B82F6] bg-[#0D1321] text-white'
+                  : 'border-transparent text-[#8B9DC3] hover:bg-[#0D1321]/60 hover:text-white'
+              }`}
             >
-              {item.icon}
+              <span className={active ? 'text-[#3B82F6]' : 'text-[#3D4F6E]'}>{item.icon}</span>
               {t(item.key as Parameters<typeof t>[0])}
             </Link>
           )
         })}
       </nav>
 
-      {/* User section */}
-      <div className="p-4 border-t border-[rgba(59,130,246,0.10)]">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-600">
+      <div className="border-t border-[#1E2A3E] p-3">
+        <div className="mb-3 flex items-center gap-3 px-2">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#1E2A3E] bg-[#0D1321] text-xs font-bold text-[#3B82F6]">
             {initials}
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-theme truncate">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-xs font-medium text-white">
               {user?.user_metadata?.full_name ?? 'Utilisateur'}
             </p>
-            <p className="text-xs text-faint truncate">{user?.email}</p>
+            <p className="truncate text-[11px] text-[#3D4F6E]">{user?.email}</p>
           </div>
         </div>
         {!hideAuthUi && (
           <button
+            type="button"
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-muted hover:text-red-500 hover:bg-red-500/5 transition-colors"
+            className="flex w-full items-center gap-2 px-3 py-2 font-[Inter,sans-serif] text-[13px] text-[#8B9DC3] transition-colors hover:text-red-400"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             {t('logout')}
@@ -141,4 +133,3 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
     </aside>
   )
 }
-

@@ -23,7 +23,7 @@ export default function UpfaceLogo({
   size = 'md',
   href,
   className = '',
-  variant = 'light',
+  variant = 'dark',
 }: UpfaceLogoProps) {
   const { fontSize, tracking, height } = UPFACE_LOGO_SIZES[size]
   const isDark = variant === 'dark'

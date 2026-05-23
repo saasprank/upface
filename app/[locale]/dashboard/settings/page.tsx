@@ -52,7 +52,7 @@ export default function SettingsPage() {
                 type="email"
                 disabled
                 placeholder="votre@email.com"
-                className="w-full bg-surface-2 border border-[rgba(15,23,42,0.06)] rounded-xl px-4 py-3 text-sm text-faint cursor-not-allowed"
+                className="w-full bg-surface-2 border border-[rgba(255,255,255,0.06)] rounded-xl px-4 py-3 text-sm text-faint cursor-not-allowed"
               />
               <p className="text-xs text-faint mt-1">Modifiable via votre fournisseur d'identité.</p>
             </div>
@@ -77,7 +77,7 @@ export default function SettingsPage() {
             <div
               onClick={() => setEmailNotif(!emailNotif)}
               className={`relative w-11 h-6 rounded-full transition-all cursor-pointer ${
-                emailNotif ? 'bg-blue-500' : 'bg-slate-200'
+                emailNotif ? 'bg-blue-500' : 'bg-surface-2'
               }`}
             >
               <div

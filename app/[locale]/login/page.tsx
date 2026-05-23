@@ -88,9 +88,9 @@ export default function LoginPage() {
 
         {/* Divider */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="flex-1 h-px bg-[rgba(15,23,42,0.06)]" />
+          <div className="flex-1 h-px bg-[rgba(255,255,255,0.06)]" />
           <span className="text-xs text-faint">{t('or')}</span>
-          <div className="flex-1 h-px bg-[rgba(15,23,42,0.06)]" />
+          <div className="flex-1 h-px bg-[rgba(255,255,255,0.06)]" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

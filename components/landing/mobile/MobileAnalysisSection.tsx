@@ -92,7 +92,7 @@ export default function MobileAnalysisSection() {
             className="rounded-2xl p-6 text-center"
             style={{
               background: '#080C14',
-              border: '1px solid rgba(59,130,246,0.12)',
+              border: '1px solid #1E2A3E',
             }}
           >
             <div className="relative inline-flex items-center justify-center mb-6">

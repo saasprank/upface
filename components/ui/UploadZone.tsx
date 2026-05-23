@@ -79,7 +79,7 @@ export default function UploadZone({ onFile, preview, loading }: UploadZoneProps
               </div>
             )}
             {!loading && (
-              <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border border-[rgba(15,23,42,0.08)] rounded-lg px-3 py-1.5 text-xs text-muted">
+              <div className="absolute bottom-3 right-3 bg-surface/90 backdrop-blur-sm border border-[rgba(255,255,255,0.08)] rounded-lg px-3 py-1.5 text-xs text-muted">
                 Cliquer pour changer
               </div>
             )}

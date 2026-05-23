@@ -1,8 +1,9 @@
+import Navbar from '@/components/layout/Navbar'
+import DashboardSidebar from '@/components/layout/DashboardSidebar'
+import DashboardBottomNav from '@/components/layout/DashboardBottomNav'
 import { redirect } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase-server'
-import DashboardSidebar from '@/components/layout/DashboardSidebar'
-import DashboardBottomNav from '@/components/layout/DashboardBottomNav'
 import { isAuthUiHidden } from '@/lib/auth-ui'
 
 const SUPABASE_CONFIGURED = !!(
@@ -53,10 +54,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="bg-grid-pattern min-h-screen">
+      <Navbar />
       <DashboardSidebar user={user} />
 
-      <div className="lg:ml-60 min-h-screen pb-20 lg:pb-0">
+      <div className="min-h-screen pb-20 pt-16 lg:ml-[220px] lg:pb-0">
         {children}
       </div>
 

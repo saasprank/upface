@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import FreeResultsView from '@/components/results/FreeResultsView'
+import ResultsPageView from '@/components/results/ResultsPageView'
 import { loadAnalysisSession, type AnalysisSessionPayload } from '@/lib/analysis-session'
 
 interface FreeResultsWithSessionProps {
@@ -11,17 +11,26 @@ interface FreeResultsWithSessionProps {
   serverObservations: Record<string, string>
   serverTier: string
   serverPercentile: number
+  createdAt: string
   prefix: string
+  routine?: {
+    skincare: string[]
+    grooming: string[]
+    fitness: string[]
+    style: string[]
+    aura: string[]
+  }
 }
 
 export default function FreeResultsWithSession({
   analysisId,
-  photoUrl,
   serverScores,
   serverObservations,
   serverTier,
   serverPercentile,
+  createdAt,
   prefix,
+  routine,
 }: FreeResultsWithSessionProps) {
   const [payload, setPayload] = useState<AnalysisSessionPayload | null>(null)
 
@@ -30,22 +39,33 @@ export default function FreeResultsWithSession({
   }, [analysisId])
 
   const scores = payload?.scores ?? serverScores
-  const observations =
-    payload?.observations && Object.keys(payload.observations).length > 0
-      ? payload.observations
-      : serverObservations
   const tier = payload?.tier ?? serverTier
-  const percentile = payload?.percentile ?? serverPercentile
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('upface_scores', JSON.stringify({
+        ...scores,
+        percentile: payload?.percentile ?? serverPercentile,
+      }))
+      const observations =
+        payload?.observations && Object.keys(payload.observations).length > 0
+          ? payload.observations
+          : serverObservations
+      if (observations && Object.keys(observations).length > 0) {
+        localStorage.setItem('upface_observations', JSON.stringify(observations))
+      }
+    } catch { /* ignore */ }
+  }, [scores, payload, serverPercentile, serverObservations])
 
   return (
-    <FreeResultsView
+    <ResultsPageView
       analysisId={analysisId}
-      photoUrl={photoUrl}
       scores={scores}
-      observations={observations}
       tier={tier}
-      percentile={percentile}
+      createdAt={createdAt}
       prefix={prefix}
+      isSubscribed={false}
+      routine={routine}
     />
   )
 }

@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import Link from 'next/link'
 import Image from 'next/image'
 import FaceCadran, { type AnalyzeState, type FaceCadranHandle, type CameraErrorCode } from '@/components/analyze/FaceCadran'
-import FaceOvalGuide from '@/components/analyze/FaceOvalGuide'
+import AnalyzeUploadScreen from '@/components/analyze/AnalyzeUploadScreen'
 import ScanProgressBar from '@/components/analyze/ScanProgressBar'
 import { ScanPoseInstructionCard } from '@/components/analyze/ScanInstructions'
 import { SCAN_POSE_STEP_ORDER, computeScanProgress } from '@/lib/face-pose-heuristics'
@@ -15,7 +15,7 @@ import { saveAnalysisSession, type AnalysisSessionPayload } from '@/lib/analysis
 import { useFacePoseGuide } from '@/hooks/useFacePoseGuide'
 import { createClient } from '@/lib/supabase'
 import { requiresAccountForAnalyze, analyzeReturnPath } from '@/lib/auth-ui'
-import UpfaceLogo from '@/components/ui/UpfaceLogo'
+import Navbar from '@/components/layout/Navbar'
 import { syncSubscriberRoutineFromAnalyze } from '@/lib/routine-client'
 import { computeClientScores } from '@/lib/client-face-scores'
 import type { NormalizedLandmark } from '@mediapipe/tasks-vision'
@@ -55,15 +55,6 @@ async function parseAnalyzeResponse(res: Response): Promise<{
   }
 }
 
-function CameraLaunchIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width={22} height={22} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-    </svg>
-  )
-}
-
 function CloseIcon() {
   return (
     <svg width={20} height={20} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -98,6 +89,7 @@ function AnalyzeContent() {
   const [apiProgress, setApiProgress] = useState(0)
   const [poseStepIndex, setPoseStepIndex] = useState(0)
   const [instructionVisible, setInstructionVisible] = useState(true)
+  const [uploading, setUploading] = useState(false)
   const [clientScores, setClientScores] = useState<{
     symetrie: number
     proportions: number
@@ -249,6 +241,102 @@ function AnalyzeContent() {
     [locale],
   )
 
+  const runAnalysisFromFile = useCallback(
+    async (file: File) => {
+      if (uploading) return
+
+      if (requiresAccountForAnalyze()) {
+        const supabase = createClient()
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.user) {
+          router.push(`${prefix}/signup?next=${encodeURIComponent(analyzeReturnPath(prefix))}`)
+          return
+        }
+      }
+
+      setUploading(true)
+      setError(null)
+
+      const controller = new AbortController()
+      const requestTimeout = window.setTimeout(() => controller.abort(), 55_000)
+
+      try {
+        const supabase = createClient()
+        let imageUrl = ''
+
+        const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('photos')
+          .upload(filename, file, { cacheControl: '3600', upsert: false })
+
+        if (!uploadError && uploadData) {
+          const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(uploadData.path)
+          imageUrl = publicUrl
+        }
+
+        let imageBase64: string | undefined
+        if (!imageUrl.trim()) {
+          imageBase64 = await fileToDataUrl(file)
+        }
+
+        const photoForDisplay = imageUrl.trim() || imageBase64 || ''
+        if (photoForDisplay) {
+          try {
+            sessionStorage.setItem('upface_photo_url', photoForDisplay)
+          } catch { /* ignore */ }
+        }
+
+        const res = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            imageUrl,
+            ...(imageBase64 ? { imageBase64 } : {}),
+          }),
+        })
+
+        const data = await parseAnalyzeResponse(res)
+
+        if (!res.ok) {
+          if (data.error === 'NO_FACE_DETECTED') throw new Error('no_face')
+          if (data.error === 'IMAGE_REQUIRED') throw new Error('image_required')
+          throw new Error(data.error ?? 'Analysis failed')
+        }
+
+        await applyAnalysisSuccess(data)
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : ''
+        const aborted = err instanceof Error && err.name === 'AbortError'
+        if (aborted) {
+          setError(
+            locale === 'fr'
+              ? 'L\'analyse a pris trop de temps. Réessaie avec une bonne connexion.'
+              : 'Analysis timed out. Try again with a stable connection.',
+          )
+        } else if (msg === 'no_face') {
+          setError(
+            locale === 'fr'
+              ? 'Aucun visage détecté. Assure-toi que ton visage est bien éclairé et de face.'
+              : 'No face detected. Make sure your face is well lit and facing the camera.',
+          )
+        } else if (msg === 'image_required') {
+          setError(
+            locale === 'fr'
+              ? 'Photo non reçue par le serveur. Réessaie ou vérifie ta connexion.'
+              : 'The server did not receive your photo. Try again or check your connection.',
+          )
+        } else {
+          setError(locale === 'fr' ? 'Une erreur est survenue. Réessaie.' : 'Something went wrong. Please try again.')
+        }
+        setUploading(false)
+      } finally {
+        window.clearTimeout(requestTimeout)
+      }
+    },
+    [applyAnalysisSuccess, locale, prefix, router, uploading],
+  )
+
   const runAnalysisApi = useCallback(async () => {
     const controller = new AbortController()
     const requestTimeout = window.setTimeout(() => controller.abort(), 55_000)
@@ -397,50 +485,58 @@ function AnalyzeContent() {
 
   if (showLaunch) {
     return (
-      <div className="min-h-screen flex flex-col" style={{ background: '#080C14' }}>
-        <header
-          className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 sm:px-6"
-          style={{ height: 56, background: 'rgba(8,12,20,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
-        >
-          <UpfaceLogo size="sm" href={`${prefix}/`} />
-        </header>
+      <div className="relative min-h-screen overflow-hidden bg-[#080C14]">
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(ellipse 60% 50% at 50% 20%, rgba(59,130,246,0.14) 0%, transparent 70%)',
+          }}
+          aria-hidden
+        />
 
-        <main className="flex-1 flex flex-col items-center justify-center px-4 pt-14 pb-10" style={{ minHeight: '100dvh' }}>
-          <div className="flex flex-col items-center gap-8 w-full max-w-lg">
-            <FaceOvalGuide alignLabel={t('align_face')} />
+        <Navbar />
 
-            {error && (
-              <div
-                className="w-full flex items-start gap-2 px-4 py-3 rounded-xl text-sm text-center"
-                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#EF4444' }}
-              >
-                {error}
-              </div>
-            )}
-
-            <button
-              type="button"
-              onClick={handleLaunchCamera}
-              className="w-full max-w-md flex items-center justify-center gap-2.5 font-bold transition-all active:scale-[0.98]"
-              style={{
-                height: 56,
-                borderRadius: 9999,
-                background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)',
-                color: '#EEF2FF',
-                fontSize: 16,
-                fontFamily: 'Satoshi, sans-serif',
-                cursor: 'pointer',
-                boxShadow: '0 0 40px rgba(59,130,246,0.35), 0 4px 24px rgba(59,130,246,0.25)',
-              }}
-            >
-              <CameraLaunchIcon />
-              {t('launch')}
-            </button>
-
-            <p className="text-[9px] sm:text-[10px] tracking-[0.18em] text-[#3D4F6E] uppercase text-center" style={{ fontFamily: 'Inter, sans-serif' }}>
-              {t('privacy')}
+        <main className="relative z-10 mx-auto flex min-h-screen max-w-[700px] flex-col items-center px-4 pb-12 pt-24">
+          <div className="mb-10 text-center">
+            <h1 className="font-[Outfit,sans-serif] text-[clamp(40px,7vw,64px)] font-black uppercase leading-[0.92] tracking-[-0.02em]">
+              <span className="block whitespace-nowrap text-white">{t('upload_title_line1')}</span>
+              <span className="block whitespace-nowrap bg-gradient-to-r from-[#3B82F6] to-[#06B6D4] bg-clip-text text-transparent">
+                {t('upload_title_line2')}
+              </span>
+            </h1>
+            <p className="mx-auto mt-4 max-w-[480px] font-[Inter,sans-serif] text-[16px] leading-relaxed text-[#8B9DC3]">
+              {t('upload_subtitle')}
             </p>
           </div>
+
+          {error && (
+            <div
+              className="mb-6 w-full max-w-[480px] rounded-xl px-4 py-3 text-center text-sm"
+              style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#EF4444' }}
+            >
+              {error}
+            </div>
+          )}
+
+          <AnalyzeUploadScreen
+            onFile={runAnalysisFromFile}
+            loading={uploading}
+            dropzoneLabel={t('upload_dropzone')}
+            formatsLabel={t('upload_formats')}
+            choosePhotoLabel={uploading ? t('upload_analyzing') : t('upload_choose')}
+            footerLabel={t('upload_footer')}
+            dragLabel={t('upload_drag')}
+          />
+
+          <button
+            type="button"
+            onClick={handleLaunchCamera}
+            disabled={uploading}
+            className="mt-8 font-[Inter,sans-serif] text-[13px] text-[#8B9DC3] underline-offset-4 transition-colors hover:text-white hover:underline disabled:opacity-50"
+          >
+            {t('camera_alt')}
+          </button>
         </main>
       </div>
     )
@@ -522,8 +618,8 @@ function AnalyzeContent() {
 export default function AnalyzePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-white border-t-transparent animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-[#080C14]">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#3B82F6] border-t-transparent" />
       </div>
     }>
       <AnalyzeContent />

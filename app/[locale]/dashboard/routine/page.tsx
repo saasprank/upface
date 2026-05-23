@@ -264,7 +264,7 @@ function RoutineContent() {
         <Link
           href={lastAnalysisId ? `${prefix}/results/${lastAnalysisId}/focus` : `${prefix}/analyze`}
           className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium transition-colors"
-          style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', color: '#3B82F6' }}
+          style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid #1E2A3E', color: '#3B82F6' }}
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -274,7 +274,7 @@ function RoutineContent() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 p-1 rounded-xl mb-8 w-fit" style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.1)' }}>
+      <div className="flex gap-1 p-1 rounded-xl mb-8 w-fit" style={{ background: '#0D1321', border: '1px solid #1E2A3E' }}>
         {TABS.map(tab => (
           <button
             key={tab.key}
@@ -282,7 +282,7 @@ function RoutineContent() {
             className="px-4 py-2 rounded-lg text-xs font-medium transition-all duration-150"
             style={{
               background: activeTab === tab.key ? '#3B82F6' : 'transparent',
-              color: activeTab === tab.key ? '#fff' : '#64748B',
+              color: activeTab === tab.key ? '#fff' : '#8B9DC3',
             }}
           >
             {tab.label}
@@ -293,13 +293,13 @@ function RoutineContent() {
       {/* Progression journalière */}
       <div
         className="rounded-2xl p-4 mb-6"
-        style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}
+        style={{ background: '#0D1321', border: '1px solid #1E2A3E' }}
       >
         <div className="flex justify-between items-center mb-2">
           <p className="text-sm font-semibold text-white">{"Aujourd'hui"}</p>
           <p className="text-xs font-bold" style={{ color: '#06B6D4' }}>{completedCount}/{totalTasks} tâches</p>
         </div>
-        <div className="h-2 rounded-full mb-2" style={{ background: '#E2E8F0' }}>
+        <div className="h-2 rounded-full mb-2" style={{ background: '#1E2A3E' }}>
           <div
             className="h-full rounded-full transition-all duration-500"
             style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, #3B82F6, #06B6D4)' }}
@@ -308,9 +308,9 @@ function RoutineContent() {
         {progressPct === 100 && totalTasks > 0 ? (
           <p className="text-xs text-center" style={{ color: '#10B981' }}>🔥 Routine du jour complète ! Streak +1</p>
         ) : progressPct === 0 ? (
-          <p className="text-xs" style={{ color: '#94A3B8' }}>Commence ta routine pour booster ton streak 🚀</p>
+          <p className="text-xs" style={{ color: '#3D4F6E' }}>Commence ta routine pour booster ton streak 🚀</p>
         ) : (
-          <p className="text-xs" style={{ color: '#94A3B8' }}>Continue ! Plus que {totalTasks - completedCount} tâche{totalTasks - completedCount > 1 ? 's' : ''}</p>
+          <p className="text-xs" style={{ color: '#3D4F6E' }}>Continue ! Plus que {totalTasks - completedCount} tâche{totalTasks - completedCount > 1 ? 's' : ''}</p>
         )}
       </div>
 
@@ -389,7 +389,7 @@ function RoutineContent() {
             <div
               key={cat.key}
               className="rounded-2xl p-5"
-              style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.08)' }}
+              style={{ background: '#0D1321', border: '1px solid #1E2A3E' }}
             >
               <div className="flex items-center gap-2 mb-4">
                 <div
@@ -429,20 +429,20 @@ function RoutineContent() {
         <div
           className="mt-6 rounded-2xl p-5 text-center"
           style={{
-            background: 'linear-gradient(135deg, #FFFFFF, #F1F5F9)',
-            border: '1px solid rgba(59,130,246,0.2)',
+            background: 'linear-gradient(135deg, #0D1321, #111827)',
+            border: '1px solid #1E2A3E',
           }}
         >
           <div
             className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3"
-            style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.25)' }}
+            style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid #1E2A3E' }}
           >
             <svg className="w-5 h-5" style={{ color: '#3B82F6' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
           <p className="text-white font-bold mb-1">Semaines 2, 3 et 4 verrouillées</p>
-          <p className="text-xs mb-4" style={{ color: '#64748B' }}>
+          <p className="text-xs mb-4" style={{ color: '#8B9DC3' }}>
             Passe à Pro pour débloquer ton plan complet 30/90 jours
           </p>
           <button
@@ -491,7 +491,7 @@ function ActionItem({ action, accentColor, muted = false, taskId, isCompleted, o
         <div className="flex items-start justify-between gap-2">
           <p
             className="text-xs font-semibold transition-all"
-            style={{ color: isCompleted ? '#94A3B8' : (muted ? '#64748B' : '#0F172A'),
+            style={{ color: isCompleted ? '#3D4F6E' : (muted ? '#8B9DC3' : '#EEF2FF'),
               textDecoration: isCompleted ? 'line-through' : 'none' }}
           >
             {action.title}

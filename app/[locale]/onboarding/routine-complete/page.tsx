@@ -27,7 +27,7 @@ function RoutineCard({ item }: { item: RoutineCategory }) {
     <div
       className="rounded-2xl p-4 mb-3"
       style={{
-        background: '#FFFFFF',
+        background: '#0D1321',
         border: '1px solid rgba(59,130,246,0.18)',
       }}
     >
@@ -41,14 +41,14 @@ function RoutineCard({ item }: { item: RoutineCategory }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-medium" style={{ color: item.color }}>{item.category}</span>
-            <span className="text-xs" style={{ color: '#94A3B8' }}>{item.day}</span>
+            <span className="text-xs" style={{ color: '#3D4F6E' }}>{item.day}</span>
           </div>
           <h3 className="text-white font-semibold text-sm mb-2">{item.title}</h3>
           <ul className="space-y-1">
             {item.tasks.map((task, i) => (
               <li key={i} className="flex items-start gap-2">
                 <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: item.color }} />
-                <span className="text-xs leading-relaxed" style={{ color: '#64748B' }}>{task}</span>
+                <span className="text-xs leading-relaxed" style={{ color: '#8B9DC3' }}>{task}</span>
               </li>
             ))}
           </ul>
@@ -138,12 +138,12 @@ function RoutineCompleteContent() {
   const headline = routine?.headline ?? 'Ta routine complète est débloquée'
 
   return (
-    <div className="min-h-screen pb-32" style={{ background: '#F8FAFF' }}>
+    <div className="min-h-screen pb-32" style={{ background: '#080C14' }}>
 
       {/* Header */}
       <div
         className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between"
-        style={{ background: '#F8FAFF', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
+        style={{ background: '#080C14', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
       >
         <UpfaceLogo size="sm" />
         <div
@@ -159,7 +159,7 @@ function RoutineCompleteContent() {
         {generating && (
           <div className="flex flex-col items-center justify-center py-16 gap-4">
             <div className="w-10 h-10 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-            <p className="text-sm" style={{ color: '#64748B' }}>Génération de ta routine personnalisée…</p>
+            <p className="text-sm" style={{ color: '#8B9DC3' }}>Génération de ta routine personnalisée…</p>
           </div>
         )}
 
@@ -169,7 +169,7 @@ function RoutineCompleteContent() {
             style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)' }}
           >
             <p className="text-sm text-white font-medium mb-1">{genError}</p>
-            <p className="text-xs" style={{ color: '#64748B' }}>
+            <p className="text-xs" style={{ color: '#8B9DC3' }}>
               Réessaie depuis le dashboard ou contacte le support si le problème persiste.
             </p>
           </div>
@@ -192,7 +192,7 @@ function RoutineCompleteContent() {
                 </svg>
               </div>
               <h2 className="text-lg font-bold text-white mb-1">Routine débloquée !</h2>
-              <p className="text-sm" style={{ color: '#64748B' }}>
+              <p className="text-sm" style={{ color: '#8B9DC3' }}>
                 Ton accès Premium est actif.{sessionId ? ' Paiement confirmé.' : ''} Ta transformation commence maintenant.
               </p>
             </div>
@@ -214,10 +214,10 @@ function RoutineCompleteContent() {
                   <div
                     key={s.label}
                     className="flex-1 rounded-xl py-2 px-3 text-center"
-                    style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.12)' }}
+                    style={{ background: '#0D1321', border: '1px solid #1E2A3E' }}
                   >
                     <div className="text-lg font-bold text-white">{s.value}</div>
-                    <div className="text-xs" style={{ color: '#94A3B8' }}>{s.label}</div>
+                    <div className="text-xs" style={{ color: '#3D4F6E' }}>{s.label}</div>
                   </div>
                 ))}
               </div>
@@ -229,7 +229,7 @@ function RoutineCompleteContent() {
                 <RoutineCard key={item.id ?? i} item={{ ...item, unlocked: true }} />
               ))
             ) : (
-              <div className="text-center py-12" style={{ color: '#64748B' }}>
+              <div className="text-center py-12" style={{ color: '#8B9DC3' }}>
                 <p className="text-sm">Aucune donnée de routine reçue. Ouvre le dashboard pour réessayer.</p>
               </div>
             )}
@@ -241,7 +241,7 @@ function RoutineCompleteContent() {
       {!generating && (
         <div
           className="fixed bottom-0 left-0 right-0 px-4 pb-8 pt-4"
-          style={{ background: 'linear-gradient(to top, #F8FAFF 80%, transparent)' }}
+          style={{ background: 'linear-gradient(to top, #080C14 80%, transparent)' }}
         >
           <button
             onClick={() => router.push(`${prefix}/dashboard`)}

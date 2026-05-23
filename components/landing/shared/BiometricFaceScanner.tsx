@@ -85,7 +85,7 @@ export default function BiometricFaceScanner({ compact = false, showHud = true }
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(to bottom, rgba(248,250,255,0.15) 0%, transparent 28%, transparent 72%, rgba(248,250,255,0.25) 100%)',
+            background: 'linear-gradient(to bottom, rgba(8,12,20,0.15) 0%, transparent 28%, transparent 72%, rgba(8,12,20,0.25) 100%)',
           }}
         />
       </div>

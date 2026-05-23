@@ -30,7 +30,7 @@ export default function MobileScoreSection() {
             className="rounded-2xl p-6 mb-4"
             style={{
               background: '#0D1321',
-              border: '1px solid rgba(59,130,246,0.12)',
+              border: '1px solid #1E2A3E',
             }}
           >
             <div className="flex justify-center mb-5">
@@ -61,7 +61,7 @@ export default function MobileScoreSection() {
             className="rounded-2xl p-5 relative overflow-hidden"
             style={{
               background: '#111827',
-              border: '1px solid rgba(59,130,246,0.1)',
+              border: '1px solid #1E2A3E',
             }}
           >
             <div className="blur-sm pointer-events-none select-none opacity-60 space-y-2">
@@ -71,7 +71,7 @@ export default function MobileScoreSection() {
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[rgba(8,12,20,0.5)] backdrop-blur-[2px]">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}
+                style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid #1E2A3E' }}
               >
                 <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />

@@ -22,7 +22,7 @@ export default function PaywallOverlay({
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(to bottom, transparent 0%, rgba(248,250,255,0.85) 30%, rgba(248,250,255,0.98) 100%)',
+          background: 'linear-gradient(to bottom, transparent 0%, rgba(8,12,20,0.85) 30%, rgba(8,12,20,0.98) 100%)',
         }}
       />
 

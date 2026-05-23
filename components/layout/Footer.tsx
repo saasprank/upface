@@ -10,10 +10,10 @@ export default function Footer() {
   const prefix = locale === 'fr' ? '' : `/${locale}`
 
   return (
-    <footer className="border-t border-[rgba(59,130,246,0.1)] bg-[rgba(255,255,255,0.5)]">
-      <div className="max-w-[375px] sm:max-w-6xl mx-auto px-4 py-12">
-        <div className="flex flex-col items-center text-center gap-6">
-          <UpfaceLogo size="md" href={`${prefix}/`} />
+    <footer className="border-t border-[#1E2A3E] bg-[#080C14]">
+      <div className="mx-auto max-w-[375px] px-4 py-12 sm:max-w-6xl">
+        <div className="flex flex-col items-center gap-6 text-center">
+          <UpfaceLogo size="md" href={`${prefix}/`} variant="dark" />
 
           <p className="text-xs text-faint leading-relaxed max-w-xs">
             {locale === 'fr'
@@ -34,7 +34,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-[rgba(15,23,42,0.06)] text-center">
+        <div className="mt-8 border-t border-[#1E2A3E] pt-6 text-center">
           <p className="text-[10px] text-faint tracking-wide">{t('copyright')}</p>
         </div>
       </div>

@@ -97,7 +97,7 @@ function SignupForm() {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid #1E2A3E' }}>
             <svg className="w-8 h-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
             </svg>
@@ -111,7 +111,7 @@ function SignupForm() {
           <p className="text-sm text-muted mb-8 leading-relaxed">
             Cliquez sur le lien pour activer votre compte et être connecté automatiquement.
           </p>
-          <div className="rounded-xl p-4 text-left mb-6" style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.15)' }}>
+          <div className="rounded-xl p-4 text-left mb-6" style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid #1E2A3E' }}>
             <p className="text-xs text-muted leading-relaxed">
               <span className="text-blue-400 font-medium">Astuce :</span> Vérifiez vos spams si vous ne trouvez pas l&apos;email. Le lien expire dans 24h.
             </p>
@@ -171,7 +171,7 @@ function SignupForm() {
             {['Symétrie', 'Proportions', 'Structure', 'Peau', 'Grooming'].map((label, i) => (
               <div key={label} className="flex items-center gap-3 blur-sm">
                 <span className="text-xs text-faint w-20 shrink-0">{label}</span>
-                <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
+                <div className="flex-1 h-1 bg-surface-2 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -221,9 +221,9 @@ function SignupForm() {
 
           {/* Divider */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-[rgba(15,23,42,0.06)]" />
+            <div className="flex-1 h-px bg-[rgba(255,255,255,0.06)]" />
             <span className="text-xs text-faint">{t('or')}</span>
-            <div className="flex-1 h-px bg-[rgba(15,23,42,0.06)]" />
+            <div className="flex-1 h-px bg-[rgba(255,255,255,0.06)]" />
           </div>
 
           {/* Email/password form */}

@@ -151,12 +151,12 @@ function OnboardingContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#F8FAFF' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: '#080C14' }}>
 
       {/* Header */}
       <header
         className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 56, background: 'rgba(248,250,255,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
+        style={{ height: 56, background: 'rgba(8,12,20,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
       >
         <UpfaceLogo size="sm" href={`${prefix}/`} />
 
@@ -171,7 +171,7 @@ function OnboardingContent() {
           />
         </div>
 
-        <span className="text-xs font-medium shrink-0" style={{ color: '#94A3B8' }}>{step}/3</span>
+        <span className="text-xs font-medium shrink-0" style={{ color: '#3D4F6E' }}>{step}/3</span>
       </header>
 
       <main className="flex-1 pt-14 pb-32 px-4">
@@ -199,18 +199,18 @@ function OnboardingContent() {
                       className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all"
                       style={{
                         background: selected ? 'rgba(59,130,246,0.12)' : 'rgba(13,19,33,0.8)',
-                        border: selected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(15,23,42,0.06)',
+                        border: selected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.06)',
                       }}
                     >
                       <div
                         className="shrink-0 flex items-center justify-center rounded-xl w-10 h-10"
-                        style={{ background: selected ? 'rgba(59,130,246,0.2)' : 'rgba(15,23,42,0.06)', color: selected ? '#3B82F6' : '#64748B' }}
+                        style={{ background: selected ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.06)', color: selected ? '#3B82F6' : '#8B9DC3' }}
                       >
                         {opt.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-sm" style={{ color: selected ? '#0F172A' : '#64748B' }}>{opt.label}</p>
-                        <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{opt.desc}</p>
+                        <p className="font-bold text-sm" style={{ color: selected ? '#EEF2FF' : '#8B9DC3' }}>{opt.label}</p>
+                        <p className="text-xs mt-0.5" style={{ color: '#8B9DC3' }}>{opt.desc}</p>
                       </div>
                       <div
                         className="shrink-0 w-5 h-5 rounded flex items-center justify-center"
@@ -254,13 +254,13 @@ function OnboardingContent() {
                       className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all"
                       style={{
                         background: selected ? 'rgba(59,130,246,0.12)' : 'rgba(13,19,33,0.8)',
-                        border: selected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(15,23,42,0.06)',
+                        border: selected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.06)',
                       }}
                     >
                       <span className="text-xl shrink-0">{opt.icon}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-sm" style={{ color: selected ? '#0F172A' : '#64748B' }}>{opt.label}</p>
-                        <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{opt.desc}</p>
+                        <p className="font-bold text-sm" style={{ color: selected ? '#EEF2FF' : '#8B9DC3' }}>{opt.label}</p>
+                        <p className="text-xs mt-0.5" style={{ color: '#8B9DC3' }}>{opt.desc}</p>
                       </div>
                       <div
                         className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
@@ -300,18 +300,18 @@ function OnboardingContent() {
                       className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all"
                       style={{
                         background: selected ? `${opt.color}14` : 'rgba(13,19,33,0.8)',
-                        border: selected ? `1.5px solid ${opt.color}55` : '1.5px solid rgba(15,23,42,0.06)',
+                        border: selected ? `1.5px solid ${opt.color}55` : '1.5px solid rgba(255,255,255,0.06)',
                       }}
                     >
                       <div
                         className="shrink-0 flex items-center justify-center rounded-xl w-10 h-10"
-                        style={{ background: selected ? `${opt.color}22` : 'rgba(15,23,42,0.06)', color: selected ? opt.color : '#64748B' }}
+                        style={{ background: selected ? `${opt.color}22` : 'rgba(255,255,255,0.06)', color: selected ? opt.color : '#8B9DC3' }}
                       >
                         {opt.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-base" style={{ color: selected ? '#0F172A' : '#64748B' }}>{opt.label}</p>
-                        <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{opt.desc}</p>
+                        <p className="font-bold text-base" style={{ color: selected ? '#EEF2FF' : '#8B9DC3' }}>{opt.label}</p>
+                        <p className="text-xs mt-0.5" style={{ color: '#8B9DC3' }}>{opt.desc}</p>
                       </div>
                       <div
                         className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
@@ -334,7 +334,7 @@ function OnboardingContent() {
       {/* Sticky CTA */}
       <div
         className="fixed bottom-0 left-0 right-0 p-4"
-        style={{ background: 'linear-gradient(to top, #F8FAFF 70%, transparent)', zIndex: 40 }}
+        style={{ background: 'linear-gradient(to top, #080C14 70%, transparent)', zIndex: 40 }}
       >
         <div className="max-w-md mx-auto flex gap-3">
           {step > 1 && (
@@ -345,7 +345,7 @@ function OnboardingContent() {
               style={{
                 height: 56, width: 56,
                 background: 'rgba(59,130,246,0.08)',
-                border: '1px solid rgba(59,130,246,0.2)',
+                border: '1px solid #1E2A3E',
                 color: '#3B82F6',
               }}
             >
@@ -380,7 +380,7 @@ function OnboardingContent() {
                 (step === 2 && !canContinue2) ||
                 (step === 3 && !canContinue3)
               )
-                ? '#94A3B8'
+                ? '#3D4F6E'
                 : '#fff',
               fontFamily: 'Satoshi, sans-serif',
               cursor: (

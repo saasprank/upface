@@ -113,7 +113,7 @@ export default function ScanInstructions({
         border: '1px solid rgba(255,255,255,0.08)',
         color: submitting ? '#8B9DC3'
           : !faceDetected ? '#FBBF24'
-            : poseMatch ? '#22D3EE' : '#94A3B8',
+            : poseMatch ? '#22D3EE' : '#3D4F6E',
       }}
       role="status"
       aria-live="polite"

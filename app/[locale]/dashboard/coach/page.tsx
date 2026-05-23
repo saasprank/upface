@@ -162,7 +162,7 @@ Réponds de manière concise, bienveillante et actionnable en français. Maximum
   const isLocked = plan === 'free' && userMessageCount >= FREE_MSG_LIMIT
 
   return (
-    <div className="flex flex-col pb-20" style={{ background: '#F8FAFF', height: '100dvh' }}>
+    <div className="flex flex-col pb-20" style={{ background: '#080C14', height: '100dvh' }}>
 
       {/* Header */}
       <div
@@ -186,10 +186,10 @@ Réponds de manière concise, bienveillante et actionnable en français. Maximum
           <div
             key={s.label}
             className="rounded-xl p-2 text-center"
-            style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.1)' }}
+            style={{ background: '#0D1321', border: '1px solid #1E2A3E' }}
           >
             <p className="text-sm font-bold text-white">{s.value}</p>
-            <p className="text-xs" style={{ color: '#94A3B8' }}>{s.label}</p>
+            <p className="text-xs" style={{ color: '#3D4F6E' }}>{s.label}</p>
           </div>
         ))}
       </div>
@@ -205,7 +205,7 @@ Réponds de manière concise, bienveillante et actionnable en français. Maximum
               style={{
                 background: msg.role === 'user'
                   ? 'linear-gradient(135deg, #3B82F6, #06B6D4)'
-                  : '#FFFFFF',
+                  : '#0D1321',
                 border: msg.role === 'assistant' ? '1px solid rgba(59,130,246,0.15)' : 'none',
                 color: 'white',
               }}
@@ -217,7 +217,7 @@ Réponds de manière concise, bienveillante et actionnable en français. Maximum
 
         {loading && (
           <div className="flex justify-start">
-            <div className="rounded-2xl rounded-bl-sm px-4 py-3" style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.15)' }}>
+            <div className="rounded-2xl rounded-bl-sm px-4 py-3" style={{ background: '#0D1321', border: '1px solid #1E2A3E' }}>
               <div className="flex gap-1">
                 {[0, 1, 2].map(i => (
                   <div key={i} className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
@@ -233,10 +233,10 @@ Réponds de manière concise, bienveillante et actionnable en français. Maximum
       {isLocked && (
         <div
           className="mx-4 mb-3 rounded-2xl p-4 flex-shrink-0 text-center"
-          style={{ background: 'linear-gradient(135deg, #FFFFFF, #F1F5F9)', border: '1px solid rgba(59,130,246,0.25)' }}
+          style={{ background: 'linear-gradient(135deg, #0D1321, #111827)', border: '1px solid #1E2A3E' }}
         >
           <p className="text-white font-bold text-sm mb-1">🔒 Limite atteinte</p>
-          <p className="text-xs mb-3" style={{ color: '#64748B' }}>Passe à Pro pour un accès illimité à ton coach IA</p>
+          <p className="text-xs mb-3" style={{ color: '#8B9DC3' }}>Passe à Pro pour un accès illimité à ton coach IA</p>
           <button
             onClick={() => router.push(`/${locale}/onboarding/routine-preview`)}
             className="px-5 py-2 rounded-xl text-xs font-bold text-white"
@@ -250,14 +250,14 @@ Réponds de manière concise, bienveillante et actionnable en français. Maximum
       {/* Suggestions (premier message seulement) */}
       {messages.length === 1 && (
         <div className="px-4 pb-3 flex-shrink-0">
-          <p className="text-xs mb-2" style={{ color: '#94A3B8' }}>Questions fréquentes</p>
+          <p className="text-xs mb-2" style={{ color: '#3D4F6E' }}>Questions fréquentes</p>
           <div className="flex flex-wrap gap-2">
             {SUGGESTIONS.map((s, i) => (
               <button
                 key={i}
                 onClick={() => void sendMessage(s)}
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95"
-                style={{ background: 'rgba(59,130,246,0.1)', color: '#3B82F6', border: '1px solid rgba(59,130,246,0.2)' }}
+                style={{ background: 'rgba(59,130,246,0.1)', color: '#3B82F6', border: '1px solid #1E2A3E' }}
               >
                 {s}
               </button>
@@ -276,7 +276,7 @@ Réponds de manière concise, bienveillante et actionnable en français. Maximum
               onKeyDown={e => { if (e.key === 'Enter') void sendMessage(input) }}
               placeholder="Pose ta question..."
               className="flex-1 px-4 py-3 rounded-2xl text-sm text-white outline-none"
-              style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.2)', fontSize: '16px' }}
+              style={{ background: '#0D1321', border: '1px solid #1E2A3E', fontSize: '16px' }}
             />
             <button
               onClick={() => void sendMessage(input)}
@@ -290,7 +290,7 @@ Réponds de manière concise, bienveillante et actionnable en français. Maximum
             </button>
           </div>
           {plan === 'free' && (
-            <p className="text-center text-xs mt-2" style={{ color: '#94A3B8' }}>
+            <p className="text-center text-xs mt-2" style={{ color: '#3D4F6E' }}>
               {FREE_MSG_LIMIT - userMessageCount} message{FREE_MSG_LIMIT - userMessageCount > 1 ? 's' : ''} gratuit{FREE_MSG_LIMIT - userMessageCount > 1 ? 's' : ''} restant{FREE_MSG_LIMIT - userMessageCount > 1 ? 's' : ''}
             </p>
           )}

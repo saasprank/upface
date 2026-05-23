@@ -16,7 +16,7 @@ export default function TraitCard({ icon, label, value, score, locked = false, o
   return (
     <Card className="p-4 flex items-start gap-3 relative overflow-hidden">
       {locked && (
-        <div className="absolute inset-0 backdrop-blur-sm bg-white/75 flex items-center justify-center z-10 rounded-xl">
+        <div className="absolute inset-0 backdrop-blur-sm bg-surface/75 flex items-center justify-center z-10 rounded-xl">
           <div className="flex flex-col items-center gap-1">
             <svg className="w-5 h-5 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -46,7 +46,7 @@ export default function TraitCard({ icon, label, value, score, locked = false, o
       </div>
 
       {/* Score bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-0.5" style={{ background: 'rgba(15,23,42,0.06)' }}>
+      <div className="absolute bottom-0 left-0 right-0 h-0.5" style={{ background: 'rgba(255,255,255,0.06)' }}>
         <div
           className="h-full transition-all duration-700"
           style={{ width: `${score}%`, background: `linear-gradient(90deg, ${scoreColor}80, ${scoreColor})` }}

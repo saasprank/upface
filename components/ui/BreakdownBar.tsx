@@ -51,7 +51,7 @@ export default function BreakdownBar({ label, value, max = 100, animate = true }
   return (
     <div ref={ref} className="flex items-center gap-3">
       <span className="text-xs text-muted w-24 shrink-0">{label}</span>
-      <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(15,23,42,0.06)' }}>
+      <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
         <div
           className="h-full rounded-full"
           style={{

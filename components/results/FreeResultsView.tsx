@@ -115,7 +115,7 @@ export default function FreeResultsView({
           </div>
           <div
             className="px-3 py-1.5 rounded-full text-xs font-bold"
-            style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.25)', color: '#3B82F6' }}
+            style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid #1E2A3E', color: '#3B82F6' }}
           >
             {TIER_LABELS[tier] ?? 'Average'}
           </div>
@@ -184,7 +184,7 @@ export default function FreeResultsView({
               <div
                 key={t.key}
                 className="rounded-2xl p-4"
-                style={{ background: '#FFFFFF', border: `1px solid ${c}22` }}
+                style={{ background: '#0D1321', border: `1px solid ${c}22` }}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2" style={{ color: c }}>
@@ -202,7 +202,7 @@ export default function FreeResultsView({
                   </div>
                 </div>
                 {/* Score bar */}
-                <div className="h-1 rounded-full mb-3" style={{ background: 'rgba(15,23,42,0.06)' }}>
+                <div className="h-1 rounded-full mb-3" style={{ background: 'rgba(255,255,255,0.06)' }}>
                   <div
                     className="h-full rounded-full transition-all"
                     style={{ width: `${s}%`, background: `linear-gradient(90deg, ${c}, ${c}99)` }}
@@ -219,7 +219,7 @@ export default function FreeResultsView({
         {/* Social proof */}
         <div
           className="flex items-center gap-2 px-4 py-3 rounded-2xl mb-6"
-          style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.12)' }}
+          style={{ background: '#0D1321', border: '1px solid #1E2A3E' }}
         >
           <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
           <p className="text-xs text-muted">
@@ -237,7 +237,7 @@ export default function FreeResultsView({
             <div
               key={s.label}
               className="flex flex-col items-center gap-1 py-3 rounded-2xl"
-              style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.12)' }}
+              style={{ background: '#0D1321', border: '1px solid #1E2A3E' }}
             >
               <span className="text-lg font-black text-theme" style={{ fontFamily: 'Satoshi, sans-serif' }}>{s.value}</span>
               <span className="text-[10px] text-muted uppercase tracking-wider">{s.label}</span>
@@ -250,7 +250,7 @@ export default function FreeResultsView({
       {/* Sticky CTA */}
       <div
         className="fixed bottom-0 left-0 right-0 p-4"
-        style={{ background: 'linear-gradient(to top, #F8FAFF 70%, transparent)', zIndex: 40 }}
+        style={{ background: 'linear-gradient(to top, #080C14 70%, transparent)', zIndex: 40 }}
       >
         <div className="max-w-lg mx-auto">
           <Link

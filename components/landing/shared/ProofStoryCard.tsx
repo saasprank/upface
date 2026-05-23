@@ -62,14 +62,14 @@ export default function ProofStoryCard({ story }: ProofStoryCardProps) {
       </header>
 
       <div className="flex items-center justify-center gap-2">
-        <div className="flex-1 rounded-xl p-3 text-center bg-[rgba(248,250,255,0.8)] border border-[rgba(59,130,246,0.1)]">
+        <div className="flex-1 rounded-xl p-3 text-center bg-[rgba(8,12,20,0.8)] border border-[rgba(59,130,246,0.1)]">
           <p className="text-[9px] tracking-wider uppercase text-faint mb-1">{t('before')}</p>
           <p className="text-3xl font-black text-theme" style={{ fontFamily: 'Satoshi, sans-serif' }}>
             {story.before}
           </p>
         </div>
         <span className="text-faint text-lg" aria-hidden="true">→</span>
-        <div className="flex-1 rounded-xl p-3 text-center bg-[rgba(248,250,255,0.8)] border border-[rgba(16,185,129,0.15)]">
+        <div className="flex-1 rounded-xl p-3 text-center bg-[rgba(8,12,20,0.8)] border border-[rgba(16,185,129,0.15)]">
           <p className="text-[9px] tracking-wider uppercase text-faint mb-1">{t('after')}</p>
           <p className="text-3xl font-black" style={{ fontFamily: 'Satoshi, sans-serif', color: '#10B981' }}>
             {story.after}

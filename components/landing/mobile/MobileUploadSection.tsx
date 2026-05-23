@@ -47,7 +47,7 @@ export default function MobileUploadSection() {
               className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center"
               style={{
                 background: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.1))',
-                border: '1px solid rgba(59,130,246,0.2)',
+                border: '1px solid #1E2A3E',
               }}
             >
               <svg className="w-7 h-7 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

@@ -106,7 +106,7 @@ export default function RoutinePreviewSection() {
                 </div>
                 <div className="space-y-2">
                   {[1, 2, 3].map(i => (
-                    <div key={i} className="h-3 rounded-full bg-white/5 w-full" />
+                    <div key={i} className="h-3 rounded-full bg-surface/5 w-full" />
                   ))}
                 </div>
               </Card>

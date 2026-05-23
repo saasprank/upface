@@ -46,7 +46,7 @@ function UploadStepPanel() {
   const t = useTranslations('landing.upload')
 
   return (
-    <FaceOvalGuide alignLabel={t('align_face')} className="max-w-[220px]" variant="light" />
+    <FaceOvalGuide alignLabel={t('align_face')} className="max-w-[220px]" variant="dark" />
   )
 }
 
@@ -130,7 +130,7 @@ function AnalysisStepPanel({ progress }: { progress: number }) {
                       ? 'rgba(16,185,129,0.4)'
                       : state === 'active'
                         ? 'rgba(59,130,246,0.4)'
-                        : 'rgba(15,23,42,0.08)'
+                        : 'rgba(255,255,255,0.08)'
                   }`,
                 }}
               >

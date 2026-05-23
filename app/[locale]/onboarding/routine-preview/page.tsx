@@ -98,14 +98,14 @@ function RoutineCard({ item }: { item: RoutineCategory }) {
     <div
       className="relative rounded-2xl p-4 mb-3 overflow-hidden"
       style={{
-        background: '#FFFFFF',
+        background: '#0D1321',
         border: `1px solid ${isLocked ? 'rgba(59,130,246,0.08)' : 'rgba(59,130,246,0.18)'}`,
       }}
     >
       {isLocked && (
         <div
           className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-2xl"
-          style={{ backdropFilter: 'blur(6px)', background: 'rgba(248,250,255,0.55)' }}
+          style={{ backdropFilter: 'blur(6px)', background: 'rgba(8,12,20,0.55)' }}
         >
           <div
             className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
@@ -116,7 +116,7 @@ function RoutineCard({ item }: { item: RoutineCategory }) {
                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <span className="text-sm font-medium" style={{ color: '#64748B' }}>Débloque avec Premium</span>
+          <span className="text-sm font-medium" style={{ color: '#8B9DC3' }}>Débloque avec Premium</span>
         </div>
       )}
       <div className="flex items-start gap-3">
@@ -129,14 +129,14 @@ function RoutineCard({ item }: { item: RoutineCategory }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-medium" style={{ color: item.color }}>{item.category}</span>
-            <span className="text-xs" style={{ color: '#94A3B8' }}>{item.day}</span>
+            <span className="text-xs" style={{ color: '#3D4F6E' }}>{item.day}</span>
           </div>
           <h3 className="text-white font-semibold text-sm mb-2">{item.title}</h3>
           <ul className="space-y-1">
             {item.tasks.map((task, i) => (
               <li key={i} className="flex items-start gap-2">
                 <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: item.color }} />
-                <span className="text-xs leading-relaxed" style={{ color: '#64748B' }}>{task}</span>
+                <span className="text-xs leading-relaxed" style={{ color: '#8B9DC3' }}>{task}</span>
               </li>
             ))}
           </ul>
@@ -220,15 +220,15 @@ export default function RoutinePreviewPage() {
     return (
       <div
         className="min-h-screen flex flex-col justify-between overflow-hidden"
-        style={{ background: '#F8FAFF' }}
+        style={{ background: '#080C14' }}
       >
         {/* Flèche retour */}
         <button
           onClick={() => setShowPaywall(false)}
           className="absolute top-4 left-4 z-10 w-9 h-9 flex items-center justify-center rounded-full"
-          style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.15)' }}
+          style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid #1E2A3E' }}
         >
-          <svg className="w-5 h-5" style={{ color: '#64748B' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-5 h-5" style={{ color: '#8B9DC3' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
@@ -242,7 +242,7 @@ export default function RoutinePreviewPage() {
             <span className="text-2xl">✦</span>
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">Débloque ton potentiel</h1>
-          <p className="text-sm" style={{ color: '#64748B' }}>
+          <p className="text-sm" style={{ color: '#8B9DC3' }}>
             Ta routine personnalisée est prête.<br />Passe à Pro pour y accéder.
           </p>
         </div>
@@ -258,7 +258,7 @@ export default function RoutinePreviewPage() {
               <span className="text-lg w-7 text-center flex-shrink-0">{f.icon}</span>
               <div>
                 <p className="text-white font-semibold text-sm leading-tight">{f.title}</p>
-                <p className="text-xs" style={{ color: '#64748B' }}>{f.sub}</p>
+                <p className="text-xs" style={{ color: '#8B9DC3' }}>{f.sub}</p>
               </div>
             </div>
           ))}
@@ -282,13 +282,13 @@ export default function RoutinePreviewPage() {
               onClick={() => setSelectedPlan('monthly')}
               className="rounded-2xl px-3 py-3 text-left transition-all active:scale-[0.98]"
               style={{
-                background: '#FFFFFF',
+                background: '#0D1321',
                 border: selectedPlan === 'monthly' ? '2px solid #3B82F6' : '1px solid rgba(59,130,246,0.15)',
               }}
             >
-              <p className="text-[11px] font-medium mb-1" style={{ color: '#64748B' }}>Mensuel</p>
+              <p className="text-[11px] font-medium mb-1" style={{ color: '#8B9DC3' }}>Mensuel</p>
               <p className="text-xl font-bold text-white leading-none">6,99€</p>
-              <p className="text-[10px] mt-1" style={{ color: '#94A3B8' }}>/ mois</p>
+              <p className="text-[10px] mt-1" style={{ color: '#3D4F6E' }}>/ mois</p>
             </button>
 
             <button
@@ -296,7 +296,7 @@ export default function RoutinePreviewPage() {
               onClick={() => setSelectedPlan('yearly')}
               className="relative rounded-2xl px-3 py-3 text-left transition-all active:scale-[0.98]"
               style={{
-                background: '#FFFFFF',
+                background: '#0D1321',
                 border: selectedPlan === 'yearly' ? '2px solid #06B6D4' : '1px solid rgba(6,182,212,0.35)',
                 boxShadow: selectedPlan === 'yearly' ? '0 0 20px rgba(6,182,212,0.12)' : 'none',
               }}
@@ -309,7 +309,7 @@ export default function RoutinePreviewPage() {
               </span>
               <p className="text-[11px] font-medium mb-1" style={{ color: '#06B6D4' }}>Annuel</p>
               <p className="text-xl font-bold text-white leading-none">42€</p>
-              <p className="text-[10px] mt-1 leading-snug" style={{ color: '#94A3B8' }}>/ an · soit 3,50€/mois</p>
+              <p className="text-[10px] mt-1 leading-snug" style={{ color: '#3D4F6E' }}>/ an · soit 3,50€/mois</p>
             </button>
           </div>
 
@@ -328,7 +328,7 @@ export default function RoutinePreviewPage() {
           {/* Légal */}
           <div className="flex justify-center gap-6 mt-3">
             {['CGU', 'Confidentialité', 'Restaurer'].map(l => (
-              <span key={l} className="text-xs" style={{ color: '#94A3B8' }}>{l}</span>
+              <span key={l} className="text-xs" style={{ color: '#3D4F6E' }}>{l}</span>
             ))}
           </div>
         </div>
@@ -338,12 +338,12 @@ export default function RoutinePreviewPage() {
 
   // ── État 1 : Routine preview ──────────────────────────
   return (
-    <div className="min-h-screen pb-[280px]" style={{ background: '#F8FAFF' }}>
+    <div className="min-h-screen pb-[280px]" style={{ background: '#080C14' }}>
 
       {/* Header */}
       <div
         className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between"
-        style={{ background: '#F8FAFF', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
+        style={{ background: '#080C14', borderBottom: '1px solid rgba(59,130,246,0.08)' }}
       >
         <UpfaceLogo size="sm" />
         <div
@@ -372,10 +372,10 @@ export default function RoutinePreviewPage() {
             <div
               key={s.label}
               className="flex-1 rounded-xl py-2 px-3 text-center"
-              style={{ background: '#FFFFFF', border: '1px solid rgba(59,130,246,0.12)' }}
+              style={{ background: '#0D1321', border: '1px solid #1E2A3E' }}
             >
               <div className="text-lg font-bold text-white">{s.value}</div>
-              <div className="text-xs" style={{ color: '#94A3B8' }}>{s.label}</div>
+              <div className="text-xs" style={{ color: '#3D4F6E' }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -390,12 +390,12 @@ export default function RoutinePreviewPage() {
         {/* Gradient fade */}
         <div
           className="relative -mt-20 pt-20 pb-4 text-center"
-          style={{ background: 'linear-gradient(to bottom, transparent, #F8FAFF 60%)' }}
+          style={{ background: 'linear-gradient(to bottom, transparent, #080C14 60%)' }}
         >
-          <p className="text-sm font-medium mb-1" style={{ color: '#64748B' }}>
+          <p className="text-sm font-medium mb-1" style={{ color: '#8B9DC3' }}>
             +32 actions supplémentaires dans ta routine complète
           </p>
-          <p className="text-xs" style={{ color: '#94A3B8' }}>
+          <p className="text-xs" style={{ color: '#3D4F6E' }}>
             Skincare avancé · Fitness · Style · Aura · Suivi 30/60/90j
           </p>
         </div>
@@ -404,7 +404,7 @@ export default function RoutinePreviewPage() {
       {/* Pricing + CTA fixe bas */}
       <div
         className="fixed bottom-0 left-0 right-0 px-4 pb-8 pt-4"
-        style={{ background: 'linear-gradient(to top, #F8FAFF 88%, transparent)' }}
+        style={{ background: 'linear-gradient(to top, #080C14 88%, transparent)' }}
       >
         <div className="flex justify-center mb-3">
           <div
@@ -421,13 +421,13 @@ export default function RoutinePreviewPage() {
             onClick={() => setSelectedPlan('monthly')}
             className="rounded-2xl px-3 py-3 text-left transition-all active:scale-[0.98]"
             style={{
-              background: '#FFFFFF',
+              background: '#0D1321',
               border: selectedPlan === 'monthly' ? '2px solid #3B82F6' : '1px solid rgba(59,130,246,0.15)',
             }}
           >
-            <p className="text-[11px] font-medium mb-1" style={{ color: '#64748B' }}>Mensuel</p>
+            <p className="text-[11px] font-medium mb-1" style={{ color: '#8B9DC3' }}>Mensuel</p>
             <p className="text-xl font-bold text-white leading-none">6,99€</p>
-            <p className="text-[10px] mt-1" style={{ color: '#94A3B8' }}>/ mois</p>
+            <p className="text-[10px] mt-1" style={{ color: '#3D4F6E' }}>/ mois</p>
           </button>
 
           <button
@@ -435,7 +435,7 @@ export default function RoutinePreviewPage() {
             onClick={() => setSelectedPlan('yearly')}
             className="relative rounded-2xl px-3 py-3 text-left transition-all active:scale-[0.98]"
             style={{
-              background: '#FFFFFF',
+              background: '#0D1321',
               border: selectedPlan === 'yearly' ? '2px solid #06B6D4' : '1px solid rgba(6,182,212,0.35)',
               boxShadow: selectedPlan === 'yearly' ? '0 0 20px rgba(6,182,212,0.12)' : 'none',
             }}
@@ -448,7 +448,7 @@ export default function RoutinePreviewPage() {
             </span>
             <p className="text-[11px] font-medium mb-1" style={{ color: '#06B6D4' }}>Annuel</p>
             <p className="text-xl font-bold text-white leading-none">42€</p>
-            <p className="text-[10px] mt-1 leading-snug" style={{ color: '#94A3B8' }}>/ an · soit 3,50€/mois</p>
+            <p className="text-[10px] mt-1 leading-snug" style={{ color: '#3D4F6E' }}>/ an · soit 3,50€/mois</p>
           </button>
         </div>
 
@@ -474,7 +474,7 @@ export default function RoutinePreviewPage() {
           )}
         </button>
 
-        <p className="text-center text-[10px] mt-2.5" style={{ color: '#94A3B8' }}>
+        <p className="text-center text-[10px] mt-2.5" style={{ color: '#3D4F6E' }}>
           Annulable à tout moment · Paiement sécurisé Stripe
         </p>
       </div>

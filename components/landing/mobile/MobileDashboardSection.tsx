@@ -41,7 +41,7 @@ export default function MobileDashboardSection() {
           <div className="rounded-2xl overflow-hidden glass-card">
             <div className="grid grid-cols-4 gap-px bg-[rgba(59,130,246,0.06)]">
               {stats.map((s) => (
-                <div key={s.key} className="bg-white p-3 text-center">
+                <div key={s.key} className="bg-surface p-3 text-center">
                   <p className="text-[9px] text-faint uppercase tracking-wider mb-1">{t(`stat_${s.key}`)}</p>
                   <p className="text-sm font-black" style={{ fontFamily: 'Satoshi, sans-serif', color: s.color }}>
                     {s.value}
@@ -81,7 +81,7 @@ export default function MobileDashboardSection() {
                 {routineItems.map((item, i) => (
                   <div
                     key={item}
-                    className="flex items-center gap-3 p-2.5 rounded-xl bg-[rgba(248,250,255,0.8)] border border-[rgba(59,130,246,0.08)]"
+                    className="flex items-center gap-3 p-2.5 rounded-xl bg-[rgba(8,12,20,0.8)] border border-[rgba(59,130,246,0.08)]"
                   >
                     <div
                       className="w-4 h-4 rounded border flex items-center justify-center shrink-0"
@@ -105,7 +105,7 @@ export default function MobileDashboardSection() {
               </div>
             </div>
 
-            <div className="flex items-center justify-around py-3 border-t border-[rgba(59,130,246,0.08)] bg-[rgba(248,250,255,0.6)]">
+            <div className="flex items-center justify-around py-3 border-t border-[rgba(59,130,246,0.08)] bg-[rgba(8,12,20,0.6)]">
               {(['home', 'analyse', 'routine', 'coach', 'profil'] as const).map((tab, i) => (
                 <div key={tab} className="flex flex-col items-center gap-0.5">
                   <div
