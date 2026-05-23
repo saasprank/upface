@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import UpfaceLogo from '@/components/ui/UpfaceLogo'
+import { resolveRoutineIcon } from '@/components/onboarding/OnboardingIcons'
 import { readRoutinePayloadFromLocalStorage } from '@/lib/routine-client'
 
 interface RoutineCategory {
@@ -33,10 +34,10 @@ function RoutineCard({ item }: { item: RoutineCategory }) {
     >
       <div className="flex items-start gap-3">
         <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-sm"
+          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{ background: `${item.color}18`, color: item.color }}
         >
-          {item.icon}
+          {resolveRoutineIcon(item.id, item.icon ? <span className="text-sm">{item.icon}</span> : undefined)}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-1">

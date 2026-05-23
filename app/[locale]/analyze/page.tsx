@@ -8,6 +8,7 @@ import Image from 'next/image'
 import FaceCadran, { type AnalyzeState, type FaceCadranHandle, type CameraErrorCode } from '@/components/analyze/FaceCadran'
 import AnalyzeUploadScreen from '@/components/analyze/AnalyzeUploadScreen'
 import ScanProgressBar from '@/components/analyze/ScanProgressBar'
+import AnalyzingProgressSection from '@/components/analyze/AnalyzingProgressSection'
 import { ScanPoseInstructionCard } from '@/components/analyze/ScanInstructions'
 import { SCAN_POSE_STEP_ORDER, computeScanProgress } from '@/lib/face-pose-heuristics'
 import { getScanTiming, SCAN_ESTIMATED_API_MS } from '@/lib/scan-timing'
@@ -257,9 +258,6 @@ function AnalyzeContent() {
       setUploading(true)
       setError(null)
 
-      const controller = new AbortController()
-      const requestTimeout = window.setTimeout(() => controller.abort(), 55_000)
-
       try {
         const supabase = createClient()
         let imageUrl = ''
@@ -280,61 +278,30 @@ function AnalyzeContent() {
         }
 
         const photoForDisplay = imageUrl.trim() || imageBase64 || ''
-        if (photoForDisplay) {
-          try {
-            sessionStorage.setItem('upface_photo_url', photoForDisplay)
-          } catch { /* ignore */ }
+        if (!photoForDisplay) {
+          throw new Error('image_required')
         }
 
-        const res = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          signal: controller.signal,
-          body: JSON.stringify({
-            imageUrl,
-            ...(imageBase64 ? { imageBase64 } : {}),
-          }),
-        })
+        try {
+          sessionStorage.setItem('upface_photo_url', photoForDisplay)
+        } catch { /* ignore */ }
 
-        const data = await parseAnalyzeResponse(res)
-
-        if (!res.ok) {
-          if (data.error === 'NO_FACE_DETECTED') throw new Error('no_face')
-          if (data.error === 'IMAGE_REQUIRED') throw new Error('image_required')
-          throw new Error(data.error ?? 'Analysis failed')
-        }
-
-        await applyAnalysisSuccess(data)
+        router.push(`${prefix}/analyzing`)
       } catch (err) {
         const msg = err instanceof Error ? err.message : ''
-        const aborted = err instanceof Error && err.name === 'AbortError'
-        if (aborted) {
+        if (msg === 'image_required') {
           setError(
             locale === 'fr'
-              ? 'L\'analyse a pris trop de temps. Réessaie avec une bonne connexion.'
-              : 'Analysis timed out. Try again with a stable connection.',
-          )
-        } else if (msg === 'no_face') {
-          setError(
-            locale === 'fr'
-              ? 'Aucun visage détecté. Assure-toi que ton visage est bien éclairé et de face.'
-              : 'No face detected. Make sure your face is well lit and facing the camera.',
-          )
-        } else if (msg === 'image_required') {
-          setError(
-            locale === 'fr'
-              ? 'Photo non reçue par le serveur. Réessaie ou vérifie ta connexion.'
-              : 'The server did not receive your photo. Try again or check your connection.',
+              ? 'Photo non reçue. Réessaie ou vérifie ta connexion.'
+              : 'Could not read your photo. Try again or check your connection.',
           )
         } else {
           setError(locale === 'fr' ? 'Une erreur est survenue. Réessaie.' : 'Something went wrong. Please try again.')
         }
         setUploading(false)
-      } finally {
-        window.clearTimeout(requestTimeout)
       }
     },
-    [applyAnalysisSuccess, locale, prefix, router, uploading],
+    [locale, prefix, router, uploading],
   )
 
   const runAnalysisApi = useCallback(async () => {
@@ -586,18 +553,17 @@ function AnalyzeContent() {
 
       {(finalizing || state === 'redirecting') && (
         <div
-          className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 px-6"
-          style={{ background: 'rgba(8,12,20,0.72)', backdropFilter: 'blur(6px)' }}
+          className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-6 px-6"
+          style={{ background: 'rgba(8,12,20,0.88)', backdropFilter: 'blur(8px)' }}
         >
-          <div
-            className="w-10 h-10 rounded-full border-2 border-[rgba(6,182,212,0.35)] border-t-[#06B6D4] animate-spin"
-            aria-hidden
+          <AnalyzingProgressSection
+            progress={state === 'redirecting' ? 100 : apiProgress * 100}
+            message={
+              state === 'redirecting'
+                ? (locale === 'fr' ? 'Ouverture des résultats…' : 'Opening results…')
+                : (locale === 'fr' ? 'Analyse IA de ton visage…' : 'AI facial analysis…')
+            }
           />
-          <p className="text-sm font-semibold text-[#EEF2FF] text-center" style={{ fontFamily: 'Satoshi, sans-serif' }}>
-            {state === 'redirecting'
-              ? (locale === 'fr' ? 'Ouverture des résultats…' : 'Opening results…')
-              : (locale === 'fr' ? 'Analyse de ton visage…' : 'Analyzing your face…')}
-          </p>
         </div>
       )}
 

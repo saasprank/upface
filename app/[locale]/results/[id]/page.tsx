@@ -136,9 +136,7 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
         serverObservations={analysis.observations ?? {}}
         serverTier={analysis.tier ?? 'average'}
         serverPercentile={analysis.percentile ?? 40}
-        createdAt={analysis.created_at}
         prefix={prefix}
-        routine={analysis.routine}
       />
     )
   }

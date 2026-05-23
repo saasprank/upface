@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Navbar from '@/components/layout/Navbar'
 import BeforeAfterSlider from './BeforeAfterSlider'
 
 interface Scores {
@@ -82,7 +83,6 @@ export default function FreeResultsView({
     } catch { /* ignore */ }
   }, [photoUrl])
 
-  // Persist scores to localStorage so dashboard & routine generator can use them
   useEffect(() => {
     try {
       localStorage.setItem('upface_scores', JSON.stringify({
@@ -98,30 +98,38 @@ export default function FreeResultsView({
 
   const scoreAfter = potentiel
 
-  const weak   = TRAIT_META.filter(t => scores[t.key as keyof Scores] < 60)
-  const strong = TRAIT_META.filter(t => scores[t.key as keyof Scores] >= 60)
-
   return (
-    <div className="min-h-screen bg-bg">
-      <div className="max-w-lg mx-auto px-4 pt-6 pb-24">
+    <div className="relative min-h-screen overflow-hidden bg-[#080C14]">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 50% at 50% 15%, rgba(59,130,246,0.14) 0%, transparent 70%)',
+        }}
+        aria-hidden
+      />
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <p className="text-xs text-muted uppercase tracking-widest font-medium mb-0.5">Résultat de ton scan</p>
-            <h1 className="text-xl font-black text-theme" style={{ fontFamily: 'Satoshi, sans-serif' }}>
-              Ton potentiel facial
-            </h1>
-          </div>
-          <div
-            className="px-3 py-1.5 rounded-full text-xs font-bold"
-            style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid #1E2A3E', color: '#3B82F6' }}
-          >
-            {TIER_LABELS[tier] ?? 'Average'}
-          </div>
-        </div>
+      <Navbar />
 
-        {/* Before / After Slider */}
+      <main className="relative z-10 mx-auto max-w-lg px-4 pb-32 pt-20">
+        <header className="mb-8 text-center">
+          <p className="mb-2 font-[Inter,sans-serif] text-[11px] font-bold uppercase tracking-[0.18em] text-[#3B82F6]">
+            Résultat de ton scan
+          </p>
+          <h1 className="font-[Outfit,sans-serif] text-[clamp(32px,6vw,44px)] font-black uppercase leading-[0.92] tracking-[-0.02em]">
+            <span className="block text-white">TON</span>
+            <span className="block bg-gradient-to-r from-[#3B82F6] to-[#06B6D4] bg-clip-text text-transparent">
+              POTENTIEL
+            </span>
+          </h1>
+          <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#1E2A3E] bg-[#0D1321] px-3 py-1.5">
+            <span className="font-[Inter,sans-serif] text-[11px] text-[#8B9DC3]">Tier</span>
+            <span className="font-[Outfit,sans-serif] text-[12px] font-bold text-[#3B82F6]">
+              {TIER_LABELS[tier] ?? 'Average'}
+            </span>
+          </div>
+        </header>
+
         <div className="mb-4">
           <BeforeAfterSlider
             photoUrl={displayPhoto}
@@ -130,37 +138,57 @@ export default function FreeResultsView({
           />
         </div>
 
-        {/* Dream face tagline */}
         <div
-          className="flex items-center gap-3 p-4 rounded-2xl mb-6"
-          style={{ background: 'rgba(6,182,212,0.06)', border: '1px solid rgba(6,182,212,0.18)' }}
+          className="mb-6 flex items-center gap-3 rounded-2xl border border-[rgba(6,182,212,0.18)] p-4"
+          style={{ background: 'rgba(6,182,212,0.06)' }}
         >
-          <div style={{ color: '#06B6D4' }}>
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <div className="text-[#06B6D4]">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
             </svg>
           </div>
           <div>
-            <p className="text-xs font-bold text-[#06B6D4] uppercase tracking-wider mb-0.5">Ton visage de rêve</p>
-            <p className="text-sm text-muted">
-              En suivant ta routine personnalisée, tu peux atteindre <span className="font-bold text-theme">{scoreAfter}/100</span> en {scores.global < 55 ? '16' : '8'} semaines.
+            <p className="mb-0.5 font-[Inter,sans-serif] text-[11px] font-bold uppercase tracking-wider text-[#06B6D4]">
+              Ton visage de rêve
+            </p>
+            <p className="font-[Inter,sans-serif] text-[13px] text-[#8B9DC3]">
+              En suivant ta routine personnalisée, tu peux atteindre{' '}
+              <span className="font-bold text-white">{scoreAfter}/100</span> en{' '}
+              {scores.global < 55 ? '16' : '8'} semaines.
             </p>
           </div>
         </div>
 
-        {/* What we'll fix */}
+        <div className="mb-8 grid grid-cols-3 gap-3">
+          {[
+            { label: 'Ton score', value: `${scores.global}/100` },
+            { label: 'Top', value: `${Math.max(5, 100 - percentile)}%` },
+            { label: 'Potentiel', value: `${scoreAfter}/100` },
+          ].map((s) => (
+            <div
+              key={s.label}
+              className="flex flex-col items-center gap-1 rounded-xl border border-[#1E2A3E] bg-[#0D1321] py-3"
+            >
+              <span className="font-[Outfit,sans-serif] text-[18px] font-black text-white">{s.value}</span>
+              <span className="font-[Inter,sans-serif] text-[10px] uppercase tracking-wider text-[#3D4F6E]">
+                {s.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
         <section className="mb-6">
-          <h2 className="text-base font-black text-theme mb-3" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+          <h2 className="mb-3 font-[Outfit,sans-serif] text-[18px] font-bold text-white">
             Ce qu&apos;on va corriger
           </h2>
           <div className="flex flex-wrap gap-2">
-            {TRAIT_META.map(t => {
+            {TRAIT_META.map((t) => {
               const s = scores[t.key as keyof Scores]
               const c = scoreColor(s)
               return (
                 <div
                   key={t.key}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
+                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold"
                   style={{ background: `${c}12`, border: `1px solid ${c}33`, color: c }}
                 >
                   {t.icon}
@@ -171,100 +199,73 @@ export default function FreeResultsView({
           </div>
         </section>
 
-        {/* Detailed observations */}
         <section className="mb-6 space-y-3">
-          <h2 className="text-base font-black text-theme mb-3" style={{ fontFamily: 'Satoshi, sans-serif' }}>
-            Analyse détaillée
+          <h2 className="mb-3 font-[Outfit,sans-serif] text-[18px] font-bold text-white">
+            Analyse détaillée IA
           </h2>
-          {TRAIT_META.map(t => {
+          {TRAIT_META.map((t) => {
             const s = scores[t.key as keyof Scores]
             const obs = observations[t.key as keyof Observations]
             const c = scoreColor(s)
             return (
               <div
                 key={t.key}
-                className="rounded-2xl p-4"
-                style={{ background: '#0D1321', border: `1px solid ${c}22` }}
+                className="rounded-2xl border p-4"
+                style={{ background: '#0D1321', borderColor: `${c}22` }}
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="mb-2 flex items-center justify-between">
                   <div className="flex items-center gap-2" style={{ color: c }}>
                     {t.icon}
-                    <span className="text-sm font-bold text-theme">{t.label}</span>
+                    <span className="font-[Outfit,sans-serif] text-[14px] font-bold text-white">{t.label}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold" style={{ color: c }}>{scoreLabel(s)}</span>
                     <span
-                      className="text-xs font-black px-2 py-0.5 rounded-full"
+                      className="rounded-full px-2 py-0.5 text-xs font-black"
                       style={{ background: `${c}18`, color: c }}
                     >
                       {s}/100
                     </span>
                   </div>
                 </div>
-                {/* Score bar */}
-                <div className="h-1 rounded-full mb-3" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                <div className="mb-3 h-1 overflow-hidden rounded-full bg-[rgba(255,255,255,0.06)]">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{ width: `${s}%`, background: `linear-gradient(90deg, ${c}, ${c}99)` }}
                   />
                 </div>
-                {obs && (
-                  <p className="text-xs leading-relaxed text-muted">{obs}</p>
+                {obs ? (
+                  <p className="font-[Inter,sans-serif] text-[12px] leading-relaxed text-[#8B9DC3]">{obs}</p>
+                ) : (
+                  <p className="font-[Inter,sans-serif] text-[12px] italic text-[#3D4F6E]">Analyse en cours…</p>
                 )}
               </div>
             )
           })}
         </section>
 
-        {/* Social proof */}
-        <div
-          className="flex items-center gap-2 px-4 py-3 rounded-2xl mb-6"
-          style={{ background: '#0D1321', border: '1px solid #1E2A3E' }}
-        >
-          <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
-          <p className="text-xs text-muted">
-            <span className="font-semibold text-theme">127 utilisateurs</span> ont commencé leur routine UPFACE aujourd&apos;hui
+        <div className="mb-6 flex items-center gap-2 rounded-2xl border border-[#1E2A3E] bg-[#0D1321] px-4 py-3">
+          <div className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-green-400" />
+          <p className="font-[Inter,sans-serif] text-[12px] text-[#8B9DC3]">
+            <span className="font-semibold text-white">127 utilisateurs</span> ont commencé leur routine UPFACE aujourd&apos;hui
           </p>
         </div>
+      </main>
 
-        {/* Stats row */}
-        <div className="grid grid-cols-3 gap-3 mb-8">
-          {[
-            { label: 'Ton score', value: `${scores.global}/100` },
-            { label: 'Top', value: `${Math.max(5, 100 - percentile)}%` },
-            { label: 'Potentiel', value: `${scoreAfter}/100` },
-          ].map(s => (
-            <div
-              key={s.label}
-              className="flex flex-col items-center gap-1 py-3 rounded-2xl"
-              style={{ background: '#0D1321', border: '1px solid #1E2A3E' }}
-            >
-              <span className="text-lg font-black text-theme" style={{ fontFamily: 'Satoshi, sans-serif' }}>{s.value}</span>
-              <span className="text-[10px] text-muted uppercase tracking-wider">{s.label}</span>
-            </div>
-          ))}
-        </div>
-
-      </div>
-
-      {/* Sticky CTA */}
       <div
-        className="fixed bottom-0 left-0 right-0 p-4"
-        style={{ background: 'linear-gradient(to top, #080C14 70%, transparent)', zIndex: 40 }}
+        className="fixed bottom-0 left-0 right-0 z-40 p-4"
+        style={{ background: 'linear-gradient(to top, #080C14 75%, transparent)' }}
       >
-        <div className="max-w-lg mx-auto">
+        <div className="mx-auto max-w-lg">
           <Link
             href={`${prefix}/onboarding?id=${analysisId}`}
-            className="w-full flex items-center justify-center gap-2 font-black text-base rounded-2xl transition-all hover:brightness-110"
+            className="flex h-[56px] w-full items-center justify-center gap-2 rounded-full font-[Outfit,sans-serif] text-[14px] font-bold uppercase tracking-[0.06em] text-white transition-opacity hover:opacity-90"
             style={{
-              height: 58,
-              background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)',
-              color: '#fff',
-              fontFamily: 'Satoshi, sans-serif',
-              boxShadow: '0 4px 28px rgba(59,130,246,0.3)',
+              background: 'linear-gradient(135deg, #3B82F6, #06B6D4)',
+              boxShadow: '0 0 40px rgba(59,130,246,0.45), 0 0 80px rgba(6,182,212,0.2)',
             }}
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
             </svg>
             Commencer ma routine

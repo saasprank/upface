@@ -14,23 +14,6 @@ const STEPS = [
 
 const TOTAL = STEPS.reduce((a, s) => a + s.duration, 0)
 
-function resolveAnalysisId(): string {
-  try {
-    const raw = localStorage.getItem('upface_onboarding')
-    if (raw) {
-      const parsed = JSON.parse(raw) as { analysisId?: string }
-      if (parsed.analysisId?.trim()) return parsed.analysisId.trim()
-    }
-  } catch { /* ignore */ }
-
-  try {
-    const fromSession = sessionStorage.getItem('upface_analysis_id')
-    if (fromSession?.trim()) return fromSession.trim()
-  } catch { /* ignore */ }
-
-  return `demo-${Date.now()}`
-}
-
 export default function GeneratingPage() {
   const router = useRouter()
   const params = useParams()
@@ -69,10 +52,9 @@ export default function GeneratingPage() {
         setCurrentStep(STEPS.length - 1)
         setDone(true)
 
-        const analysisId = resolveAnalysisId()
         window.setTimeout(() => {
           if (!cancelled) {
-            router.replace(`${prefix}/results/${analysisId}`)
+            router.replace(`${prefix}/onboarding/routine-preview`)
           }
         }, 650)
       }
@@ -123,7 +105,7 @@ export default function GeneratingPage() {
 
       <div className="mb-8 text-center min-h-[28px] px-4">
         <p className="text-white font-medium text-base">
-          {done ? 'Ton bilan est prêt…' : STEPS[currentStep].label}
+          {done ? 'Ta routine est prête…' : STEPS[currentStep].label}
         </p>
       </div>
 
@@ -136,7 +118,7 @@ export default function GeneratingPage() {
                   ? 'bg-green-500'
                   : i === currentStep
                     ? 'border-2 border-blue-400'
-                    : 'border border-gray-700'
+                    : 'border border-[#1E2A3E]'
               }`}
             >
               {(done || i < currentStep) && (
@@ -150,7 +132,7 @@ export default function GeneratingPage() {
             </div>
             <span
               className={`text-sm transition-colors duration-300 ${
-                done || i <= currentStep ? 'text-white' : 'text-gray-600'
+                done || i <= currentStep ? 'text-white' : 'text-[#3D4F6E]'
               }`}
             >
               {step.label}

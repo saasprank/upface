@@ -3,8 +3,14 @@
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useLocale } from 'next-intl'
-import Link from 'next/link'
 import UpfaceLogo from '@/components/ui/UpfaceLogo'
+import {
+  IconFire,
+  IconStrength,
+  IconMirror,
+  IconSparkle,
+  IconNeutral,
+} from '@/components/onboarding/OnboardingIcons'
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -62,11 +68,11 @@ const IMPROVE_OPTIONS = [
 ]
 
 const DREAM_OPTIONS = [
-  { id: 'unstoppable', label: 'Inarrêtable', desc: 'Confiance totale, sans limite', icon: '🔥' },
-  { id: 'confident',   label: 'Confiant en toute situation', desc: 'À l\'aise partout, avec tout le monde', icon: '💪' },
-  { id: 'proud',       label: 'Fier de mon reflet', desc: 'Enfin satisfait de ce que je vois', icon: '🪞' },
-  { id: 'myself',      label: 'Enfin moi-même', desc: 'Mon visage reflète qui je suis vraiment', icon: '✨' },
-  { id: 'same',        label: 'Pareil qu\'avant', desc: 'Juste quelques améliorations légères', icon: '😐' },
+  { id: 'unstoppable', label: 'Inarrêtable', desc: 'Confiance totale, sans limite', icon: <IconFire /> },
+  { id: 'confident',   label: 'Confiant en toute situation', desc: 'À l\'aise partout, avec tout le monde', icon: <IconStrength /> },
+  { id: 'proud',       label: 'Fier de mon reflet', desc: 'Enfin satisfait de ce que je vois', icon: <IconMirror /> },
+  { id: 'myself',      label: 'Enfin moi-même', desc: 'Mon visage reflète qui je suis vraiment', icon: <IconSparkle /> },
+  { id: 'same',        label: 'Pareil qu\'avant', desc: 'Juste quelques améliorations légères', icon: <IconNeutral /> },
 ]
 
 const TIME_OPTIONS = [
@@ -257,7 +263,12 @@ function OnboardingContent() {
                         border: selected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.06)',
                       }}
                     >
-                      <span className="text-xl shrink-0">{opt.icon}</span>
+                      <div
+                        className="shrink-0 flex items-center justify-center rounded-xl w-10 h-10"
+                        style={{ background: selected ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.06)', color: selected ? '#3B82F6' : '#8B9DC3' }}
+                      >
+                        {opt.icon}
+                      </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-sm" style={{ color: selected ? '#EEF2FF' : '#8B9DC3' }}>{opt.label}</p>
                         <p className="text-xs mt-0.5" style={{ color: '#8B9DC3' }}>{opt.desc}</p>

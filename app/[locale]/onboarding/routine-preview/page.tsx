@@ -1,8 +1,18 @@
 ﻿'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useParams } from 'next/navigation'
 import UpfaceLogo from '@/components/ui/UpfaceLogo'
+import {
+  IconClipboard,
+  IconMicroscope,
+  IconRobot,
+  IconChart,
+  IconSparkle,
+  IconLink,
+  IconStar,
+  resolveRoutineIcon,
+} from '@/components/onboarding/OnboardingIcons'
 
 // ─── Types ───────────────────────────────────────────────
 interface OnboardingData {
@@ -15,7 +25,7 @@ interface OnboardingData {
 interface RoutineCategory {
   id: string
   category: string
-  icon: string
+  icon?: string
   color: string
   day: string
   title: string
@@ -31,7 +41,7 @@ interface GeneratedRoutine {
 // ─── Fallback statique ───────────────────────────────────
 const ROUTINE_FALLBACK: RoutineCategory[] = [
   {
-    id: 'skincare', day: 'Jour 1–7', category: 'Skincare', icon: '✦', color: '#3B82F6',
+    id: 'skincare', day: 'Jour 1–7', category: 'Skincare', color: '#3B82F6',
     title: 'Nettoyage & Hydratation de base',
     tasks: [
       'Nettoyant doux matin et soir (CeraVe ou La Roche-Posay)',
@@ -41,7 +51,7 @@ const ROUTINE_FALLBACK: RoutineCategory[] = [
     unlocked: true,
   },
   {
-    id: 'grooming', day: 'Jour 1–7', category: 'Grooming', icon: '✂', color: '#06B6D4',
+    id: 'grooming', day: 'Jour 1–7', category: 'Grooming', color: '#06B6D4',
     title: 'Définition & Entretien',
     tasks: [
       'Taille des sourcils : enlever les poils entre les deux',
@@ -51,7 +61,7 @@ const ROUTINE_FALLBACK: RoutineCategory[] = [
     unlocked: true,
   },
   {
-    id: 'fitness', day: 'Jour 8–14', category: 'Fitness', icon: '◈', color: '#10B981',
+    id: 'fitness', day: 'Jour 8–14', category: 'Fitness', color: '#10B981',
     title: 'Jawline & Posture',
     tasks: [
       'Exercices mâchoire : 3×20 reps matin',
@@ -61,7 +71,7 @@ const ROUTINE_FALLBACK: RoutineCategory[] = [
     unlocked: true,
   },
   {
-    id: 'style', day: 'Jour 8–21', category: 'Style', icon: '◇', color: '#8B5CF6',
+    id: 'style', day: 'Jour 8–21', category: 'Style', color: '#8B5CF6',
     title: 'Silhouette & Présence',
     tasks: [
       'Audit garde-robe : coupes ajustées uniquement',
@@ -71,7 +81,7 @@ const ROUTINE_FALLBACK: RoutineCategory[] = [
     unlocked: false,
   },
   {
-    id: 'aura', day: 'Jour 14–30', category: 'Aura', icon: '⬡', color: '#F59E0B',
+    id: 'aura', day: 'Jour 14–30', category: 'Aura', color: '#F59E0B',
     title: 'Présence & Magnétisme',
     tasks: [
       'Contact visuel : exercice miroir 5 min/jour',
@@ -82,13 +92,13 @@ const ROUTINE_FALLBACK: RoutineCategory[] = [
   },
 ]
 
-const FEATURES = [
-  { icon: '📋', title: 'Routine complète 30/60/90 jours', sub: 'Plan jour par jour adapté à ton score' },
-  { icon: '🔬', title: '47 critères analysés en détail', sub: 'Chaque point de ton visage décrypté' },
-  { icon: '🤖', title: 'Coach IA personnalisé', sub: 'Conseils adaptés chaque semaine' },
-  { icon: '📈', title: 'Suivi de progression', sub: 'Vois ton score évoluer semaine après semaine' },
-  { icon: '✨', title: 'Skincare & Grooming avancés', sub: 'Produits recommandés pour ton type de peau' },
-  { icon: '🔗', title: 'Carte de score partageable', sub: 'Partage tes résultats sur TikTok & Instagram' },
+const FEATURES: { icon: ReactNode; title: string; sub: string }[] = [
+  { icon: <IconClipboard />, title: 'Routine complète 30/60/90 jours', sub: 'Plan jour par jour adapté à ton score' },
+  { icon: <IconMicroscope />, title: '47 critères analysés en détail', sub: 'Chaque point de ton visage décrypté' },
+  { icon: <IconRobot />, title: 'Coach IA personnalisé', sub: 'Conseils adaptés chaque semaine' },
+  { icon: <IconChart />, title: 'Suivi de progression', sub: 'Vois ton score évoluer semaine après semaine' },
+  { icon: <IconSparkle />, title: 'Skincare & Grooming avancés', sub: 'Produits recommandés pour ton type de peau' },
+  { icon: <IconLink />, title: 'Carte de score partageable', sub: 'Partage tes résultats sur TikTok & Instagram' },
 ]
 
 // ─── Composant carte routine ──────────────────────────────
@@ -121,10 +131,10 @@ function RoutineCard({ item }: { item: RoutineCategory }) {
       )}
       <div className="flex items-start gap-3">
         <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-sm"
+          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{ background: `${item.color}18`, color: item.color }}
         >
-          {item.icon}
+          {resolveRoutineIcon(item.id)}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-1">
@@ -236,10 +246,10 @@ export default function RoutinePreviewPage() {
         {/* SECTION HAUT — Hero */}
         <div className="pt-8 px-6 text-center">
           <div
-            className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
+            className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-white"
             style={{ background: 'linear-gradient(135deg, #3B82F6, #06B6D4)' }}
           >
-            <span className="text-2xl">✦</span>
+            <IconStar />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">Débloque ton potentiel</h1>
           <p className="text-sm" style={{ color: '#8B9DC3' }}>
@@ -255,7 +265,9 @@ export default function RoutinePreviewPage() {
               className="flex items-center gap-3 py-2.5"
               style={{ borderBottom: i < FEATURES.length - 1 ? '1px solid rgba(59,130,246,0.08)' : 'none' }}
             >
-              <span className="text-lg w-7 text-center flex-shrink-0">{f.icon}</span>
+              <span className="w-7 flex-shrink-0 flex items-center justify-center" style={{ color: '#3B82F6' }}>
+                {f.icon}
+              </span>
               <div>
                 <p className="text-white font-semibold text-sm leading-tight">{f.title}</p>
                 <p className="text-xs" style={{ color: '#8B9DC3' }}>{f.sub}</p>
@@ -322,7 +334,14 @@ export default function RoutinePreviewPage() {
           >
             {loadingPlan !== null ? (
               <div className="w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
-            ) : 'Commencer maintenant ▷'}
+            ) : (
+              <>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                Commencer maintenant
+              </>
+            )}
           </button>
 
           {/* Légal */}

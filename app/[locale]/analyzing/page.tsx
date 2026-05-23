@@ -9,6 +9,7 @@ import Navbar from '@/components/layout/Navbar'
 import { createClient } from '@/lib/supabase'
 import { isAuthUiHidden } from '@/lib/auth-ui'
 import { syncSubscriberRoutineFromAnalyze } from '@/lib/routine-client'
+import { saveAnalysisSession } from '@/lib/analysis-session'
 
 const MESSAGES_KEYS = ['step_1', 'step_2', 'step_3', 'step_4'] as const
 const PROGRESS_DURATION_MS = 8000
@@ -51,21 +52,35 @@ export default function AnalyzingPage() {
     startedRef.current = true
 
     const run = async () => {
-      const url = sessionStorage.getItem('upface_photo_url')
+      const url = sessionStorage.getItem('upface_photo_url') ?? ''
       const isDemo = searchParams.get('demo') === '1'
+
+      const requestBody = url.startsWith('data:')
+        ? { imageBase64: url, demo: isDemo }
+        : { imageUrl: url, demo: isDemo }
 
       try {
         const res = await fetch('/api/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageUrl: url, demo: isDemo }),
+          body: JSON.stringify(requestBody),
         })
 
         const data = await res.json() as {
           analysisId?: string
           error?: string
-          scores?: Record<string, number>
+          scores?: {
+            global: number
+            symetrie: number
+            proportions: number
+            structure: number
+            peau: number
+            grooming: number
+            aura: number
+          }
           observations?: Record<string, string>
+          tier?: string
+          percentile?: number
           freeAnalysis?: boolean
         }
 
@@ -75,6 +90,15 @@ export default function AnalyzingPage() {
         }
 
         if (!res.ok) throw new Error('Analysis failed')
+
+        if (data.scores) {
+          try {
+            localStorage.setItem('upface_scores', JSON.stringify({
+              ...data.scores,
+              potentiel: Math.min(95, (data.scores.global ?? 70) + 14),
+            }))
+          } catch { /* ignore */ }
+        }
 
         if (data.observations) {
           localStorage.setItem('upface_observations', JSON.stringify(data.observations))
@@ -89,6 +113,16 @@ export default function AnalyzingPage() {
         const id = data.analysisId ?? `demo-${Date.now()}`
         analysisIdRef.current = id
         sessionStorage.setItem('upface_analysis_id', id)
+
+        if (data.scores) {
+          saveAnalysisSession(id, {
+            scores: data.scores,
+            observations: data.observations,
+            tier: data.tier,
+            percentile: data.percentile,
+            freeAnalysis: data.freeAnalysis,
+          })
+        }
       } catch {
         const demoId = `demo-${Date.now()}`
         analysisIdRef.current = demoId
